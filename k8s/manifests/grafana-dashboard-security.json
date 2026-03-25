@@ -1,0 +1,215 @@
+{
+  "__requires": [
+    { "type": "datasource", "id": "prometheus", "name": "Prometheus" }
+  ],
+  "title": "KrakenD API Gateway — ISO 27004 Security Metrics",
+  "uid": "krakend-iso27004-security",
+  "description": "ISO/IEC 27004:2016 security measurement dashboard for the Revenu Platform API Gateway. Maps KPIs to ISO 27001 controls.",
+  "tags": ["krakend", "security", "iso27001", "iso27004", "compliance"],
+  "timezone": "utc",
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "title": "M01: JWT Validation Failure Rate (A.8.5)",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "targets": [{
+        "expr": "sum(rate(krakend_router_response_size_count{status=\"401\"}[5m])) / sum(rate(krakend_router_response_size_count[5m])) * 100",
+        "legendFormat": "401 Rate %"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 1, "color": "yellow" },
+              { "value": 5, "color": "red" }
+            ]
+          },
+          "unit": "percent",
+          "max": 10
+        }
+      }
+    },
+    {
+      "title": "M02: Authorization Denial Rate (A.5.15)",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "targets": [{
+        "expr": "sum(rate(krakend_router_response_size_count{status=\"403\"}[5m])) / sum(rate(krakend_router_response_size_count[5m])) * 100",
+        "legendFormat": "403 Rate %"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 0.5, "color": "yellow" },
+              { "value": 2, "color": "red" }
+            ]
+          },
+          "unit": "percent"
+        }
+      }
+    },
+    {
+      "title": "M04: Gateway Uptime (A.8.14)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "targets": [{
+        "expr": "avg_over_time(up{job=\"krakend\"}[30d]) * 100",
+        "legendFormat": "Uptime %"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 99.0, "color": "yellow" },
+              { "value": 99.9, "color": "green" }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 3
+        }
+      }
+    },
+    {
+      "title": "M07: Error Rate 5xx (A.8.14)",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "targets": [{
+        "expr": "sum(rate(krakend_router_response_size_count{status=~\"5..\"}[5m])) / sum(rate(krakend_router_response_size_count[5m])) * 100",
+        "legendFormat": "5xx Rate %"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 0.1, "color": "yellow" },
+              { "value": 1, "color": "red" }
+            ]
+          },
+          "unit": "percent"
+        }
+      }
+    },
+    {
+      "title": "M05: P95 Response Latency (A.8.6)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "targets": [{
+        "expr": "histogram_quantile(0.95, sum(rate(krakend_router_response_time_seconds_bucket[5m])) by (le))",
+        "legendFormat": "P95 Latency"
+      }, {
+        "expr": "histogram_quantile(0.50, sum(rate(krakend_router_response_time_seconds_bucket[5m])) by (le))",
+        "legendFormat": "P50 Latency"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 0.1, "color": "yellow" },
+              { "value": 1, "color": "red" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "M06: Circuit Breaker Status (A.5.29)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "targets": [{
+        "expr": "krakend_circuit_breaker_open",
+        "legendFormat": "{{name}}"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 1, "color": "red" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Auth Failures by Status (A.8.5, A.5.15)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "targets": [{
+        "expr": "sum(rate(krakend_router_response_size_count{status=\"401\"}[5m]))",
+        "legendFormat": "401 Unauthorized"
+      }, {
+        "expr": "sum(rate(krakend_router_response_size_count{status=\"403\"}[5m]))",
+        "legendFormat": "403 Forbidden"
+      }, {
+        "expr": "sum(rate(krakend_router_response_size_count{status=\"429\"}[5m]))",
+        "legendFormat": "429 Rate Limited"
+      }]
+    },
+    {
+      "title": "M09: Certificate Expiry (A.8.24)",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
+      "targets": [{
+        "expr": "(certmanager_certificate_expiration_timestamp_seconds{name=\"krakend-mtls-client\"} - time()) / 86400",
+        "legendFormat": "Days to Expiry"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 7, "color": "orange" },
+              { "value": 30, "color": "green" }
+            ]
+          },
+          "unit": "d",
+          "decimals": 0
+        }
+      }
+    },
+    {
+      "title": "Replica Count (A.8.14)",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
+      "targets": [{
+        "expr": "kube_deployment_status_replicas_available{deployment=\"krakend\"}",
+        "legendFormat": "Available Pods"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": 0, "color": "red" },
+              { "value": 1, "color": "orange" },
+              { "value": 2, "color": "green" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Request Rate by Status (Overview)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "targets": [{
+        "expr": "sum(rate(krakend_router_response_size_count{status=~\"2..\"}[5m]))",
+        "legendFormat": "2xx Success"
+      }, {
+        "expr": "sum(rate(krakend_router_response_size_count{status=~\"4..\"}[5m]))",
+        "legendFormat": "4xx Client Error"
+      }, {
+        "expr": "sum(rate(krakend_router_response_size_count{status=~\"5..\"}[5m]))",
+        "legendFormat": "5xx Server Error"
+      }]
+    }
+  ]
+}
