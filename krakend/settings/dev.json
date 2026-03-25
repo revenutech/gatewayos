@@ -2,7 +2,8 @@
   "keycloak": {
     "jwks_url": "http://keycloak:8180/realms/ledgeros/protocol/openid-connect/certs",
     "issuer": "http://keycloak:8180/realms/ledgeros",
-    "audience": "revenu-platform"
+    "audience": "revenu-platform",
+    "disable_jwk_security": true
   },
   "service": {
     "port": 8080,
