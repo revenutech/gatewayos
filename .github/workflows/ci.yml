@@ -70,6 +70,36 @@ jobs:
       - name: Build Docker image
         run: docker build -t revenu-gateway:ci .
 
+  # ISO 27001 A.5.21 — ICT supply chain security
+  # ISO 27001 A.8.8 — Management of technical vulnerabilities
+  container-security:
+    name: Container Security Scan (A.5.21, A.8.8)
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image for scanning
+        run: docker build -t revenu-gateway:scan .
+      - name: "A.5.21: Trivy vulnerability scan"
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: revenu-gateway:scan
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+      - name: "A.5.21: Generate SBOM"
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: revenu-gateway:scan
+          format: cyclonedx
+          output: sbom.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
   # Enterprise KrakenD equivalent: server/hot-reload
   # Computes config hash and updates deployment annotation for rolling restart
   config-hash:

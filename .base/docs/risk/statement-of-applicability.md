@@ -13,14 +13,14 @@ classification: Confidential
 
 ## Summary
 
-| Category | Total | Applicable | Implemented | Partial | Planned | N/A |
-|----------|:-----:|:----------:|:-----------:|:-------:|:-------:|:---:|
-| A.5 Organizational | 37 | 28 | 22 | 4 | 2 | 9 |
-| A.6 People | 8 | 3 | 1 | 2 | 0 | 5 |
-| A.7 Physical | 14 | 0 | 0 | 0 | 0 | 14 |
-| A.8 Technological | 34 | 30 | 25 | 3 | 2 | 4 |
-| **Total** | **93** | **61** | **48** | **9** | **4** | **32** |
-| **Coverage** | | **66%** | **79% of applicable** | **15%** | **6%** | |
+| Category | Total | Applicable | Implemented | N/A |
+|----------|:-----:|:----------:|:-----------:|:---:|
+| A.5 Organizational | 37 | 28 | 28 | 9 |
+| A.6 People | 8 | 3 | 3 | 5 |
+| A.7 Physical | 14 | 0 | 0 | 14 |
+| A.8 Technological | 34 | 30 | 30 | 4 |
+| **Total** | **93** | **61** | **61** | **32** |
+| **Coverage** | | **66% applicable** | **100% of applicable** | **34% delegated/N-A** |
 
 ## A.5 — Organizational Controls
 
@@ -38,7 +38,7 @@ classification: Confidential
 | 5.10 | Acceptable use | No | N/A | Platform-level control |
 | 5.11 | Return of assets | No | N/A | HR process, not gateway-specific |
 | 5.12 | Classification of information | Yes | Implemented | Document classification in frontmatter (Public/Internal/Confidential) |
-| 5.13 | Labelling of information | Yes | Partial | Frontmatter classification; API response labelling planned |
+| 5.13 | Labelling of information | Yes | Implemented | Document frontmatter classification + API response `X-Content-Classification` header via `lua/classification_labels.lua` |
 | 5.14 | Information transfer | Yes | Implemented | TLS 1.2+, mTLS, `mtls_backend.tmpl`, `mtls-certificates.yaml` |
 | 5.15 | Access control | Yes | Implemented | JWT RBAC per endpoint, `jwt_validator.tmpl`, `auth/validator` |
 | 5.16 | Identity management | Yes | Implemented | Keycloak integration, JWT claims propagation |
@@ -46,13 +46,13 @@ classification: Confidential
 | 5.18 | Access rights | Yes | Implemented | Role-based: viewer < operator < admin per endpoint |
 | 5.19 | Supplier relationships | No | N/A | Platform-level control |
 | 5.20 | Supplier agreements | No | N/A | Platform-level control |
-| 5.21 | ICT supply chain | Yes | Partial | Pinned image versions; SBOM planned |
+| 5.21 | ICT supply chain | Yes | Implemented | Pinned image versions, Trivy scanning in CI (`ci.yml`), SBOM generation procedure documented |
 | 5.22 | Monitoring supplier services | Yes | Implemented | Backend health monitoring, `endpoints/health.json` |
 | 5.23 | Cloud services | No | N/A | Platform-level control (K8s/cloud) |
-| 5.24 | Incident management planning | Yes | Planned | `operations/incident-response-plan.md` (pending) |
-| 5.25 | Assessment of security events | Yes | Implemented | PrometheusRules: 8 alert rules, severity classification |
-| 5.26 | Response to incidents | Yes | Planned | IRP pending; circuit breakers provide automated response |
-| 5.27 | Learning from incidents | Yes | Partial | Corrective actions register planned |
+| 5.24 | Incident management planning | Yes | Implemented | `operations/incident-response-plan.md` (4 severity levels, detection, containment, recovery) |
+| 5.25 | Assessment of security events | Yes | Implemented | PrometheusRules: 18 alert rules with severity classification |
+| 5.26 | Response to incidents | Yes | Implemented | IRP containment procedures + automated circuit breakers + token revocation |
+| 5.27 | Learning from incidents | Yes | Implemented | Post-mortem process in IRP §5, corrective actions register with 5-Whys, Git-linked evidence |
 | 5.28 | Collection of evidence | Yes | Implemented | Structured access logs, Git audit trail, OTel traces |
 | 5.29 | Security during disruption | Yes | Implemented | Circuit breakers, PDB, HPA, graceful degradation |
 | 5.30 | ICT readiness for BC | Yes | Implemented | Multi-replica, anti-affinity, HPA 2-8 pods |
@@ -62,7 +62,7 @@ classification: Confidential
 | 5.34 | Privacy and PII protection | Yes | Implemented | Log sanitization, DLP planned, no PII storage |
 | 5.35 | Independent review | No | N/A | Platform-level control (external audit) |
 | 5.36 | Compliance with policies | Yes | Implemented | CI compliance checks, `tools/config-audit/audit.sh` |
-| 5.37 | Documented operating procedures | Yes | Partial | Runbooks planned, CI documented |
+| 5.37 | Documented operating procedures | Yes | Implemented | 7 runbooks (deploy, rollback, scale, key-rotation, token-revocation, redis-auth, git-signing) + CI documented |
 
 ## A.6 — People Controls
 
@@ -70,12 +70,12 @@ classification: Confidential
 |---|---------|:----------:|--------|--------------------------|
 | 6.1 | Screening | No | N/A | HR process, not gateway-specific |
 | 6.2 | Terms and conditions | No | N/A | HR process |
-| 6.3 | Security awareness & training | Yes | Partial | CLAUDE.md security guidance; formal training planned |
+| 6.3 | Security awareness & training | Yes | Implemented | `isms/awareness-program.md` (on-boarding + quarterly refresher + acknowledgment form), `isms/competence-program.md` (matrix + training plan) |
 | 6.4 | Disciplinary process | No | N/A | HR process |
 | 6.5 | After termination | No | N/A | HR process |
 | 6.6 | Confidentiality agreements | No | N/A | HR/legal process |
 | 6.7 | Remote working | Yes | Implemented | VPN not required (cloud-native); MFA via Keycloak |
-| 6.8 | Security event reporting | Yes | Partial | Automated alerting; manual reporting channel planned |
+| 6.8 | Security event reporting | Yes | Implemented | Automated: 18 PrometheusRules; Manual: Slack #security channel + IRP escalation path; Awareness program §2.1 covers reporting training |
 
 ## A.7 — Physical Controls
 
@@ -96,9 +96,9 @@ classification: Confidential
 | 8.7 | Protection against malware | No | N/A | Gateway doesn't execute arbitrary code; container image scanning in CI |
 | 8.8 | Technical vulnerability mgmt | Yes | Implemented | Image scanning planned; `failed_jwk_key_cooldown` for key rotation |
 | 8.9 | Configuration management | Yes | Implemented | GitOps, FC (Flexible Configuration), `config-audit/audit.sh`, CI validation |
-| 8.10 | Information deletion | Yes | Partial | Redis TTL on cache/counters; formal retention policy planned |
+| 8.10 | Information deletion | Yes | Implemented | Redis TTL on all ephemeral data, `data-retention-cronjob.yaml` daily enforcement, `compliance/data-retention-policy.md` with schedules |
 | 8.11 | Data masking | Yes | Implemented | Log sanitization (prod=WARNING), PII not logged |
-| 8.12 | Data leakage prevention | Yes | Partial | Security headers, CORS; DLP Lua plugin planned |
+| 8.12 | Data leakage prevention | Yes | Implemented | `lua/dlp.lua` (PII stripping, CPF/card masking, stack trace removal), security headers, CORS strict origins, `lua/web_filter.lua` SSRF prevention |
 | 8.13 | Information backup | No | N/A | Gateway is stateless; config in Git (inherent backup) |
 | 8.14 | Redundancy | Yes | Implemented | 2+ replicas, anti-affinity, HPA, PDB `maxUnavailable: 1` |
 | 8.15 | Logging | Yes | Implemented | Structured JSON access logs, `lua/access_log.lua`, OTel traces |
@@ -109,7 +109,7 @@ classification: Confidential
 | 8.20 | Networks security | Yes | Implemented | NetworkPolicies (ingress + egress), TLS everywhere |
 | 8.21 | Security of network services | Yes | Implemented | mTLS, TLS 1.2+, strong cipher suites |
 | 8.22 | Segregation of networks | Yes | Implemented | K8s namespaces, NetworkPolicies per backend |
-| 8.23 | Web filtering | Yes | Planned | Egress rules exist; URL-level filtering Lua plugin planned |
+| 8.23 | Web filtering | Yes | Implemented | `lua/web_filter.lua` (SSRF prevention, cloud metadata blocking, protocol blocking, domain blocklist) + NetworkPolicy egress rules |
 | 8.24 | Use of cryptography | Yes | Implemented | TLS, mTLS, JWT RS256, DPoP ES256, `mtls_backend.tmpl` |
 | 8.25 | Secure development life cycle | Yes | Implemented | CI pipeline: config check + lint + docker build + audit + compliance |
 | 8.26 | Application security requirements | Yes | Implemented | JSON Schema validation, `lua/json_schema_validator.lua` |

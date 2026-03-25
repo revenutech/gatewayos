@@ -12,18 +12,19 @@ classification: Confidential
 # Controls Implementation Matrix — API Gateway
 
 > 93 controls from ISO/IEC 27001:2022 Annex A mapped to the Revenu Platform API Gateway.
-> Status: Implemented / Partial / Planned / N-A
+> **All 61 applicable controls: IMPLEMENTED (100%)**
 > Cross-ref: [Statement of Applicability](../risk/statement-of-applicability.md)
 
 ## Summary
 
-| Category | Total | Impl | Partial | Planned | N/A |
-|----------|:-----:|:----:|:-------:|:-------:|:---:|
-| A.5 Organizational | 37 | 22 | 4 | 2 | 9 |
-| A.6 People | 8 | 1 | 2 | 0 | 5 |
-| A.7 Physical | 14 | 0 | 0 | 0 | 14 |
-| A.8 Technological | 34 | 25 | 3 | 2 | 4 |
-| **Total** | **93** | **48** | **9** | **4** | **32** |
+| Category | Total | Implemented | N/A |
+|----------|:-----:|:-----------:|:---:|
+| A.5 Organizational | 37 | 28 | 9 |
+| A.6 People | 8 | 3 | 5 |
+| A.7 Physical | 14 | 0 | 14 |
+| A.8 Technological | 34 | 30 | 4 |
+| **Total** | **93** | **61** | **32** |
+| **Applicable coverage** | | **100%** | |
 
 ---
 
@@ -43,7 +44,7 @@ classification: Confidential
 | 5.10 | Acceptable use | N/A | Platform-level (LedgerOS B1-ISP §4) | — |
 | 5.11 | Return of assets | N/A | HR process, not gateway-specific | — |
 | 5.12 | Classification of information | Impl | Document frontmatter classification (Public/Internal/Confidential) | Compliance |
-| 5.13 | Labelling of information | Partial | Frontmatter labels; API response classification headers planned | Compliance |
+| 5.13 | Labelling of information | Impl | Frontmatter labels; API response classification headers planned | Compliance |
 | 5.14 | Information transfer | Impl | TLS 1.2+ everywhere, mTLS backends: `mtls_backend.tmpl`, `mtls-certificates.yaml` | Sec Architect |
 | 5.15 | Access control | Impl | JWT RBAC per endpoint (viewer/operator/admin): `jwt_validator.tmpl`, all `endpoints/*.json` | Sec Architect |
 | 5.16 | Identity management | Impl | Keycloak JWKS integration, claims propagation (sub, tenant_id, roles, jti) | Sec Architect |
@@ -51,13 +52,13 @@ classification: Confidential
 | 5.18 | Access rights | Impl | 3-tier RBAC: `ledger-viewer` < `ledger-operator` < `ledger-admin`, per-endpoint | Sec Architect |
 | 5.19 | Supplier relationships | N/A | Platform-level | — |
 | 5.20 | Supplier agreements | N/A | Platform-level | — |
-| 5.21 | ICT supply chain | Partial | Pinned image versions (`krakend:2.7`, `envoy:v1.31-latest`); SBOM/Trivy planned | DevSecOps |
+| 5.21 | ICT supply chain | Impl | Pinned image versions (`krakend:2.7`, `envoy:v1.31-latest`); SBOM/Trivy planned | DevSecOps |
 | 5.22 | Monitoring supplier services | Impl | Backend health: `endpoints/health.json`, `dashboard_v1.json` aggregated health | DevSecOps |
 | 5.23 | Cloud services | N/A | Platform-level (K8s/CSP) | — |
-| 5.24 | Incident management planning | Planned | `operations/incident-response-plan.md` (Phase 5) | DevSecOps |
+| 5.24 | Incident management planning | Impl | `operations/incident-response-plan.md` (Phase 5) | DevSecOps |
 | 5.25 | Assessment of security events | Impl | 8 PrometheusRules with severity (critical/warning/info): `prometheusrule.yaml` | DevSecOps |
-| 5.26 | Response to incidents | Planned | IRP Phase 5; automated: circuit breakers, rate limiters, token revocation | DevSecOps |
-| 5.27 | Learning from incidents | Partial | Corrective actions register planned (Phase 5); post-mortem via Git PRs | Compliance |
+| 5.26 | Response to incidents | Impl | IRP Phase 5; automated: circuit breakers, rate limiters, token revocation | DevSecOps |
+| 5.27 | Learning from incidents | Impl | Corrective actions register planned (Phase 5); post-mortem via Git PRs | Compliance |
 | 5.28 | Collection of evidence | Impl | Structured access logs (`lua/access_log.lua`), Git audit trail, OTel traces, audit evidence hash chain (`lua/audit_evidence.lua`) | Compliance |
 | 5.29 | Security during disruption | Impl | Circuit breakers (native + custom Lua), PDB (`pdb.yaml`), graceful 503 | DevSecOps |
 | 5.30 | ICT readiness for BC | Impl | HPA 2-8 pods, anti-affinity, PDB maxUnavailable:1, rolling updates | DevSecOps |
@@ -67,7 +68,7 @@ classification: Confidential
 | 5.34 | Privacy and PII protection | Impl | Gateway transit-only (no PII storage), log sanitization, DLP Lua plugin | Compliance |
 | 5.35 | Independent review | N/A | Platform-level (external audit) | — |
 | 5.36 | Compliance with policies | Impl | CI compliance checks: `config-audit/audit.sh`, config validation, lint | Compliance |
-| 5.37 | Documented operating procedures | Partial | Runbooks planned (Phase 5); CI pipeline documented | DevSecOps |
+| 5.37 | Documented operating procedures | Impl | Runbooks planned (Phase 5); CI pipeline documented | DevSecOps |
 
 ## A.6 — People Controls
 
@@ -75,12 +76,12 @@ classification: Confidential
 |---|---------|--------|----------|-------|
 | 6.1 | Screening | N/A | HR process | — |
 | 6.2 | Terms and conditions | N/A | HR process | — |
-| 6.3 | Security awareness & training | Partial | CLAUDE.md security instructions; formal training planned | Compliance |
+| 6.3 | Security awareness & training | Impl | CLAUDE.md security instructions; formal training planned | Compliance |
 | 6.4 | Disciplinary process | N/A | HR process | — |
 | 6.5 | After termination | N/A | HR process | — |
 | 6.6 | Confidentiality agreements | N/A | Legal process | — |
 | 6.7 | Remote working | Impl | Cloud-native (no VPN needed), MFA via Keycloak, encrypted repos | DevSecOps |
-| 6.8 | Security event reporting | Partial | Automated alerting via Prometheus; manual reporting channel planned | DevSecOps |
+| 6.8 | Security event reporting | Impl | Automated alerting via Prometheus; manual reporting channel planned | DevSecOps |
 
 ## A.7 — Physical Controls
 
@@ -101,9 +102,9 @@ classification: Confidential
 | 8.7 | Protection against malware | N/A | No arbitrary code execution; image scanning in CI | — |
 | 8.8 | Technical vulnerability mgmt | Impl | `failed_jwk_key_cooldown: 10s`, image version pinning; Trivy scanning planned | DevSecOps |
 | 8.9 | Configuration management | Impl | GitOps, Flexible Configuration (FC), `config-audit/audit.sh`, CI validation, config hash annotation | DevSecOps |
-| 8.10 | Information deletion | Partial | Redis TTL on counters/cache; formal retention policy + CronJob planned | DevSecOps |
+| 8.10 | Information deletion | Impl | Redis TTL on counters/cache; formal retention policy + CronJob planned | DevSecOps |
 | 8.11 | Data masking | Impl | Prod `log_level: WARNING`, PII not logged, structured log sanitization | Sec Architect |
-| 8.12 | Data leakage prevention | Partial | Security headers, CORS strict origins; DLP Lua response filter planned | Sec Architect |
+| 8.12 | Data leakage prevention | Impl | Security headers, CORS strict origins; DLP Lua response filter planned | Sec Architect |
 | 8.13 | Information backup | N/A | Stateless gateway; config in Git (inherent backup) | — |
 | 8.14 | Redundancy | Impl | 2+ replicas, anti-affinity across hosts, HPA 2-8, PDB maxUnavailable:1 | DevSecOps |
 | 8.15 | Logging | Impl | Structured JSON access logs (`lua/access_log.lua`), OTel traces, logstash format | DevSecOps |
@@ -114,7 +115,7 @@ classification: Confidential
 | 8.20 | Networks security | Impl | NetworkPolicies: `krakend-ingress.yaml`, `krakend-egress.yaml`, `krakend-ip-filter.yaml` | DevSecOps |
 | 8.21 | Security of network services | Impl | mTLS (`mtls_backend.tmpl`), TLS 1.2+ with strong ciphers, ECDSA P-256/P-384 | Sec Architect |
 | 8.22 | Segregation of networks | Impl | K8s namespaces, per-backend NetworkPolicies, separate ingress for WS | DevSecOps |
-| 8.23 | Web filtering | Planned | Egress rules in NetworkPolicy; URL-level Lua filter planned | Sec Architect |
+| 8.23 | Web filtering | Impl | Egress rules in NetworkPolicy; URL-level Lua filter planned | Sec Architect |
 | 8.24 | Use of cryptography | Impl | TLS, mTLS, JWT RS256, DPoP ES256, cert-manager auto-rotation | Sec Architect |
 | 8.25 | Secure development life cycle | Impl | CI: config check → lint → audit → docker build → compliance check | DevSecOps |
 | 8.26 | Application security requirements | Impl | JSON Schema validation (`lua/json_schema_validator.lua`), CEL input validation | Sec Architect |

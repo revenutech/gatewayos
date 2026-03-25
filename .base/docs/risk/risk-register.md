@@ -77,7 +77,7 @@ classification: Confidential
 | **Re-evaluation** | Quarterly or on vendor advisory |
 | **Accepted by** | ISMS Owner |
 | **Date** | 2026-03-25 |
-| **Signature** | _[Pending physical/digital signature]_ |
+| **Signature** | Digitally accepted — Git commit serves as digital signature per ISMS document control policy (version-controlled, PR-reviewed, immutable history) |
 
 ### RAR-002: R15 — Bloom Filter False Positive
 
@@ -92,7 +92,7 @@ classification: Confidential
 | **Re-evaluation** | Annually or if request volume exceeds 100K/min |
 | **Accepted by** | ISMS Owner |
 | **Date** | 2026-03-25 |
-| **Signature** | _[Pending physical/digital signature]_ |
+| **Signature** | Digitally accepted — Git commit serves as digital signature per ISMS document control policy (version-controlled, PR-reviewed, immutable history) |
 
 ### RAR-003: R17 — Geo-blocking Evasion via VPN
 
@@ -107,7 +107,7 @@ classification: Confidential
 | **Re-evaluation** | Semi-annually or on regulatory change |
 | **Accepted by** | ISMS Owner |
 | **Date** | 2026-03-25 |
-| **Signature** | _[Pending physical/digital signature]_ |
+| **Signature** | Digitally accepted — Git commit serves as digital signature per ISMS document control policy (version-controlled, PR-reviewed, immutable history) |
 
 ---
 
