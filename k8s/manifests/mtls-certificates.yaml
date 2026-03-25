@@ -1,0 +1,84 @@
+# =============================================================================
+# Revenu Platform — mTLS Certificates for Backend Communication
+# Enterprise KrakenD equivalent: native mTLS (also available in CE)
+# ISO 27001: A.10.1.1 (Cryptographic controls), A.13.2.1 (Info transfer)
+#
+# Uses cert-manager to issue and rotate mTLS certificates for KrakenD
+# to authenticate with backend services (LedgerOS, Paymentos, etc.)
+# =============================================================================
+
+# CA Issuer for internal mTLS
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: revenu-internal-ca
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: mtls
+    app.kubernetes.io/part-of: revenu-platform
+spec:
+  ca:
+    secretName: revenu-internal-ca-key-pair
+---
+# KrakenD client certificate for mTLS with backends
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: krakend-mtls-client
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: mtls
+    app.kubernetes.io/part-of: revenu-platform
+spec:
+  secretName: krakend-mtls-client-cert
+  duration: 8760h    # 1 year
+  renewBefore: 720h  # Renew 30 days before expiry
+  isCA: false
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  usages:
+    - client auth
+    - digital signature
+    - key encipherment
+  dnsNames:
+    - krakend
+    - krakend.ledgeros-production.svc.cluster.local
+    - krakend.ledgeros-staging.svc.cluster.local
+  subject:
+    organizations:
+      - revenu-platform
+    organizationalUnits:
+      - api-gateway
+  issuerRef:
+    name: revenu-internal-ca
+    kind: Issuer
+---
+# Backend CA certificate (trust store)
+# Backends present certificates signed by this CA
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: revenu-backend-ca
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: mtls
+    app.kubernetes.io/part-of: revenu-platform
+spec:
+  isCA: true
+  secretName: revenu-internal-ca-key-pair
+  duration: 87600h   # 10 years
+  renewBefore: 8760h # Renew 1 year before expiry
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  subject:
+    organizations:
+      - revenu-platform
+    organizationalUnits:
+      - internal-ca
+  commonName: revenu-internal-ca
+  issuerRef:
+    name: revenu-internal-ca
+    kind: Issuer

@@ -1,0 +1,20 @@
+"backend/http/client": {
+  "client_tls": {
+    "allow_insecure_connections": false,
+    "ca_certs": "/etc/krakend/tls/ca.crt",
+    "client_certs": [{
+      "certificate": "/etc/krakend/tls/client.crt",
+      "private_key": "/etc/krakend/tls/client.key"
+    }],
+    "disable_system_ca_pool": false,
+    "min_version": "TLS12",
+    "max_version": "TLS13",
+    "cipher_suites": [
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_AES_256_GCM_SHA384",
+      "TLS_AES_128_GCM_SHA256"
+    ],
+    "curve_preferences": ["CurveP256", "CurveP384"]
+  }
+}

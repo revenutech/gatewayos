@@ -1,0 +1,64 @@
+# =============================================================================
+# Revenu Platform — GeoIP Configuration
+# Enterprise KrakenD equivalent: plugin/http-server (geoip) + security/policies (geo-blocking)
+# ISO 27001: A.9.4.1 (Information access restriction)
+#
+# Uses Nginx Ingress geoip2 module with MaxMind GeoLite2 database.
+# Nginx injects X-Geo-Country, X-Geo-City headers which KrakenD propagates to backends.
+#
+# Setup:
+# 1. Register at MaxMind for a free GeoLite2 license key
+# 2. Download GeoLite2-Country.mmdb
+# 3. Create secret: kubectl create secret generic maxmind-license --from-literal=license-key=YOUR_KEY
+# 4. Configure ingress-nginx to load GeoIP2 databases
+# =============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: krakend-geoip-config
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: geoip
+    app.kubernetes.io/part-of: revenu-platform
+data:
+  # Nginx Ingress ConfigMap overrides for GeoIP2
+  # Apply to the ingress-nginx controller's configmap
+  nginx-geoip-snippet.conf: |
+    # =============================================================================
+    # GeoIP2 Nginx Configuration Snippet
+    # Add this to the ingress-nginx-controller ConfigMap
+    # =============================================================================
+
+    # Load GeoIP2 database (path depends on ingress-nginx configuration)
+    # geoip2 /etc/nginx/geoip/GeoLite2-Country.mmdb {
+    #   auto_reload 60m;
+    #   $geoip2_data_country_code country iso_code;
+    #   $geoip2_data_country_name country names en;
+    #   $geoip2_data_continent_code continent code;
+    # }
+
+  # Blocked countries list (ISO 3166-1 alpha-2 codes)
+  # Update this list based on compliance requirements
+  blocked-countries.conf: |
+    # Countries blocked by compliance/regulatory requirements
+    # These will receive a 403 Forbidden response
+    map $geoip2_data_country_code $blocked_country {
+      default       0;
+      # Sanctioned countries (OFAC/EU sanctions list)
+      # KP  1;  # North Korea
+      # IR  1;  # Iran
+      # SY  1;  # Syria
+      # CU  1;  # Cuba
+      # RU  1;  # Russia (if applicable)
+    }
+
+  # Allowed countries (whitelist mode — uncomment to restrict to specific countries)
+  allowed-countries.conf: |
+    map $geoip2_data_country_code $allowed_country {
+      default       0;
+      BR            1;  # Brazil (primary market)
+      US            1;  # United States
+      PT            1;  # Portugal
+      # Add other allowed countries as needed
+    }

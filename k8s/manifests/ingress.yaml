@@ -41,6 +41,17 @@ metadata:
       # Add real client IP header for downstream rate limiting
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      # =====================================================================
+      # GeoIP — Enterprise KrakenD equivalent: plugin/http-server (geoip)
+      # Inject geo headers for KrakenD to propagate to backends
+      # Requires geoip2 module enabled in ingress-nginx controller
+      # =====================================================================
+      proxy_set_header X-Geo-Country $geoip2_data_country_code;
+      proxy_set_header X-Geo-Continent $geoip2_data_continent_code;
+      # Geo-blocking: reject requests from blocked countries
+      if ($blocked_country) {
+        return 403 '{"error":"geo_blocked","message":"Access denied from your region"}';
+      }
 spec:
   ingressClassName: nginx
   tls:

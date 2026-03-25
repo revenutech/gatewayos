@@ -1,0 +1,11 @@
+"modifier/lua-endpoint": {
+  "sources": ["/etc/krakend/partials/lua/api_key_auth.lua"],
+  "pre": "pre_proxy",
+  "live": false,
+  "allow_open_libs": true,
+  "extra_config": {
+    "dynamic_config": {
+      "keys": "{{ .api_keys.registry }}"
+    }
+  }
+}

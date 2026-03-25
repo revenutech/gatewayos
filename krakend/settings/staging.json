@@ -4,6 +4,9 @@
     "issuer": "https://auth-staging.revenu.com.br/realms/ledgeros",
     "audience": "revenu-platform"
   },
+  "api_keys": {
+    "registry": ""
+  },
   "service": {
     "port": 8080,
     "log_level": "INFO",

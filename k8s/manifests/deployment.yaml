@@ -102,6 +102,9 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+            - name: mtls-certs
+              mountPath: /etc/krakend/tls
+              readOnly: true
         # ---------------------------------------------------------------------
         # Envoy sidecar: gRPC-REST transcoder (Enterprise KrakenD equivalent: backend/grpc)
         # Listens on 127.0.0.1:8085, transcodes REST to gRPC for LedgerOS :9081
@@ -174,6 +177,17 @@ spec:
           configMap:
             name: krakend-config-reloader
             defaultMode: 0755
+        # mTLS client certificates for backend communication
+        - name: mtls-certs
+          secret:
+            secretName: krakend-mtls-client-cert
+            items:
+              - key: tls.crt
+                path: client.crt
+              - key: tls.key
+                path: client.key
+              - key: ca.crt
+                path: ca.crt
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
