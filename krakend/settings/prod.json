@@ -4,6 +4,10 @@
     "issuer": "https://auth.revenu.com.br/realms/ledgeros",
     "audience": "revenu-platform"
   },
+  "oauth2": {
+    "client_id": "krakend-gateway",
+    "client_secret": "${OAUTH2_CLIENT_SECRET}"
+  },
   "api_keys": {
     "registry": ""
   },

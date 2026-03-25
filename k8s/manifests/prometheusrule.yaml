@@ -59,3 +59,58 @@ spec:
           annotations:
             summary: "KrakenD rate limiting spike"
             description: "More than 100 requests/s being rate-limited."
+
+    # =========================================================================
+    # Business Metrics Alerts
+    # Enterprise KrakenD equivalent: telemetry/metrics (custom business alerts)
+    # =========================================================================
+    - name: krakend.business.rules
+      rules:
+        - alert: KrakenDTenantErrorBudgetBurn
+          expr: |
+            sum by (tenant_id) (rate(krakend_router_response_size_count{status=~"5.."}[1h]))
+            / sum by (tenant_id) (rate(krakend_router_response_size_count[1h])) > 0.01
+          for: 10m
+          labels:
+            severity: warning
+            service: krakend
+            category: business
+          annotations:
+            summary: "Tenant {{ $labels.tenant_id }} error budget burn"
+            description: "Tenant {{ $labels.tenant_id }} 5xx rate is {{ $value | humanizePercentage }} over 1h (SLO: 99%)."
+
+        - alert: KrakenDNoRevenueEvents
+          expr: |
+            sum(rate(krakend_router_response_size_count{endpoint=~"/v1/postings|/v1/settlements|/v1/pix/.*",status="200"}[30m])) == 0
+          for: 30m
+          labels:
+            severity: warning
+            service: krakend
+            category: business
+          annotations:
+            summary: "No revenue-generating events in 30 minutes"
+            description: "No successful postings, settlements, or payment initiations in the last 30 minutes."
+
+        - alert: KrakenDAuthFailureSpike
+          expr: |
+            sum(rate(krakend_router_response_size_count{status=~"401|403"}[5m])) > 50
+          for: 5m
+          labels:
+            severity: warning
+            service: krakend
+            category: security
+          annotations:
+            summary: "Authentication/authorization failure spike"
+            description: "More than 50 auth failures/s — possible credential stuffing or misconfiguration."
+
+        - alert: KrakenDTierRateLimitExhaustion
+          expr: |
+            sum(rate(krakend_router_response_size_count{status="429"}[5m])) by (tier) > 10
+          for: 5m
+          labels:
+            severity: info
+            service: krakend
+            category: business
+          annotations:
+            summary: "Tier {{ $labels.tier }} rate limit exhaustion"
+            description: "Tier {{ $labels.tier }} consistently hitting rate limits — potential upgrade candidate."

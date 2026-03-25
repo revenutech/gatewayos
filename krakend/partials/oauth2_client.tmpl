@@ -1,0 +1,9 @@
+"auth/client-credentials": {
+  "client_id": "{{ .oauth2.client_id }}",
+  "client_secret": "{{ .oauth2.client_secret }}",
+  "token_url": "{{ .keycloak.issuer }}/protocol/openid-connect/token",
+  "scopes": "openid",
+  "endpoint_params": {
+    "audience": ["{{ .keycloak.audience }}"]
+  }
+}

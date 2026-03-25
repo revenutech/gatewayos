@@ -5,6 +5,10 @@
     "audience": "revenu-platform",
     "disable_jwk_security": true
   },
+  "oauth2": {
+    "client_id": "krakend-gateway",
+    "client_secret": "dev-secret-change-me"
+  },
   "api_keys": {
     "registry": "dev-test-key-001:dev-key-1:tenant-dev:ledger-viewer,ledger-operator:default:true|dev-test-key-002:dev-key-2:tenant-dev:ledger-admin:premium:true"
   },

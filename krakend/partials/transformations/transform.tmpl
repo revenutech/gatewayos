@@ -1,0 +1,16 @@
+"modifier/lua-endpoint": {
+  "sources": [
+    "/etc/krakend/partials/transformations/request_transform.lua"
+  ],
+  "pre": "pre_proxy",
+  "live": false,
+  "allow_open_libs": true
+},
+"modifier/lua-proxy": {
+  "sources": [
+    "/etc/krakend/partials/transformations/response_transform.lua"
+  ],
+  "post": "post_proxy",
+  "live": false,
+  "allow_open_libs": true
+}
