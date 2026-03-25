@@ -1,0 +1,7 @@
+{{/* ISO 27001:2022 A.8.23 (Web filtering) — SSRF prevention + URL blocklist */}}
+"modifier/lua-endpoint": {
+  "sources": ["/etc/krakend/partials/lua/web_filter.lua"],
+  "pre": "pre_proxy",
+  "live": false,
+  "allow_open_libs": true
+}

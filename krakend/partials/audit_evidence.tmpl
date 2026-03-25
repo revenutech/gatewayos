@@ -1,0 +1,7 @@
+{{/* ISO 27001:2022 A.5.28 (Collection of evidence), A.8.15 (Logging) */}}
+"modifier/lua-proxy": {
+  "sources": ["/etc/krakend/partials/lua/audit_evidence.lua"],
+  "post": "post_proxy",
+  "live": false,
+  "allow_open_libs": true
+}

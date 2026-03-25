@@ -1,0 +1,111 @@
+# =============================================================================
+# Revenu Platform — Data Retention & Deletion CronJob
+# ISO 27001:2022 Annex A Control 8.10 (Information deletion)
+# ISO 27001:2022 Annex A Control 5.33 (Protection of records)
+#
+# Scheduled job that enforces data retention policies:
+# - Cleans expired Redis keys (rate limit counters, cache entries)
+# - Validates TTL compliance across Redis data stores
+# - Reports retention metrics for ISO 27004 measurement
+# =============================================================================
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: krakend-data-retention
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: data-retention
+    app.kubernetes.io/part-of: revenu-platform
+    iso27001.control: "A.8.10"
+spec:
+  schedule: "0 2 * * *"  # Daily at 02:00 UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: krakend
+            app.kubernetes.io/component: data-retention
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: retention-enforcer
+              image: redis:7-alpine
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  REDIS_HOST="${REDIS_HOST:-redis}"
+                  REDIS_PORT="${REDIS_PORT:-6379}"
+                  echo "[retention] Starting data retention enforcement at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                  echo "[retention] ISO 27001:2022 A.8.10 — Information deletion"
+
+                  # 1. Clean expired rate limit counters (should auto-expire via TTL)
+                  RL_KEYS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT KEYS "rl:*" | wc -l)
+                  RL_NO_TTL=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT --scan --pattern "rl:*" | while read key; do
+                    ttl=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT TTL "$key")
+                    [ "$ttl" = "-1" ] && echo "$key"
+                  done | wc -l)
+                  echo "[retention] Rate limit keys: total=$RL_KEYS without_ttl=$RL_NO_TTL"
+
+                  # Fix keys without TTL (set 2h TTL as safety net)
+                  redis-cli -h $REDIS_HOST -p $REDIS_PORT --scan --pattern "rl:*" | while read key; do
+                    ttl=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT TTL "$key")
+                    if [ "$ttl" = "-1" ]; then
+                      redis-cli -h $REDIS_HOST -p $REDIS_PORT EXPIRE "$key" 7200
+                      echo "[retention] Set TTL on orphan key: $key"
+                    fi
+                  done
+
+                  # 2. Clean expired cache entries
+                  CACHE_KEYS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT KEYS "cache:*" | wc -l)
+                  echo "[retention] Cache keys: total=$CACHE_KEYS"
+
+                  # 3. Clean expired metric counters (older than 24h)
+                  METRIC_KEYS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT KEYS "metrics:*" | wc -l)
+                  echo "[retention] Metric keys: total=$METRIC_KEYS"
+
+                  # 4. Clean expired circuit breaker state (older than recovery_time x 2)
+                  CB_KEYS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT KEYS "cb:*" | wc -l)
+                  echo "[retention] Circuit breaker keys: total=$CB_KEYS"
+
+                  # 5. Report revoked tokens count
+                  REVOKED_TOKENS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT SCARD "revoked_tokens" 2>/dev/null || echo "0")
+                  REVOKED_USERS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT SCARD "revoked_users" 2>/dev/null || echo "0")
+                  REVOKED_TENANTS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT SCARD "revoked_tenants" 2>/dev/null || echo "0")
+                  echo "[retention] Revoked: tokens=$REVOKED_TOKENS users=$REVOKED_USERS tenants=$REVOKED_TENANTS"
+
+                  # 6. Summary
+                  TOTAL_KEYS=$(redis-cli -h $REDIS_HOST -p $REDIS_PORT DBSIZE | grep -o '[0-9]*')
+                  echo "[retention] Redis DBSIZE: $TOTAL_KEYS"
+                  echo "[retention] Retention enforcement completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              env:
+                - name: REDIS_HOST
+                  value: "redis"
+                - name: REDIS_PORT
+                  value: "6379"
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 64Mi

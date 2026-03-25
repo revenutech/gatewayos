@@ -1,0 +1,7 @@
+{{/* ISO 27001:2022 A.8.12 (Data leakage prevention), A.5.34 (PII protection) */}}
+"modifier/lua-proxy": {
+  "sources": ["/etc/krakend/partials/lua/dlp.lua"],
+  "post": "post_proxy",
+  "live": false,
+  "allow_open_libs": true
+}
