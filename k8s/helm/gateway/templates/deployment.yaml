@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gateway
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.labels | nindent 8 }}
+      annotations:
+        checksum/config: {{ .Values.configHash | quote }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: krakend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 8090
+              protocol: TCP
+          command: ["krakend", "run", "-c", "/etc/krakend/krakend.tmpl"]
+          env:
+            - name: FC_ENABLE
+              value: {{ .Values.krakend.fcEnable | quote }}
+            - name: FC_SETTINGS
+              value: {{ .Values.krakend.fcSettings }}
+            - name: FC_PARTIALS
+              value: {{ .Values.krakend.fcPartials }}
+            - name: FC_TEMPLATES
+              value: {{ .Values.krakend.fcTemplates }}
+            - name: KRAKEND_PORT
+              value: {{ .Values.krakend.port | quote }}
+            - name: USAGE_DISABLE
+              value: {{ .Values.krakend.usageDisable | quote }}
+          {{- if eq .Values.probes.type "httpGet" }}
+          livenessProbe:
+            httpGet:
+              path: /__health
+              port: http
+            {{- toYaml .Values.probes.liveness | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /__health
+              port: http
+            {{- toYaml .Values.probes.readiness | nindent 12 }}
+          {{- else }}
+          livenessProbe:
+            tcpSocket:
+              port: http
+            {{- toYaml .Values.probes.liveness | nindent 12 }}
+          readinessProbe:
+            tcpSocket:
+              port: http
+            {{- toYaml .Values.probes.readiness | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/krakend
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.mtls.enabled }}
+            - name: mtls-certs
+              mountPath: /etc/krakend/tls
+              readOnly: true
+            {{- end }}
+        {{- if .Values.envoy.enabled }}
+        - name: envoy-grpc-transcoder
+          image: "{{ .Values.envoy.image.repository }}:{{ .Values.envoy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          args:
+            - -c
+            - /etc/envoy/envoy.yaml
+            - --service-cluster
+            - gateway-grpc-transcoder
+            - --log-level
+            - warn
+          ports:
+            - name: grpc-transcode
+              containerPort: 8085
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.envoy.resources | nindent 12 }}
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+              readOnly: true
+            - name: envoy-proto
+              mountPath: /etc/envoy/proto
+              readOnly: true
+            - name: envoy-tmp
+              mountPath: /tmp
+        {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+        - name: tmp
+          emptyDir:
+            sizeLimit: 50Mi
+        {{- if .Values.mtls.enabled }}
+        - name: mtls-certs
+          secret:
+            secretName: gateway-mtls-client-cert
+            items:
+              - key: tls.crt
+                path: client.crt
+              - key: tls.key
+                path: client.key
+              - key: ca.crt
+                path: ca.crt
+        {{- end }}
+        {{- if .Values.envoy.enabled }}
+        - name: envoy-config
+          configMap:
+            name: {{ .Release.Name }}-envoy
+        - name: envoy-proto
+          configMap:
+            name: ledgeros-proto-descriptor
+        - name: envoy-tmp
+          emptyDir:
+            sizeLimit: 10Mi
+        {{- end }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - gateway
+                topologyKey: kubernetes.io/hostname

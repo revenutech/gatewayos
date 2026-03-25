@@ -1,0 +1,54 @@
+# =============================================================================
+# Gateway — GCP Dev Environment
+# GKE zonal (sae1-a), 1 replica, LoadBalancer, debug
+# Estimated cost: ~$15/month
+# =============================================================================
+
+replicaCount: 1
+
+image:
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-dev/gateway-dev/gateway
+  tag: "dev-latest"
+  pullPolicy: Always
+
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: gateway-app-dev@revenu-gateway-dev.iam.gserviceaccount.com
+
+service:
+  type: LoadBalancer
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+probes:
+  type: tcpSocket  # GKE kubelet HTTP prober workaround
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+envoy:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+cronjob:
+  dataRetention:
+    redis:
+      host: redis
+      port: "6379"
+
+krakend:
+  env: dev

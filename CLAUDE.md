@@ -96,6 +96,28 @@ All config files include ISO 27001 Annex A control references in comments. When 
 
 LedgerOS ISO 27000 documentation: `ledgeros/.base/knowledge/iso27000/`, `ledgeros/.base/plans/08-security/`
 
+## GCP Deployment
+
+```bash
+# Terraform (infra)
+cd deployment/infra/gcp/environments/dev && terraform apply
+
+# Helm (app)
+helm upgrade --install gateway k8s/helm/gateway -f k8s/helm/gateway/values-gcp-dev.yaml
+
+# CD pipelines (auto)
+# develop → cd-dev-gcp.yml → GKE dev
+# staging → cd-staging-gcp.yml → GKE staging (+ Cosign sign)
+# v*.*.* tag → cd-production-gcp.yml → GKE prod (approval + SBOM + Trivy)
+```
+
+| Path | What |
+|------|------|
+| `deployment/infra/gcp/` | Terraform modules (VPC, GKE, AR, KMS, DNS, Monitoring) |
+| `deployment/infra/gcp/environments/` | Per-env configs (dev/staging/prod) |
+| `k8s/helm/gateway/` | Helm chart (14 templates + 3 GCP values) |
+| `.github/workflows/cd-*-gcp.yml` | CD pipelines (dev/staging/prod) |
+
 ## Adding a New Module
 
 1. Add backend address to `krakend/settings/{dev,staging,prod}.json` under `backends`

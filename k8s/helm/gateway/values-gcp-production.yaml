@@ -1,0 +1,75 @@
+# =============================================================================
+# Gateway — GCP Production Environment
+# GKE regional (sae1), 3 replicas, GCE Ingress, ManagedCert, Binary Auth
+# Estimated cost: ~$300/month
+# ISO 27001: A.8.31 (Separation of environments)
+# =============================================================================
+
+replicaCount: 3
+
+image:
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-production/gateway-prod/gateway
+  tag: ""  # Set by CD pipeline (v*.*.*)
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: gateway-app-production@revenu-gateway-production.iam.gserviceaccount.com
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  className: gce
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gateway-prod-ip
+    networking.gke.io/managed-certificates: gateway-prod-cert
+  hosts:
+    - host: api.revenu.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+backendConfig:
+  enabled: true
+  connectionDraining:
+    drainingTimeoutSec: 60
+
+managedCertificate:
+  enabled: true
+  domains:
+    - api.revenu.com.br
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 75
+
+probes:
+  type: tcpSocket
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+
+envoy:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+mtls:
+  enabled: true
+
+krakend:
+  env: prod

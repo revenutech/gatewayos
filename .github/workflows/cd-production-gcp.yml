@@ -1,0 +1,192 @@
+name: CD — Production (GCP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy (e.g., v1.0.0)"
+        required: true
+  push:
+    tags: ["v*.*.*"]
+
+env:
+  GKE_CLUSTER: gateway-prod-cluster
+  GKE_REGION: southamerica-east1
+  AR_REPO: southamerica-east1-docker.pkg.dev/revenu-gateway-production/gateway-prod
+  IMAGE_NAME: gateway
+
+jobs:
+  ci:
+    name: CI Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate KrakenD config
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/krakend:/etc/krakend \
+            -e FC_ENABLE=1 -e FC_SETTINGS=/etc/krakend/settings \
+            -e FC_PARTIALS=/etc/krakend/partials -e FC_TEMPLATES=/etc/krakend/templates \
+            devopsfaith/krakend:2.7 check -c /etc/krakend/krakend.tmpl
+      - name: Config audit
+        run: bash tools/config-audit/audit.sh --strict
+      - name: ISO compliance check
+        run: |
+          # Verify all mandatory ISMS docs exist
+          for doc in .base/docs/isms/scope-statement.md .base/docs/risk/risk-register.md .base/docs/compliance/controls-matrix.md; do
+            [ -f "$doc" ] || { echo "MISSING: $doc"; exit 1; }
+          done
+
+  build:
+    name: Build, Sign, Scan & Attest
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    outputs:
+      image_tag: ${{ steps.tag.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: tag
+        name: Determine image tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.image_tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          fi
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_PROD }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_PROD }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker southamerica-east1-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }} .
+
+      # Security scan
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      # Sign image
+      - uses: sigstore/cosign-installer@v3
+      - name: Sign container image
+        run: cosign sign --yes ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+
+      # SBOM
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+          format: cyclonedx
+          output: sbom.json
+
+      - name: Attest SBOM
+        run: cosign attest --yes --predicate sbom.json --type cyclonedx ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+
+      - name: Push to Artifact Registry
+        run: docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
+  deploy:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production  # Requires approval
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_PROD }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_PROD }}
+
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_REGION }}
+
+      - name: Deploy with Helm (atomic)
+        run: |
+          helm upgrade --install gateway k8s/helm/gateway \
+            -f k8s/helm/gateway/values-gcp-production.yaml \
+            --set image.tag=${{ needs.build.outputs.image_tag }} \
+            --set configHash=${{ github.sha }} \
+            --atomic --wait --timeout 5m
+
+      - name: Smoke tests
+        run: |
+          echo "Waiting for rollout..."
+          kubectl rollout status deployment/gateway --timeout=300s
+
+          echo "Checking health..."
+          for i in $(seq 1 20); do
+            STATUS=$(kubectl get pods -l app.kubernetes.io/name=gateway -o jsonpath='{.items[0].status.phase}' 2>/dev/null || echo "Pending")
+            echo "Attempt $i: $STATUS"
+            [ "$STATUS" = "Running" ] && break
+            sleep 10
+          done
+
+          echo "Verifying endpoints..."
+          kubectl port-forward svc/gateway 8080:8080 &
+          sleep 5
+          curl -sf http://localhost:8080/__health || { echo "Health check failed"; exit 1; }
+          kill %1
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "Deployment failed, rolling back..."
+          helm rollback gateway 0
+          kubectl rollout status deployment/gateway --timeout=120s
+
+  post-deploy:
+    name: Post-Deploy
+    needs: [build, deploy]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          generate_release_notes: true
+
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {"text":"Gateway Production Deploy SUCCESS: ${{ needs.build.outputs.image_tag }}"}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

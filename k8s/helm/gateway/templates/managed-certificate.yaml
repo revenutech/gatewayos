@@ -1,0 +1,13 @@
+{{- if .Values.managedCertificate.enabled }}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ .Release.Name }}-cert
+  labels:
+    {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  domains:
+    {{- range .Values.managedCertificate.domains }}
+    - {{ . }}
+    {{- end }}
+{{- end }}

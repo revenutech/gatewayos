@@ -1,0 +1,19 @@
+{{- if .Values.backendConfig.enabled }}
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: {{ .Release.Name }}-backend-config
+  labels:
+    {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  healthCheck:
+    checkIntervalSec: {{ .Values.backendConfig.healthCheck.checkIntervalSec }}
+    timeoutSec: {{ .Values.backendConfig.healthCheck.timeoutSec }}
+    healthyThreshold: {{ .Values.backendConfig.healthCheck.healthyThreshold }}
+    unhealthyThreshold: {{ .Values.backendConfig.healthCheck.unhealthyThreshold }}
+    type: HTTP
+    requestPath: {{ .Values.backendConfig.healthCheck.requestPath }}
+    port: {{ .Values.service.httpPort }}
+  connectionDraining:
+    drainingTimeoutSec: {{ .Values.backendConfig.connectionDraining.drainingTimeoutSec }}
+{{- end }}

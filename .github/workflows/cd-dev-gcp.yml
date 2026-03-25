@@ -1,0 +1,73 @@
+name: CD — Dev (GCP)
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  GKE_CLUSTER: gateway-dev-cluster
+  GKE_ZONE: southamerica-east1-a
+  AR_REPO: southamerica-east1-docker.pkg.dev/revenu-gateway-dev/gateway-dev
+  IMAGE_NAME: gateway
+
+jobs:
+  build-deploy:
+    name: Build & Deploy to GKE Dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Auth via Workload Identity Federation (no service account keys)
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_DEV }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_DEV }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker southamerica-east1-docker.pkg.dev --quiet
+
+      # Build & Push
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }} .
+          docker tag ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }} \
+                     ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-latest
+
+      - name: Push to Artifact Registry
+        run: |
+          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }}
+          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-latest
+
+      # Deploy via Helm
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install gateway k8s/helm/gateway \
+            -f k8s/helm/gateway/values-gcp-dev.yaml \
+            --set image.tag=dev-${{ github.sha }} \
+            --set configHash=${{ github.sha }} \
+            --wait --timeout 5m
+
+      # Health Check
+      - name: Health check
+        run: |
+          for i in $(seq 1 15); do
+            STATUS=$(kubectl get pods -l app.kubernetes.io/name=gateway -o jsonpath='{.items[0].status.phase}' 2>/dev/null || echo "Pending")
+            echo "Attempt $i: Pod status = $STATUS"
+            [ "$STATUS" = "Running" ] && exit 0
+            sleep 10
+          done
+          echo "Health check failed after 15 attempts"
+          kubectl describe pods -l app.kubernetes.io/name=gateway
+          exit 1

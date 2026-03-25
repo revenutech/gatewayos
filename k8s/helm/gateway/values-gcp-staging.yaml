@@ -1,0 +1,62 @@
+# =============================================================================
+# Gateway — GCP Staging Environment
+# GKE regional (sae1), 2 replicas, GCE Ingress, ManagedCert
+# Estimated cost: ~$40/month
+# =============================================================================
+
+replicaCount: 2
+
+image:
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-staging/gateway-staging/gateway
+  tag: "staging-latest"
+  pullPolicy: Always
+
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: gateway-app-staging@revenu-gateway-staging.iam.gserviceaccount.com
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  className: gce
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gateway-staging-ip
+    networking.gke.io/managed-certificates: gateway-staging-cert
+  hosts:
+    - host: gateway-staging.revenu.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+backendConfig:
+  enabled: true
+
+managedCertificate:
+  enabled: true
+  domains:
+    - gateway-staging.revenu.com.br
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+probes:
+  type: tcpSocket
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+mtls:
+  enabled: true
+
+krakend:
+  env: staging
