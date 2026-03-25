@@ -1,0 +1,23 @@
+{{/* =============================================================================
+  Revenu Platform Gateway - JWT Validation Configuration
+  ISO 27001: A.9.4.2 (Secure log-on procedures)
+  RS256/JWKS token validation for API gateway
+  Migrated from: ledgeros/deployment/krakend/partials/security/jwt.json
+============================================================================= */}}
+"auth/validator": {
+  "alg": "RS256",
+  "jwk_url": "{{ .jwt.jwks_url }}",
+  "issuer": "{{ .jwt.issuer }}",
+  "audience": ["{{ .jwt.audience }}"],
+  "cache": true,
+  "cache_duration": {{ .jwt.cache_duration }},
+  "disable_jwk_security": {{ .jwt.disable_jwk_security }},
+  "propagate_claims": [
+    ["sub", "x-user-id"],
+    ["tenant_id", "x-tenant-id"],
+    ["realm_access.roles", "x-user-roles"],
+    ["email", "x-user-email"]
+  ],
+  "roles_key": "realm_access.roles",
+  "operation_debug": {{ .service.debug }}
+}

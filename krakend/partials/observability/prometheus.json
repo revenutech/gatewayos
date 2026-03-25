@@ -1,0 +1,14 @@
+{{/* =============================================================================
+  Revenu Platform Gateway - Prometheus Metrics Export
+  ISO 27001: A.12.4.1 (Event logging)
+  Gateway metrics collection and export
+  Migrated from: ledgeros/deployment/krakend/partials/observability/prometheus.json
+============================================================================= */}}
+"telemetry/metrics": {
+  "collection_time": "30s",
+  "proxy_disabled": false,
+  "router_disabled": false,
+  "backend_disabled": false,
+  "endpoint_disabled": false,
+  "listen_address": ":9090"
+}

@@ -1,0 +1,20 @@
+{
+  "_comment": "Revenu Platform Gateway - Backend Routing Configuration",
+  "_iso27001": "A.14.1.2 (Secure application services)",
+  "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+  "encoding": "json",
+  "sd": "static",
+  "extra_config": {
+    "qos/circuit-breaker": {
+      "interval": 60,
+      "timeout": 10,
+      "max_errors": 5,
+      "name": "cb-ledgeros-api",
+      "log_status_change": true
+    },
+    "backend/http": {
+      "return_error_code": true,
+      "return_error_msg": true
+    }
+  }
+}

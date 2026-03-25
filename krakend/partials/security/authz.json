@@ -1,0 +1,9 @@
+{{/* =============================================================================
+  Revenu Platform Gateway - Authorization Configuration
+  ISO 27001: A.9.4.1 (Information access restriction)
+  CEL tenant validation for API gateway
+  Migrated from: ledgeros/deployment/krakend/partials/security/authz.json
+============================================================================= */}}
+"validation/cel": [{
+  "check_expr": "has(req_headers['X-Tenant-Id']) && size(req_headers['X-Tenant-Id']) > 0"
+}]
