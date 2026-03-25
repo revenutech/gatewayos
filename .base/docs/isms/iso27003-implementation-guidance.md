@@ -150,16 +150,23 @@ classification: Internal
 ### 7.2 Competence
 
 **Gateway Implementation:**
-- **Required competence:** Documented per role in RACI
-- **Evidence:** CODEOWNERS ensures qualified reviewers
-- **Gap:** Formal training program planned (CA in corrective actions)
+- **Competence program:** `isms/competence-program.md` — matrix per role with required levels
+- **5 roles covered:** ISMS Owner, Security Architect, DevSecOps Lead, Compliance Officer, Developer
+- **Verification:** Annual performance review, certification checks, drill evaluations, PR quality assessment
+- **Training plan:** Mandatory (ISO 27001 fundamentals, awareness, LGPD/BACEN) + role-specific
+- **Records:** HR system (certs) + Git (technical evidence) + training register
+- **CODEOWNERS:** Ensures qualified reviewers for security-impacting files
 
 ### 7.3 Awareness
 
 **Gateway Implementation:**
-- **CLAUDE.md:** Security section with ISO compliance guidance
-- **PR reviews:** Security context shared through review comments
-- **Gap:** Formal awareness program planned
+- **Awareness program:** `isms/awareness-program.md` — formal program with acknowledgment
+- **On-boarding:** 6 activities (policy read, architecture walkthrough, RACI briefing, IRP training, acknowledgment signing)
+- **Quarterly refresher:** Rotating topics (threat landscape, IR drill, regulatory updates, ISMS performance)
+- **Event-triggered:** Post-mortem briefings, policy updates, new requirements
+- **Acknowledgment:** Formal signed form with register tracking
+- **CLAUDE.md:** Developer quick-reference during coding
+- **Effectiveness measurement:** 5 metrics (completion rate, attendance, drill score, PR quality, violation rate)
 
 ### 7.4 Communication
 

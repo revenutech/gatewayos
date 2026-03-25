@@ -17,6 +17,8 @@ classification: Confidential
 | CA-002 | 2026-03-25 | Initial assessment | Bloom filter FPR too high (0.001) | Default value not tuned for scale | Reduced to 0.0000001 (1 in 10M) | Sec Architect | 2026-03-25 | Closed |
 | CA-003 | 2026-03-25 | Risk assessment | Supply chain risk (R09) — no SBOM | Image scanning not in CI pipeline | Plan: Add Trivy scanning to CI | DevSecOps | 2026-06-30 | Open |
 | CA-004 | 2026-03-25 | Risk assessment | Redis SPOF (R16) | Single Redis instance | Plan: Migrate to Redis Sentinel/Cluster | DevSecOps | 2026-06-30 | Open |
+| CA-005 | 2026-03-25 | Audit GAP-08 | Redis without AUTH | NetworkPolicy only, no auth layer | Enable Redis AUTH — see `runbooks/redis-auth.md` | DevSecOps | 2026-06-30 | Open |
+| CA-006 | 2026-03-25 | Audit GAP-09 | Git commits unsigned | No non-repudiation for config changes | Enable GPG/SSH signed commits — see `runbooks/git-signing.md` | DevSecOps | 2026-06-30 | Open |
 
 ## Closed Corrective Actions
 

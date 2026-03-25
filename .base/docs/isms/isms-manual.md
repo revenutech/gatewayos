@@ -81,17 +81,18 @@ Interested Parties ──→ Requirements ──→ ISMS Scope (Cl. 4.3)
 | Cl. 5.2 | Information Security Policy | `isms/information-security-policy.md` | Active |
 | Cl. 5.3 | Roles & Responsibilities | `isms/roles-responsibilities.md` | Active |
 | Cl. 4.2 | Interested Parties | `isms/interested-parties.md` | Active |
-| Cl. 6.1.2 | Risk Assessment Methodology | `risk/risk-methodology.md` | Pending |
-| Cl. 6.1.2 | Risk Register | `risk/risk-register.md` | Pending |
-| Cl. 6.1.3 | Risk Treatment Plan | `risk/risk-treatment-plan.md` | Pending |
-| Cl. 6.1.3d | Statement of Applicability | `risk/statement-of-applicability.md` | Pending |
+| Cl. 6.1.2 | Risk Assessment Methodology | `risk/risk-methodology.md` | Active |
+| Cl. 6.1.2 | Risk Register | `risk/risk-register.md` | Active |
+| Cl. 6.1.3 | Risk Treatment Plan | `risk/risk-register.md` §Treatment Plan | Active |
+| Cl. 6.1.3d | Statement of Applicability | `risk/statement-of-applicability.md` | Active |
 | Cl. 6.2 | Security Objectives | `isms/information-security-policy.md` §3 | Active |
-| Cl. 7.2 | Competence Evidence | HR records (external) | N/A |
-| Cl. 8.1 | Operational Procedures | `operations/runbooks/` | Pending |
-| Cl. 9.1 | Monitoring Results | `metrics/security-metrics-framework.md` | Pending |
-| Cl. 9.2 | Internal Audit Results | `operations/internal-audit-procedure.md` | Pending |
-| Cl. 9.3 | Management Review Results | `metrics/management-review-template.md` | Pending |
-| Cl. 10.1 | Nonconformities & Corrective Actions | `operations/corrective-actions.md` | Pending |
+| Cl. 7.2 | Competence Program | `isms/competence-program.md` | Active |
+| Cl. 7.3 | Awareness Program | `isms/awareness-program.md` | Active |
+| Cl. 8.1 | Operational Procedures | `operations/runbooks/` (5 runbooks) | Active |
+| Cl. 9.1 | Monitoring Results | `metrics/security-metrics-framework.md` + `metrics/iso27004-measurement-procedures.md` | Active |
+| Cl. 9.2 | Internal Audit Procedure | `operations/internal-audit-procedure.md` | Active |
+| Cl. 9.3 | Management Review Template | `metrics/management-review-template.md` | Active |
+| Cl. 10.1 | Nonconformities & Corrective Actions | `operations/corrective-actions.md` | Active |
 
 ### 3.2 Technical Evidence (Compliance-as-Code)
 
@@ -118,6 +119,15 @@ Interested Parties ──→ Requirements ──→ ISMS Scope (Cl. 4.3)
 | Business Continuity Plan | Disaster recovery | `operations/business-continuity-plan.md` |
 | Change Management | Change control process | `operations/change-management.md` |
 | Runbooks | Operational procedures | `operations/runbooks/` |
+| ISO 27002 Organizational Controls | A.5 implementation guidance | `compliance/iso27002-organizational-controls.md` |
+| ISO 27002 Technological Controls | A.8 implementation guidance | `compliance/iso27002-technological-controls.md` |
+| ISO 27003 Implementation Guidance | ISMS implementation per clause | `isms/iso27003-implementation-guidance.md` |
+| ISO 27004 Measurement Procedures | 20 KPI procedures | `metrics/iso27004-measurement-procedures.md` |
+| Data Retention Policy | Retention schedules | `compliance/data-retention-policy.md` |
+| Competence Program | Skills matrix, training plan | `isms/competence-program.md` |
+| Awareness Program | Awareness activities, acknowledgment | `isms/awareness-program.md` |
+| Grafana Security Dashboard | ISO 27004 metrics visualization | `k8s/manifests/grafana-dashboard-security.json` |
+| Compliance CI Pipeline | Automated ISO compliance validation | `.github/workflows/compliance.yml` |
 
 ## 4. ISMS Processes
 

@@ -294,4 +294,40 @@ classification: Internal
 
 ---
 
+## ISO 27002:2022 Attribute Table — All Applicable Technological Controls
+
+| # | Control | Type | CIA | Cybersecurity Concept | Operational Capability | Security Domain |
+|---|---------|------|-----|----------------------|----------------------|----------------|
+| 8.2 | Privileged access rights | Preventive | C,I,A | Protect | IAM | Protection |
+| 8.3 | Information access restriction | Preventive | C,I,A | Protect | IAM | Protection |
+| 8.4 | Access to source code | Preventive | C,I,A | Protect | IAM, App security, Secure config | Protection |
+| 8.5 | Secure authentication | Preventive | C,I,A | Protect | IAM | Protection |
+| 8.6 | Capacity management | Preventive, Detective | I,A | Protect, Detect | Continuity, Asset mgmt | Protection, Resilience |
+| 8.8 | Technical vulnerability mgmt | Preventive | C,I,A | Identify, Protect | Threat & vulnerability mgmt | Protection |
+| 8.9 | Configuration management | Preventive | C,I,A | Protect | Secure configuration | Protection |
+| 8.10 | Information deletion | Preventive | C | Protect | Information protection, Legal | Protection |
+| 8.11 | Data masking | Preventive | C | Protect | Information protection | Protection |
+| 8.12 | Data leakage prevention | Preventive, Detective | C | Protect, Detect | Information protection | Protection, Defence |
+| 8.14 | Redundancy | Preventive | A | Protect | Continuity, Asset mgmt | Resilience |
+| 8.15 | Logging | Detective | C,I,A | Detect | Event management | Defence |
+| 8.16 | Monitoring activities | Detective, Corrective | C,I,A | Detect, Respond | Event management | Defence |
+| 8.17 | Clock synchronization | Detective | I | Detect | Event management | Protection, Defence |
+| 8.18 | Privileged utility programs | Preventive | C,I,A | Protect | System & network security | Protection |
+| 8.19 | Software installation | Preventive | C,I,A | Protect | Secure configuration, App security | Protection |
+| 8.20 | Networks security | Preventive, Detective | C,I,A | Protect, Detect | System & network security | Protection |
+| 8.21 | Security of network services | Preventive | C,I,A | Protect | System & network security | Protection |
+| 8.22 | Segregation of networks | Preventive | C,I,A | Protect | System & network security | Protection |
+| 8.23 | Web filtering | Preventive | C,I,A | Protect | System & network security | Protection |
+| 8.24 | Use of cryptography | Preventive | C,I | Protect | Secure configuration | Protection |
+| 8.25 | Secure development life cycle | Preventive | C,I,A | Protect | App security | Protection |
+| 8.26 | Application security requirements | Preventive | C,I,A | Protect | App security | Protection |
+| 8.27 | Secure system architecture | Preventive | C,I,A | Protect | App security, Secure config | Protection |
+| 8.28 | Secure coding | Preventive | C,I,A | Protect | App security | Protection |
+| 8.29 | Security testing | Preventive, Detective | C,I,A | Identify, Protect | App security | Protection |
+| 8.30 | Outsourced development | Preventive | C,I,A | Protect | App security, Supplier security | Protection |
+| 8.31 | Separation of environments | Preventive | C,I,A | Protect | App security, Secure config | Protection |
+| 8.32 | Change management | Preventive | C,I,A | Protect | App security, Secure config | Protection |
+| 8.33 | Test information | Preventive | C | Protect | Information protection | Protection |
+| 8.34 | Audit testing protection | Preventive | C,I,A | Protect | System & network security | Protection |
+
 > **Cross-references:** [Organizational Controls](iso27002-organizational-controls.md) | [Controls Matrix](controls-matrix.md) | [SoA](../risk/statement-of-applicability.md)

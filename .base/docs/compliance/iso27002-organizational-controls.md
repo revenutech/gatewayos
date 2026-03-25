@@ -254,4 +254,35 @@ classification: Internal
 
 ---
 
+## ISO 27002:2022 Attribute Table — All Applicable Organizational Controls
+
+| # | Control | Type | CIA | Cybersecurity Concept | Operational Capability | Security Domain |
+|---|---------|------|-----|----------------------|----------------------|----------------|
+| 5.1 | Policies | Preventive | C,I,A | Identify | Governance | Governance, Resilience |
+| 5.2 | Roles & responsibilities | Preventive | C,I,A | Identify | Governance | Governance, Protection, Resilience |
+| 5.3 | Segregation of duties | Preventive | C,I,A | Protect | Governance, IAM | Governance |
+| 5.7 | Threat intelligence | Preventive, Detective, Corrective | C,I,A | Identify, Detect, Respond | Threat & vulnerability mgmt | Defence, Resilience |
+| 5.8 | Security in project mgmt | Preventive | C,I,A | Identify | Governance | Governance |
+| 5.9 | Inventory of assets | Preventive | C,I,A | Identify | Asset management | Governance, Protection |
+| 5.12 | Classification | Preventive | C,I,A | Identify | Information protection | Governance, Protection |
+| 5.14 | Information transfer | Preventive | C,I,A | Protect | Asset mgmt, Info protection | Protection |
+| 5.15 | Access control | Preventive | C,I,A | Protect | IAM | Protection |
+| 5.16 | Identity management | Preventive | C,I,A | Protect | IAM | Protection |
+| 5.17 | Authentication info | Preventive | C,I,A | Protect | IAM | Protection |
+| 5.18 | Access rights | Preventive | C,I,A | Protect | IAM | Protection |
+| 5.21 | ICT supply chain | Preventive | C,I,A | Identify | Supplier security | Governance, Protection |
+| 5.22 | Monitoring suppliers | Detective | C,I,A | Detect | Supplier security | Defence |
+| 5.24 | Incident planning | Corrective | C,I,A | Respond | Incident management | Defence |
+| 5.25 | Assessment of events | Detective | C,I,A | Detect | Incident management | Defence |
+| 5.26 | Response to incidents | Corrective | C,I,A | Respond | Incident management | Defence |
+| 5.27 | Learning from incidents | Preventive | C,I,A | Identify | Incident management | Defence |
+| 5.28 | Evidence collection | Detective | C,I,A | Detect, Respond | Incident management | Defence |
+| 5.29 | Security during disruption | Preventive, Corrective | C,I,A | Protect, Recover | Continuity | Resilience |
+| 5.30 | ICT readiness for BC | Corrective | A | Recover | Continuity | Resilience |
+| 5.31 | Legal requirements | Preventive | C,I,A | Identify | Legal & compliance | Governance |
+| 5.33 | Protection of records | Preventive | C,I,A | Protect | Legal & compliance, Asset mgmt | Defence |
+| 5.34 | Privacy and PII | Preventive | C | Identify, Protect | Information protection | Protection |
+| 5.36 | Compliance with policies | Preventive, Detective | C,I,A | Identify, Protect | Legal & compliance | Governance |
+| 5.37 | Operating procedures | Preventive | C,I,A | Protect | Asset mgmt, Physical security | Protection |
+
 > **Cross-references:** [Controls Matrix](controls-matrix.md) | [SoA](../risk/statement-of-applicability.md) | [ISO 27002 source](ledgeros/.base/knowledge/iso-27002/)

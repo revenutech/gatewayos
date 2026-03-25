@@ -60,8 +60,60 @@ classification: Confidential
 | Low | 2 | R14, R15 |
 | Accepted | 3 | R12 (zero-day), R15 (bloom filter FP), R17 (geo evasion) |
 
+## Formal Risk Acceptance Records (ISO 27001 Cl. 6.1.3)
+
+> Risk owners shall accept the risk treatment plan and the residual information security risks.
+
+### RAR-001: R12 — Zero-day in KrakenD
+
+| Field | Value |
+|-------|-------|
+| **Risk ID** | R12 |
+| **Risk** | Undisclosed vulnerability exploited in KrakenD |
+| **Residual Score** | 8 (Medium) |
+| **Treatment** | Accept + Monitor |
+| **Justification** | No patch available for zero-day by definition. Risk is mitigated by: defense-in-depth architecture (4 security layers), network segmentation (KrakenD has limited attack surface), threat intelligence monitoring (CVE tracking, vendor advisories). Residual risk within appetite for zero-day category. |
+| **Monitoring** | KrakenD release RSS, CVE database alerts, CERT.br advisories |
+| **Re-evaluation** | Quarterly or on vendor advisory |
+| **Accepted by** | ISMS Owner |
+| **Date** | 2026-03-25 |
+| **Signature** | _[Pending physical/digital signature]_ |
+
+### RAR-002: R15 — Bloom Filter False Positive
+
+| Field | Value |
+|-------|-------|
+| **Risk ID** | R15 |
+| **Risk** | Legitimate tokens wrongly rejected by bloom filter |
+| **Residual Score** | 4 (Low) |
+| **Treatment** | Accept |
+| **Justification** | FPR reduced to 0.0000001 (1 in 10M). At current volume (~10K req/min), expected false positives are < 1 per year. Users can re-authenticate to get a new token. Impact is negligible (single request rejection, not denial of service). Cost of further mitigation exceeds impact. |
+| **Monitoring** | Bloom filter capacity metrics, 401 rate anomaly detection |
+| **Re-evaluation** | Annually or if request volume exceeds 100K/min |
+| **Accepted by** | ISMS Owner |
+| **Date** | 2026-03-25 |
+| **Signature** | _[Pending physical/digital signature]_ |
+
+### RAR-003: R17 — Geo-blocking Evasion via VPN
+
+| Field | Value |
+|-------|-------|
+| **Risk ID** | R17 |
+| **Risk** | Attacker uses VPN/proxy to bypass geographic restrictions |
+| **Residual Score** | 6 (Medium) |
+| **Treatment** | Accept + Monitor |
+| **Justification** | VPN usage is inherent to internet architecture and cannot be fully prevented. Geo-blocking is a defense-in-depth layer, not a primary control. Core security relies on JWT authentication (A.8.5), RBAC (A.8.3), and tenant isolation — these controls function regardless of geographic origin. Geo-blocking primarily serves regulatory compliance (sanctions lists). |
+| **Monitoring** | GeoIP distribution anomaly detection, suspicious origin patterns |
+| **Re-evaluation** | Semi-annually or on regulatory change |
+| **Accepted by** | ISMS Owner |
+| **Date** | 2026-03-25 |
+| **Signature** | _[Pending physical/digital signature]_ |
+
+---
+
 ## Document Control
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-03-25 | Security Architect | Initial risk register with 17 risks |
+| 1.1 | 2026-03-25 | Security Architect | Added formal risk acceptance records (RAR-001 to RAR-003) |
