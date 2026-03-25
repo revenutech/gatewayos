@@ -1,0 +1,12 @@
+"modifier/lua-endpoint": {
+  "sources": ["/etc/krakend/partials/lua/tiered_rate_limit.lua"],
+  "pre": "pre_proxy",
+  "live": false,
+  "allow_open_libs": true,
+  "extra_config": {
+    "dynamic_config": {
+      "redis_host": "{{ .redis.host }}",
+      "redis_port": "{{ .redis.port }}"
+    }
+  }
+}

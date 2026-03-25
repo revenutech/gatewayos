@@ -1,0 +1,18 @@
+"modifier/lua-proxy": {
+  "sources": ["/etc/krakend/partials/lua/circuit_breaker_custom.lua"],
+  "pre": "pre_proxy",
+  "post": "post_proxy",
+  "live": false,
+  "allow_open_libs": true,
+  "extra_config": {
+    "dynamic_config": {
+      "redis_host": "{{ .redis.host }}",
+      "redis_port": "{{ .redis.port }}",
+      "backend_name": "{{ .cb_name }}",
+      "max_errors": "{{ .cb_max_errors }}",
+      "interval": "{{ .cb_interval }}",
+      "recovery_time": "{{ .cb_timeout }}",
+      "half_open_max": "3"
+    }
+  }
+}

@@ -18,7 +18,10 @@
     "paymentos": "http://paymentos.ledgeros-staging.svc.cluster.local:8082",
     "atmos": "http://atmos.ledgeros-staging.svc.cluster.local:8088",
     "identos": "http://identos.ledgeros-staging.svc.cluster.local:8091",
-    "ledgeros_grpc_transcoder": "http://127.0.0.1:8085"
+    "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
+    "onboardos": "http://onboardos.ledgeros-staging.svc.cluster.local:8092",
+    "accountos": "http://accountos.ledgeros-staging.svc.cluster.local:8093",
+    "financeos": "http://financeos.ledgeros-staging.svc.cluster.local:8095"
   },
   "redis": {
     "host": "redis.ledgeros-staging.svc.cluster.local",
@@ -57,6 +60,24 @@
     "cb_max_errors": 5,
     "cb_interval": 60,
     "cb_timeout": 10
+  },
+  "cb_onboardos": {
+    "cb_name": "cb-onboardos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_accountos": {
+    "cb_name": "cb-accountos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_financeos": {
+    "cb_name": "cb-financeos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 15
   },
   "cb_identos": {
     "cb_name": "cb-identos",

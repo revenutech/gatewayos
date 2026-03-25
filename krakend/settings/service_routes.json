@@ -24,6 +24,21 @@
       "host": "identos",
       "port": 8091,
       "protocol": "http"
+    },
+    "onboardos": {
+      "host": "onboardos",
+      "port": 8092,
+      "protocol": "http"
+    },
+    "accountos": {
+      "host": "accountos",
+      "port": 8093,
+      "protocol": "http"
+    },
+    "financeos": {
+      "host": "financeos",
+      "port": 8095,
+      "protocol": "http"
     }
   }
 }

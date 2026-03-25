@@ -1,0 +1,46 @@
+{{/* =============================================================================
+  Dynamic Routing Endpoint Template
+  Enterprise KrakenD equivalent: endpoints/dynamic-routing
+
+  Routes requests to different backend paths based on JWT claims.
+  Uses KrakenD CE's native {JWT.claim} interpolation in url_pattern.
+
+  Supports:
+  - Tenant-specific routing: /v1/tenants/{JWT.tenant_id}/resource
+  - User-specific routing: /v1/users/{JWT.sub}/resource
+  - Combined routing with path params
+
+  Usage in endpoint JSON:
+    {{ template "dynamic_routing_endpoint" (dict
+      "endpoint" "/v1/my-resource"
+      "method" "GET"
+      "roles" (list "ledger-viewer" "ledger-admin")
+      "backend_host" .backends.ledgeros_http
+      "backend_path" "/internal/v1/tenants/{JWT.tenant_id}/resource"
+      "cb" .cb_posting
+    ) }}
+============================================================================= */}}
+{{ define "dynamic_routing_endpoint" }}
+{
+  "endpoint": "{{ .endpoint }}",
+  "method": "{{ .method }}",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "{{ or .encoding "json" }}",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" $ }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": {{ marshal .roles }}
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backend_host }}"],
+    "url_pattern": "{{ .backend_path }}",
+    "encoding": "{{ or .backend_encoding "json" }}",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb }}
+    }
+  }]
+}
+{{ end }}

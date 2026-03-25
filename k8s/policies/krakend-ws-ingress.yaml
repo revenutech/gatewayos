@@ -1,0 +1,44 @@
+# =============================================================================
+# Revenu Platform — Network Policy: WebSocket Direct Access
+# Enterprise KrakenD equivalent: websocket
+# ISO 27001: A.13.1.1 (Network controls)
+#
+# Allows Nginx Ingress to reach backend services directly for WebSocket
+# connections (bypassing KrakenD which doesn't support WS in CE).
+# =============================================================================
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ws-ingress-backends
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: websocket-policy
+    app.kubernetes.io/part-of: revenu-platform
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - ledgeros
+          - paymentos
+          - atmos
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow WebSocket connections from Nginx Ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8081
+        - protocol: TCP
+          port: 8082
+        - protocol: TCP
+          port: 8088
