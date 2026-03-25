@@ -24,3 +24,24 @@ services:
       timeout: 3s
       retries: 3
     restart: unless-stopped
+    depends_on:
+      envoy-grpc-transcoder:
+        condition: service_healthy
+
+  # Envoy sidecar: gRPC-REST transcoder (Enterprise KrakenD equivalent: backend/grpc)
+  # In K8s this runs as a sidecar (127.0.0.1:8085), in Docker Compose it's a separate service
+  envoy-grpc-transcoder:
+    image: envoyproxy/envoy:v1.31-latest
+    container_name: revenu-grpc-transcoder
+    volumes:
+      - ./envoy/envoy-dev.yaml:/etc/envoy/envoy.yaml:ro
+      - ./envoy/proto:/etc/envoy/proto:ro
+    ports:
+      - "8085:8085"
+      - "9901:9901"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:9901/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped

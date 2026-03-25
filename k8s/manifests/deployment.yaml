@@ -29,6 +29,10 @@ spec:
         app.kubernetes.io/name: krakend
         app.kubernetes.io/component: api-gateway
         app.kubernetes.io/part-of: revenu-platform
+      annotations:
+        # Enterprise KrakenD equivalent: server/hot-reload
+        # CI/CD updates this hash when config changes, triggering rolling restart
+        checksum/config: "PLACEHOLDER_CONFIG_HASH"
     spec:
       serviceAccountName: krakend
       automountServiceAccountToken: false
@@ -98,6 +102,58 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+        # ---------------------------------------------------------------------
+        # Envoy sidecar: gRPC-REST transcoder (Enterprise KrakenD equivalent: backend/grpc)
+        # Listens on 127.0.0.1:8085, transcodes REST to gRPC for LedgerOS :9081
+        # ---------------------------------------------------------------------
+        - name: envoy-grpc-transcoder
+          image: envoyproxy/envoy:v1.31-latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          args:
+            - -c
+            - /etc/envoy/envoy.yaml
+            - --service-cluster
+            - krakend-grpc-transcoder
+            - --log-level
+            - warn
+          ports:
+            - name: grpc-transcode
+              containerPort: 8085
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 9901
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9901
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+              readOnly: true
+            - name: envoy-proto
+              mountPath: /etc/envoy/proto
+              readOnly: true
+            - name: envoy-tmp
+              mountPath: /tmp
       volumes:
         - name: config
           configMap:
@@ -105,6 +161,19 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 50Mi
+        - name: envoy-config
+          configMap:
+            name: envoy-grpc-transcoder
+        - name: envoy-proto
+          configMap:
+            name: ledgeros-proto-descriptor
+        - name: envoy-tmp
+          emptyDir:
+            sizeLimit: 10Mi
+        - name: reloader-scripts
+          configMap:
+            name: krakend-config-reloader
+            defaultMode: 0755
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

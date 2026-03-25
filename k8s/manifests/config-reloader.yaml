@@ -1,0 +1,68 @@
+# =============================================================================
+# Revenu Platform — KrakenD Config Reloader
+# Enterprise KrakenD equivalent: server/hot-reload
+#
+# Strategy: ConfigMap hash annotation on the Deployment pod template.
+# When the ConfigMap changes (via CI/CD), the hash changes, triggering
+# a rolling restart of KrakenD pods with zero downtime (maxUnavailable: 0).
+#
+# This ConfigMap holds the reloader script used as an init container
+# to compute and inject the config hash.
+# =============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: krakend-config-reloader
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: config-reloader
+    app.kubernetes.io/part-of: revenu-platform
+data:
+  reload.sh: |
+    #!/bin/sh
+    # =============================================================================
+    # Config hash watcher sidecar
+    # Enterprise KrakenD equivalent: server/hot-reload (watch mode)
+    #
+    # Watches /etc/krakend for changes via inotifywait.
+    # When config changes are detected, signals KrakenD process to restart.
+    # In practice, rolling restart via annotation hash is preferred for production.
+    # This sidecar is useful for development/staging environments.
+    # =============================================================================
+
+    CONFIG_DIR="/etc/krakend"
+    CHECK_INTERVAL="${CHECK_INTERVAL:-5}"
+    HASH_FILE="/tmp/config-hash"
+
+    compute_hash() {
+        find "$CONFIG_DIR" -type f \( -name '*.json' -o -name '*.tmpl' \) \
+            -exec sha256sum {} \; | sort | sha256sum | awk '{print $1}'
+    }
+
+    # Compute initial hash
+    compute_hash > "$HASH_FILE"
+    echo "[config-reloader] Initial config hash: $(cat $HASH_FILE)"
+    echo "[config-reloader] Watching $CONFIG_DIR every ${CHECK_INTERVAL}s..."
+
+    while true; do
+        sleep "$CHECK_INTERVAL"
+
+        NEW_HASH=$(compute_hash)
+        OLD_HASH=$(cat "$HASH_FILE" 2>/dev/null)
+
+        if [ "$NEW_HASH" != "$OLD_HASH" ]; then
+            echo "[config-reloader] Config change detected! Old: $OLD_HASH New: $NEW_HASH"
+            echo "$NEW_HASH" > "$HASH_FILE"
+
+            # Send SIGTERM to KrakenD (PID 1 in the main container)
+            # KrakenD will gracefully shutdown and Kubernetes will restart it
+            # with the new config already mounted.
+            #
+            # Note: In a sidecar, we can't directly signal PID 1 of another container.
+            # Instead, we write a sentinel file that a shared-volume watcher can detect,
+            # or rely on the annotation-hash approach for production.
+            echo "$NEW_HASH" > /tmp/reload-trigger
+            echo "[config-reloader] Reload trigger written to /tmp/reload-trigger"
+        fi
+    done

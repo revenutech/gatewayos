@@ -14,7 +14,12 @@
     "ledgeros_grpc": "ledgeros.ledgeros-staging.svc.cluster.local:9081",
     "paymentos": "http://paymentos.ledgeros-staging.svc.cluster.local:8082",
     "atmos": "http://atmos.ledgeros-staging.svc.cluster.local:8088",
-    "identos": "http://identos.ledgeros-staging.svc.cluster.local:8091"
+    "identos": "http://identos.ledgeros-staging.svc.cluster.local:8091",
+    "ledgeros_grpc_transcoder": "http://127.0.0.1:8085"
+  },
+  "redis": {
+    "host": "redis.ledgeros-staging.svc.cluster.local",
+    "port": "6379"
   },
   "rate_limit": {
     "global_max": 5000,
@@ -43,6 +48,12 @@
     "cb_max_errors": 10,
     "cb_interval": 120,
     "cb_timeout": 30
+  },
+  "cb_grpc_posting": {
+    "cb_name": "cb-ledgeros-grpc",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
   },
   "cb_identos": {
     "cb_name": "cb-identos",

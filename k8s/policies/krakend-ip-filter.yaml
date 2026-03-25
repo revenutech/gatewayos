@@ -1,0 +1,66 @@
+# =============================================================================
+# Revenu Platform — IP-based Access Control Policy
+# Enterprise KrakenD equivalent: plugin/http-server (ip-filter, geo-ip)
+# ISO 27001: A.9.4.1 (Information access restriction)
+#
+# Defense-in-depth: This NetworkPolicy restricts which source CIDRs
+# can reach KrakenD pods directly (bypassing Ingress).
+# Primary IP filtering is done at Nginx Ingress level via annotations.
+# =============================================================================
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: restrict-direct-access-krakend
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: ip-filter
+    app.kubernetes.io/part-of: revenu-platform
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: krakend
+  policyTypes:
+    - Ingress
+  ingress:
+    # Only allow traffic from Nginx Ingress controller (normal API traffic)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Only allow Prometheus to scrape metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 8090
+
+    # Internal admin access (e.g., from ops namespace for debugging)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ops
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Allow Envoy sidecar communication (localhost, same pod)
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: krakend
+      ports:
+        - protocol: TCP
+          port: 8085

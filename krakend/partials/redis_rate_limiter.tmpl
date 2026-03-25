@@ -1,0 +1,15 @@
+"modifier/lua-proxy": {
+  "sources": ["/etc/krakend/partials/lua/redis_rate_limit.lua"],
+  "pre": "pre_proxy",
+  "live": false,
+  "allow_open_libs": true,
+  "extra_config": {
+    "dynamic_config": {
+      "redis_host": "{{ .redis.host }}",
+      "redis_port": "{{ .redis.port }}",
+      "global_max": "{{ .rate_limit.global_max }}",
+      "tenant_max": "{{ .rate_limit.tenant_max }}",
+      "window_seconds": "60"
+    }
+  }
+}
