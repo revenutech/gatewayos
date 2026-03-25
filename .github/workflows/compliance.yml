@@ -1,0 +1,109 @@
+name: ISO 27001 Compliance Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  iso-compliance:
+    name: ISO 27001 Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ISO 27001 A.8.9 — Configuration management
+      - name: "A.8.9: Config audit (env consistency, security, CORS)"
+        run: bash tools/config-audit/audit.sh --strict
+
+      # ISO 27001 A.8.25 — Secure development life cycle
+      - name: "A.8.25: Validate KrakenD config syntax"
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/krakend:/etc/krakend \
+            -e FC_ENABLE=1 \
+            -e FC_SETTINGS=/etc/krakend/settings \
+            -e FC_PARTIALS=/etc/krakend/partials \
+            -e FC_TEMPLATES=/etc/krakend/templates \
+            devopsfaith/krakend:2.7 \
+            check -c /etc/krakend/krakend.tmpl
+
+      # ISO 27001 A.8.9 — Configuration management (JSON validity)
+      - name: "A.8.9: Lint JSON configs"
+        run: |
+          for f in $(find krakend/settings -name '*.json'); do
+            echo "Validating $f..."
+            python3 -m json.tool "$f" > /dev/null
+          done
+
+      # ISO 27001 A.5.28 — Evidence: verify ISMS documents exist
+      - name: "A.5.28: Verify ISMS documentation completeness"
+        run: |
+          echo "Checking mandatory ISMS documents..."
+          MISSING=0
+          for doc in \
+            ".base/docs/isms/scope-statement.md" \
+            ".base/docs/isms/information-security-policy.md" \
+            ".base/docs/isms/roles-responsibilities.md" \
+            ".base/docs/isms/interested-parties.md" \
+            ".base/docs/isms/isms-manual.md" \
+            ".base/docs/risk/risk-methodology.md" \
+            ".base/docs/risk/risk-register.md" \
+            ".base/docs/risk/statement-of-applicability.md" \
+            ".base/docs/risk/threat-model.md" \
+            ".base/docs/compliance/controls-matrix.md" \
+            ".base/docs/operations/incident-response-plan.md" \
+            ".base/docs/operations/business-continuity-plan.md" \
+            ".base/docs/operations/change-management.md" \
+            ".base/docs/operations/internal-audit-procedure.md" \
+            ".base/docs/operations/corrective-actions.md"; do
+            if [ ! -f "$doc" ]; then
+              echo "  MISSING: $doc"
+              MISSING=$((MISSING + 1))
+            else
+              echo "  OK: $doc"
+            fi
+          done
+          if [ "$MISSING" -gt 0 ]; then
+            echo "ERROR: $MISSING mandatory ISMS documents missing"
+            exit 1
+          fi
+          echo "All mandatory ISMS documents present."
+
+      # ISO 27001 A.8.5 — Verify JWT security config
+      - name: "A.8.5: Verify JWT validator security settings"
+        run: |
+          echo "Checking JWT validator..."
+          if ! grep -q "failed_jwk_key_cooldown" krakend/partials/jwt_validator.tmpl; then
+            echo "ERROR: jwt_validator.tmpl missing failed_jwk_key_cooldown"
+            exit 1
+          fi
+          if ! grep -q "roles_key_is_nested" krakend/endpoints/ledger_v1.json; then
+            echo "ERROR: Missing roles_key_is_nested in RBAC endpoints"
+            exit 1
+          fi
+          echo "JWT validator security settings verified."
+
+      # ISO 27001 A.8.20 — Verify network policies exist
+      - name: "A.8.20: Verify network policies"
+        run: |
+          echo "Checking network policies..."
+          for policy in \
+            "k8s/policies/krakend-ingress.yaml" \
+            "k8s/policies/krakend-egress.yaml" \
+            "k8s/policies/krakend-ip-filter.yaml"; do
+            if [ ! -f "$policy" ]; then
+              echo "ERROR: Missing network policy: $policy"
+              exit 1
+            fi
+            echo "  OK: $policy"
+          done
+          echo "Network policies verified."
+
+      - name: Compliance check summary
+        if: always()
+        run: |
+          echo "=================================="
+          echo "ISO 27001 Compliance Check Complete"
+          echo "=================================="

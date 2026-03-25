@@ -56,6 +56,46 @@ docker run --rm \
 - **Token Revocation:** Bloom filter (10M tokens, 0.1% FPR)
 - **Network Policies:** Explicit ingress/egress per backend
 
+## ISO 27001 Compliance
+
+This gateway maintains an ISMS (Information Security Management System) compliant with ISO/IEC 27001:2022, ISO 27002, 27003, 27004, and 27005.
+
+### ISMS Documentation
+
+| Document | Path | ISO Ref |
+|----------|------|---------|
+| ISMS Scope Statement | `.base/docs/isms/scope-statement.md` | Cl. 4.3 |
+| Security Policy (B1-GW) | `.base/docs/isms/information-security-policy.md` | Cl. 5.2 |
+| Roles & RACI | `.base/docs/isms/roles-responsibilities.md` | Cl. 5.3 |
+| Interested Parties | `.base/docs/isms/interested-parties.md` | Cl. 4.2 |
+| ISMS Manual | `.base/docs/isms/isms-manual.md` | Cl. 4.4 |
+| Risk Methodology | `.base/docs/risk/risk-methodology.md` | 27005 |
+| Risk Register | `.base/docs/risk/risk-register.md` | 27005 |
+| Statement of Applicability | `.base/docs/risk/statement-of-applicability.md` | Cl. 6.1.3d |
+| STRIDE Threat Model | `.base/docs/risk/threat-model.md` | 27005 |
+| Controls Matrix (93) | `.base/docs/compliance/controls-matrix.md` | Annex A |
+| Security Metrics | `.base/docs/metrics/security-metrics-framework.md` | 27004 |
+| IRP | `.base/docs/operations/incident-response-plan.md` | A.5.24-28 |
+| BCP | `.base/docs/operations/business-continuity-plan.md` | A.5.29-30 |
+| Change Management | `.base/docs/operations/change-management.md` | A.8.32 |
+| Runbooks | `.base/docs/operations/runbooks/` | A.5.37 |
+
+### Compliance CI
+
+The `.github/workflows/compliance.yml` pipeline validates ISO compliance on every PR:
+- Config validation (A.8.9)
+- ISMS document completeness (A.5.28)
+- JWT security settings (A.8.5)
+- Network policy presence (A.8.20)
+
+### ISO Annotations
+
+All config files include ISO 27001 Annex A control references in comments. When modifying files, preserve these annotations.
+
+### Derived From
+
+LedgerOS ISO 27000 documentation: `ledgeros/.base/knowledge/iso27000/`, `ledgeros/.base/plans/08-security/`
+
 ## Adding a New Module
 
 1. Add backend address to `krakend/settings/{dev,staging,prod}.json` under `backends`

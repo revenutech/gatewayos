@@ -1,0 +1,104 @@
+# =============================================================================
+# Revenu Platform — ISO 27004 Compliance PrometheusRules
+# ISO 27001:2022 Cl. 9.1 (Monitoring, measurement, analysis, evaluation)
+# ISO/IEC 27004:2016 (Information security measurement)
+# =============================================================================
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: krakend-compliance-alerts
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: compliance-monitoring
+    release: prometheus-stack
+    iso27001.clause: "9.1"
+spec:
+  groups:
+    - name: krakend.compliance.rules
+      rules:
+        # A.8.24 — TLS certificate expiry warning
+        - alert: KrakenDCertExpiringIn30Days
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds{name="krakend-mtls-client"} - time() < 2592000
+          for: 1h
+          labels:
+            severity: warning
+            service: krakend
+            iso_control: "A.8.24"
+            category: compliance
+          annotations:
+            summary: "mTLS certificate expiring within 30 days"
+            description: "Certificate {{ $labels.name }} expires in {{ $value | humanizeDuration }}. Auto-renewal should handle this; investigate if cert-manager is healthy."
+
+        # A.8.24 — TLS certificate critically close to expiry
+        - alert: KrakenDCertExpiringIn7Days
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds{name="krakend-mtls-client"} - time() < 604800
+          for: 10m
+          labels:
+            severity: critical
+            service: krakend
+            iso_control: "A.8.24"
+            category: compliance
+          annotations:
+            summary: "mTLS certificate expiring within 7 days — CRITICAL"
+            description: "Certificate {{ $labels.name }} expires in {{ $value | humanizeDuration }}. cert-manager renewal may have failed."
+
+        # A.8.9 — Configuration validation failure in CI
+        - alert: KrakenDConfigValidationFailure
+          expr: |
+            increase(github_workflow_run_conclusion_total{workflow="CI — Gateway",conclusion="failure"}[1h]) > 0
+          for: 0m
+          labels:
+            severity: warning
+            service: krakend
+            iso_control: "A.8.9"
+            category: compliance
+          annotations:
+            summary: "KrakenD config validation failed in CI"
+            description: "A CI pipeline run failed. Investigate config drift or invalid changes."
+
+        # A.5.15 — Access control compliance: too many unauthorized requests
+        - alert: KrakenDAccessControlAnomaly
+          expr: |
+            sum(rate(krakend_router_response_size_count{status=~"401|403"}[10m])) /
+            sum(rate(krakend_router_response_size_count[10m])) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+            service: krakend
+            iso_control: "A.5.15"
+            category: compliance
+          annotations:
+            summary: "Access control failure rate exceeds 5%"
+            description: "More than 5% of requests are failing auth/authz. Possible misconfiguration or attack."
+
+        # A.8.6 — Capacity: HPA at maximum
+        - alert: KrakenDCapacityAtMaximum
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="krakend"}
+            >= kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler="krakend"}
+          for: 15m
+          labels:
+            severity: warning
+            service: krakend
+            iso_control: "A.8.6"
+            category: compliance
+          annotations:
+            summary: "KrakenD HPA at maximum replicas for 15+ minutes"
+            description: "Gateway is running at max capacity ({{ $value }} pods). Consider increasing HPA max."
+
+        # A.8.14 — Redundancy: fewer than desired replicas
+        - alert: KrakenDReducedRedundancy
+          expr: |
+            kube_deployment_status_replicas_available{deployment="krakend"} < 2
+          for: 5m
+          labels:
+            severity: critical
+            service: krakend
+            iso_control: "A.8.14"
+            category: compliance
+          annotations:
+            summary: "KrakenD running with reduced redundancy"
+            description: "Only {{ $value }} replica(s) available. Minimum 2 required for HA."
