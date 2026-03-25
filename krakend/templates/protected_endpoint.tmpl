@@ -1,0 +1,24 @@
+{{ define "protected_endpoint" }}
+{
+  "endpoint": "{{ .endpoint }}",
+  "method": "{{ .method }}",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "{{ or .encoding "json" }}",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" $ }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles": {{ marshal .roles }}
+    },
+    {{ template "rate_limiter.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backend_host }}"],
+    "url_pattern": "{{ .backend_path }}",
+    "encoding": "{{ or .backend_encoding "json" }}",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" . }}
+    }
+  }]
+}
+{{ end }}

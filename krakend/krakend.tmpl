@@ -1,0 +1,31 @@
+{
+  "$schema": "https://www.krakend.io/schema/krakend.json",
+  "version": 3,
+  "name": "revenu-platform-gateway",
+  "port": {{ .service.port }},
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "extra_config": {
+    {{ template "telemetry.tmpl" . }},
+    {{ template "cors.tmpl" . }},
+    {{ template "security_headers.tmpl" . }},
+    {{ template "bloom_filter.tmpl" . }},
+    "telemetry/logging": {
+      "level": "{{ .service.log_level }}",
+      "prefix": "[KRAKEND]",
+      "stdout": true,
+      "format": "logstash"
+    },
+    "router": {
+      "return_error_msg": {{ .service.return_error_msg }}
+    }
+  },
+  "endpoints": [
+    {{ template "endpoints/health.json" . }}
+    ,{{ template "endpoints/ledger_v1.json" . }}
+    ,{{ template "endpoints/paymentos_v1.json" . }}
+    ,{{ template "endpoints/identos_v1.json" . }}
+    ,{{ template "endpoints/atmos_v1.json" . }}
+    ,{{ template "endpoints/admin_v1.json" . }}
+  ]
+}

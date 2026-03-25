@@ -1,0 +1,29 @@
+{
+  "service_map": {
+    "ledgeros_http": {
+      "host": "ledgeros",
+      "port": 8081,
+      "protocol": "http"
+    },
+    "ledgeros_grpc": {
+      "host": "ledgeros",
+      "port": 9081,
+      "protocol": "grpc"
+    },
+    "paymentos": {
+      "host": "paymentos",
+      "port": 8082,
+      "protocol": "http"
+    },
+    "atmos": {
+      "host": "atmos",
+      "port": 8088,
+      "protocol": "http"
+    },
+    "identos": {
+      "host": "identos",
+      "port": 8091,
+      "protocol": "http"
+    }
+  }
+}

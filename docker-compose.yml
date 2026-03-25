@@ -1,0 +1,26 @@
+services:
+  krakend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: revenu-gateway
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+    volumes:
+      - ./krakend:/etc/krakend
+    environment:
+      - FC_ENABLE=1
+      - FC_SETTINGS=/etc/krakend/settings
+      - FC_PARTIALS=/etc/krakend/partials
+      - FC_TEMPLATES=/etc/krakend/templates
+      - FC_OUT=/etc/krakend/compiled-krakend.json
+      - KRAKEND_PORT=8080
+      - USAGE_DISABLE=1
+    command: ["run", "-c", "/etc/krakend/krakend.tmpl"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/__health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped

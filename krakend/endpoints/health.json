@@ -1,0 +1,20 @@
+{
+  "endpoint": "/__health",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["http://localhost:8080"],
+    "url_pattern": "/__health",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/__ready",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+}

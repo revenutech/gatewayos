@@ -1,0 +1,37 @@
+# =============================================================================
+# Revenu Platform — KrakenD Ingress
+# ISO 27001: A.13.1.1 (Network controls), A.14.1.2 (Secure app services)
+# =============================================================================
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: krakend-ingress
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: revenu-platform
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.revenu.com.br
+      secretName: krakend-tls
+  rules:
+    - host: api.revenu.com.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: krakend
+                port:
+                  number: 8080

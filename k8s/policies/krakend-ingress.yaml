@@ -1,0 +1,38 @@
+# =============================================================================
+# Revenu Platform — Network Policy: KrakenD Ingress
+# ISO 27001: A.13.1.1 (Network controls)
+# =============================================================================
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-krakend
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: krakend
+  policyTypes:
+    - Ingress
+  ingress:
+    # NGINX ingress controller -> KrakenD HTTP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+    # Prometheus -> KrakenD metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 8090

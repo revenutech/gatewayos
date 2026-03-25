@@ -1,0 +1,41 @@
+name: CI — Gateway
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate KrakenD Config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check KrakenD config
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/krakend:/etc/krakend \
+            -e FC_ENABLE=1 \
+            -e FC_SETTINGS=/etc/krakend/settings \
+            -e FC_PARTIALS=/etc/krakend/partials \
+            -e FC_TEMPLATES=/etc/krakend/templates \
+            devopsfaith/krakend:2.7 \
+            check -c /etc/krakend/krakend.tmpl
+
+      - name: Lint JSON configs
+        run: |
+          for f in $(find krakend/settings -name '*.json'); do
+            echo "Validating $f..."
+            python3 -m json.tool "$f" > /dev/null
+          done
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t revenu-gateway:ci .

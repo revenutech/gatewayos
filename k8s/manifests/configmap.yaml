@@ -1,0 +1,16 @@
+# =============================================================================
+# Revenu Platform — KrakenD ConfigMap
+# Populated via CI/CD pipeline or kustomize configMapGenerator
+# =============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: krakend-config
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: config
+    app.kubernetes.io/part-of: revenu-platform
+  annotations:
+    note: "Populated via CI/CD pipeline or kustomize configMapGenerator."
+data: {}

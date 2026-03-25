@@ -1,0 +1,21 @@
+# =============================================================================
+# Revenu Platform — KrakenD ServiceMonitor (Prometheus)
+# =============================================================================
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: krakend-metrics
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: monitoring
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: krakend
+  endpoints:
+    - port: metrics
+      path: /__metrics
+      interval: 15s
+      scrapeTimeout: 10s

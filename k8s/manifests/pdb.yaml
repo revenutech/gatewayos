@@ -1,0 +1,16 @@
+# =============================================================================
+# Revenu Platform — KrakenD PodDisruptionBudget
+# =============================================================================
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: krakend-pdb
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: api-gateway
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: krakend

@@ -1,0 +1,65 @@
+{
+  "keycloak": {
+    "jwks_url": "https://auth-staging.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://auth-staging.revenu.com.br/realms/ledgeros",
+    "audience": "revenu-platform"
+  },
+  "service": {
+    "port": 8080,
+    "log_level": "INFO",
+    "return_error_msg": false
+  },
+  "backends": {
+    "ledgeros_http": "http://ledgeros.ledgeros-staging.svc.cluster.local:8081",
+    "ledgeros_grpc": "ledgeros.ledgeros-staging.svc.cluster.local:9081",
+    "paymentos": "http://paymentos.ledgeros-staging.svc.cluster.local:8082",
+    "atmos": "http://atmos.ledgeros-staging.svc.cluster.local:8088",
+    "identos": "http://identos.ledgeros-staging.svc.cluster.local:8091"
+  },
+  "rate_limit": {
+    "global_max": 5000,
+    "tenant_max": 500
+  },
+  "cors": {
+    "allow_origins": ["https://staging.revenu.com.br"],
+    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "max_age": "12h"
+  },
+  "cb_posting": {
+    "cb_name": "cb-ledgeros-posting",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_paymentos": {
+    "cb_name": "cb-paymentos",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 15
+  },
+  "cb_atmos": {
+    "cb_name": "cb-atmos",
+    "cb_max_errors": 10,
+    "cb_interval": 120,
+    "cb_timeout": 30
+  },
+  "cb_identos": {
+    "cb_name": "cb-identos",
+    "cb_max_errors": 2,
+    "cb_interval": 30,
+    "cb_timeout": 5
+  },
+  "postings_write": {
+    "rate_limit": {
+      "global_max": 1000,
+      "tenant_max": 100
+    }
+  },
+  "balances_read": {
+    "rate_limit": {
+      "global_max": 5000,
+      "tenant_max": 500
+    }
+  }
+}

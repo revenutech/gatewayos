@@ -1,0 +1,61 @@
+# =============================================================================
+# Revenu Platform — KrakenD PrometheusRule (4 alerts)
+# =============================================================================
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: krakend-alerts
+  labels:
+    app.kubernetes.io/name: krakend
+    app.kubernetes.io/component: monitoring
+    release: prometheus-stack
+spec:
+  groups:
+    - name: krakend.rules
+      rules:
+        - alert: KrakenDHighErrorRate
+          expr: |
+            sum(rate(krakend_router_response_size_count{status=~"5.."}[5m]))
+            / sum(rate(krakend_router_response_size_count[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+            service: krakend
+          annotations:
+            summary: "KrakenD error rate above 5%"
+            description: "Gateway error rate is {{ $value | humanizePercentage }} over the last 5 minutes."
+
+        - alert: KrakenDCircuitBreakerOpen
+          expr: krakend_circuit_breaker_open > 0
+          for: 1m
+          labels:
+            severity: warning
+            service: krakend
+          annotations:
+            summary: "KrakenD circuit breaker is OPEN"
+            description: "Circuit breaker {{ $labels.name }} is open. Backend service may be degraded."
+
+        - alert: KrakenDHighLatency
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(krakend_router_response_time_seconds_bucket[5m])) by (le)
+            ) > 1.0
+          for: 5m
+          labels:
+            severity: warning
+            service: krakend
+          annotations:
+            summary: "KrakenD p95 latency above 1s"
+            description: "Gateway p95 response time is {{ $value }}s."
+
+        - alert: KrakenDRateLimitSpike
+          expr: |
+            sum(rate(krakend_router_response_size_count{status="429"}[5m])) > 100
+          for: 2m
+          labels:
+            severity: info
+            service: krakend
+          annotations:
+            summary: "KrakenD rate limiting spike"
+            description: "More than 100 requests/s being rate-limited."

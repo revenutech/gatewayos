@@ -1,0 +1,65 @@
+{
+  "keycloak": {
+    "jwks_url": "http://keycloak:8180/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "http://keycloak:8180/realms/ledgeros",
+    "audience": "revenu-platform"
+  },
+  "service": {
+    "port": 8080,
+    "log_level": "DEBUG",
+    "return_error_msg": true
+  },
+  "backends": {
+    "ledgeros_http": "http://ledgeros:8081",
+    "ledgeros_grpc": "ledgeros:9081",
+    "paymentos": "http://paymentos:8082",
+    "atmos": "http://atmos:8088",
+    "identos": "http://identos:8091"
+  },
+  "rate_limit": {
+    "global_max": 5000,
+    "tenant_max": 500
+  },
+  "cors": {
+    "allow_origins": ["http://localhost:3000", "http://localhost:8081"],
+    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "max_age": "12h"
+  },
+  "cb_posting": {
+    "cb_name": "cb-ledgeros-posting",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_paymentos": {
+    "cb_name": "cb-paymentos",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 15
+  },
+  "cb_atmos": {
+    "cb_name": "cb-atmos",
+    "cb_max_errors": 10,
+    "cb_interval": 120,
+    "cb_timeout": 30
+  },
+  "cb_identos": {
+    "cb_name": "cb-identos",
+    "cb_max_errors": 2,
+    "cb_interval": 30,
+    "cb_timeout": 5
+  },
+  "postings_write": {
+    "rate_limit": {
+      "global_max": 1000,
+      "tenant_max": 100
+    }
+  },
+  "balances_read": {
+    "rate_limit": {
+      "global_max": 5000,
+      "tenant_max": 500
+    }
+  }
+}
