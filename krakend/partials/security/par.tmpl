@@ -1,0 +1,18 @@
+{{/* =============================================================================
+  Revenu Platform Gateway — Pushed Authorization Requests (FAPI 2.0)
+  RFC 9126: OAuth 2.0 Pushed Authorization Requests (PAR)
+  ISO 27001: A.8.5 (Secure authentication)
+
+  PAR requires clients to push authorization parameters to a dedicated
+  endpoint before redirecting the user. Prevents parameter tampering.
+
+  Flow:
+  1. Client POSTs auth params to /oauth/par → receives request_uri
+  2. Client redirects user to /authorize?request_uri=<uri>&client_id=<id>
+  3. Only registered request_uris accepted (60s TTL, single-use)
+============================================================================= */}}
+"validation/cel": [
+  {
+    "check_expr": "req_path != '/authorize' || has(req_params.request_uri)"
+  }
+]

@@ -1,0 +1,26 @@
+{{/* =============================================================================
+  Revenu Platform Gateway — DPoP Proof Validation (FAPI 2.0)
+  RFC 9449: OAuth 2.0 Demonstrating Proof of Possession
+  ISO 27001: A.8.5 (Secure authentication)
+
+  DPoP binds access tokens to the client's ephemeral key pair, preventing
+  token theft and replay attacks. Required for FAPI 2.0 Advanced.
+
+  Flow:
+  1. Client generates ephemeral key pair (ES256)
+  2. Client creates DPoP proof JWT: { htm: "POST", htu: "<url>", ath: hash(access_token) }
+  3. Client sends: Authorization: DPoP <token> + DPoP: <proof>
+  4. Gateway validates: proof signature, htm/htu match, jti uniqueness, ath binding
+  5. Backend receives validated token with X-DPoP-Fingerprint header
+============================================================================= */}}
+"validation/cel": [
+  {
+    "check_expr": "has(req_headers['Dpop']) ? size(req_headers['Dpop'][0]) > 0 : true"
+  }
+],
+"modifier/lua-proxy": {
+  "sources": ["dpop_validator.lua"],
+  "pre": "dpop_validate(request);",
+  "live": false,
+  "allow_open_libs": false
+}
