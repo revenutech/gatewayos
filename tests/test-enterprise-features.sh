@@ -289,6 +289,33 @@ else
 fi
 
 # =========================================================================
+# GROUP F-H: Lua Enterprise Features (SKIP — CE Limitation)
+# =========================================================================
+echo ""
+echo -e "${CYAN}--- Group F-H: Lua Enterprise Features ---${NC}"
+echo -e "${YELLOW}NOTE: KrakenD CE does not support Lua plugins at runtime.${NC}"
+echo -e "${YELLOW}      Scripts implemented but require Enterprise Edition.${NC}"
+echo ""
+
+for t in \
+  "T22: API Key Auth (valid key)" \
+  "T23: API Key Auth (invalid key)" \
+  "T24: API Key RBAC (viewer->admin)" \
+  "T25: API Key Auth (admin role)" \
+  "T26: SQL injection blocked" \
+  "T27: XSS in Referer blocked" \
+  "T28: Bot UA blocked" \
+  "T29: SSRF in Referer blocked" \
+  "T30: Body size limit" \
+  "T31: Classification header" \
+  "T32: Classification health" \
+  "T33: Audit evidence chain" \
+  "T34: Access log structured" \
+  "T35: DLP CPF masking"; do
+  skip "$t" "Requires Enterprise Edition"
+done
+
+# =========================================================================
 # SUMMARY
 # =========================================================================
 echo ""
