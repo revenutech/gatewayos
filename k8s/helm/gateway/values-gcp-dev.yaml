@@ -17,6 +17,7 @@ serviceAccount:
 
 service:
   type: LoadBalancer
+  loadBalancerIP: "34.95.204.158"
 
 ingress:
   enabled: false
