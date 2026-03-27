@@ -50,5 +50,25 @@ cronjob:
       host: redis
       port: "6379"
 
+serviceMonitor:
+  enabled: false
+
+prometheusRule:
+  enabled: false
+
+cronjob:
+  dataRetention:
+    enabled: false
+
+envoy:
+  enabled: false
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
 krakend:
   env: dev

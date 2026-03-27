@@ -125,10 +125,7 @@ configHash: "PLACEHOLDER"
 
 krakend:
   env: dev
-  fcEnable: "1"
-  fcSettings: /etc/krakend/settings
-  fcPartials: /etc/krakend/partials
-  fcTemplates: /etc/krakend/templates
+  fcEnable: "0"
   port: "8080"
   usageDisable: "1"
 

@@ -23,7 +23,7 @@ locals {
 
 terraform {
   backend "gcs" {
-    bucket = "revenu-terraform-state-gcp"
+    bucket = "revenu-platform-tf-state"
     prefix = "gateway/dev"
   }
 }

@@ -1,0 +1,1272 @@
+{
+  "$schema": "https://www.krakend.io/schema/krakend.json",
+  "version": 3,
+  "name": "revenu-platform-gateway",
+  "port": 8080,
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "extra_config": {
+    "telemetry/opentelemetry": {
+      "service_name": "krakend-gateway",
+      "service_version": "1.0.0",
+      "exporters": {
+        "otlp": [
+          {
+            "name": "otel-collector",
+            "host": "otel-collector",
+            "port": 4317,
+            "use_http": false
+          }
+        ]
+      },
+      "layers": {
+        "global": {
+          "report_headers": true
+        },
+        "proxy": {
+          "report_headers": true
+        },
+        "backend": {
+          "metrics": {
+            "report_headers": true
+          },
+          "traces": {
+            "report_headers": true
+          }
+        }
+      }
+    },
+    "telemetry/metrics": {
+      "collection_time": "30s",
+      "listen_address": ":8090"
+    },
+    "security/cors": {
+      "allow_origins": [
+        "http://localhost:3000",
+        "http://localhost:8081"
+      ],
+      "allow_methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "OPTIONS"
+      ],
+      "allow_headers": [
+        "Authorization",
+        "Content-Type",
+        "X-Correlation-ID"
+      ],
+      "expose_headers": [
+        "X-Request-ID",
+        "X-Correlation-ID"
+      ],
+      "max_age": "12h",
+      "allow_credentials": true
+    },
+    "security/http": {
+      "allowed_hosts": [],
+      "ssl_redirect": false,
+      "ssl_host": "",
+      "ssl_proxy_headers": {
+        "X-Forwarded-Proto": "https"
+      },
+      "sts_seconds": 31536000,
+      "sts_include_subdomains": true,
+      "frame_deny": true,
+      "content_type_nosniff": true,
+      "browser_xss_filter": true,
+      "content_security_policy": "default-src 'self'",
+      "referrer_policy": "strict-origin-when-cross-origin",
+      "custom_frame_options_value": "DENY"
+    },
+    "auth/revoker": {
+      "N": 10000000,
+      "P": 1e-07,
+      "hash_name": "optimal",
+      "TTL": 3600,
+      "port": 1234,
+      "token_keys": [
+        "jti"
+      ]
+    },
+    "telemetry/logging": {
+      "level": "DEBUG",
+      "prefix": "[KRAKEND]",
+      "stdout": true,
+      "format": "logstash"
+    },
+    "router": {
+      "return_error_msg": true
+    }
+  },
+  "endpoints": [
+    {
+      "endpoint": "/__ready",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/health",
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/postings",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/transactions",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/postings/{id}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/transactions/{id}",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/balances/{id}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/balances/{id}",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/settlements",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/settlements",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/reconciliation/jobs",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/reconciliation/jobs",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/pix/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/v1/pix/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/pix/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/v1/pix/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/ted/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/v1/ted/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/boleto/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/v1/boleto/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/auth/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "alg": "RS256",
+          "jwk_url": "http://keycloak:8180/realms/ledgeros/protocol/openid-connect/certs",
+          "issuer": "http://keycloak:8180/realms/ledgeros",
+          "audience": [
+            "revenu-platform"
+          ],
+          "cache": true,
+          "cache_duration": 3600,
+          "failed_jwk_key_cooldown": "10s",
+          "disable_jwk_security": true,
+          "propagate_claims": [
+            [
+              "sub",
+              "x-user-id"
+            ],
+            [
+              "tenant_id",
+              "x-tenant-id"
+            ],
+            [
+              "realm_access.roles",
+              "x-roles"
+            ],
+            [
+              "jti",
+              "x-jwt-jti"
+            ],
+            [
+              "subscription_tier",
+              "x-subscription-tier"
+            ]
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://identos:8091"
+          ],
+          "url_pattern": "/v1/auth/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/users/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://identos:8091"
+          ],
+          "url_pattern": "/v1/users/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/atm/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://atmos:8088"
+          ],
+          "url_pattern": "/v1/atm/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/atm/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://atmos:8088"
+          ],
+          "url_pattern": "/v1/atm/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/admin/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/admin/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/admin/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/admin/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "LedgerOS gRPC endpoints via Envoy transcoder sidecar (127.0.0.1:8085)",
+      "_enterprise_equivalent": "backend/grpc \u2014 KrakenD Enterprise native gRPC support",
+      "endpoint": "/grpc/v1/postings",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://envoy-grpc-transcoder:8085"
+          ],
+          "url_pattern": "/grpc/v1/postings",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/grpc/v1/postings/{id}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://envoy-grpc-transcoder:8085"
+          ],
+          "url_pattern": "/grpc/v1/postings/{id}",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/grpc/v1/balances/{id}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://envoy-grpc-transcoder:8085"
+          ],
+          "url_pattern": "/grpc/v1/balances/{id}",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/grpc/v1/settlements",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://envoy-grpc-transcoder:8085"
+          ],
+          "url_pattern": "/grpc/v1/settlements",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/grpc/v1/reconciliation/jobs",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://envoy-grpc-transcoder:8085"
+          ],
+          "url_pattern": "/grpc/v1/reconciliation/jobs",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "LedgerOS dynamic routing endpoints \u2014 tenant-scoped via JWT claims",
+      "_enterprise_equivalent": "endpoints/dynamic-routing \u2014 KrakenD Enterprise",
+      "endpoint": "/v1/my/postings",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/internal/v1/tenants/{JWT.tenant_id}/transactions",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "User-scoped balances \u2014 routes to user-specific backend path",
+      "endpoint": "/v1/my/balances",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/internal/v1/users/{JWT.sub}/balances",
+          "encoding": "json",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "Tenant dashboard \u2014 aggregated view scoped to JWT tenant",
+      "endpoint": "/v1/my/dashboard",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/internal/v1/tenants/{JWT.tenant_id}/summary",
+          "encoding": "json",
+          "group": "ledger",
+          "extra_config": {}
+        },
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/internal/v1/tenants/{JWT.tenant_id}/payment-summary",
+          "encoding": "json",
+          "group": "payments",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "OnboardOS \u2014 Customer onboarding module (:8092)",
+      "_enterprise_equivalent": "endpoints/wildcard \u2014 KrakenD Enterprise wildcard routes",
+      "endpoint": "/v1/onboarding/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://onboardos:8092"
+          ],
+          "url_pattern": "/v1/onboarding/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/onboarding/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://onboardos:8092"
+          ],
+          "url_pattern": "/v1/onboarding/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "AccountOS \u2014 Account management module (:8093)",
+      "_enterprise_equivalent": "endpoints/wildcard \u2014 KrakenD Enterprise wildcard routes",
+      "endpoint": "/v1/accounts/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://accountos:8093"
+          ],
+          "url_pattern": "/v1/accounts/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/accounts/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://accountos:8093"
+          ],
+          "url_pattern": "/v1/accounts/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/accounts/{path}",
+      "method": "PUT",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://accountos:8093"
+          ],
+          "url_pattern": "/v1/accounts/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "FinanceOS \u2014 Financial operations module (:8095)",
+      "_enterprise_equivalent": "endpoints/wildcard \u2014 KrakenD Enterprise wildcard routes",
+      "endpoint": "/v1/finance/{path}",
+      "method": "POST",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "Content-Type",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://financeos:8095"
+          ],
+          "url_pattern": "/v1/finance/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/finance/{path}",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "no-op",
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://financeos:8095"
+          ],
+          "url_pattern": "/v1/finance/{path}",
+          "encoding": "no-op",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "Aggregated Dashboard Endpoints \u2014 multi-backend in single response",
+      "_enterprise_equivalent": "KrakenD CE native feature (multiple backends per endpoint)",
+      "endpoint": "/v1/dashboard/overview",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID",
+        "X-Subscription-Tier"
+      ],
+      "output_encoding": "json",
+      "timeout": "5000ms",
+      "concurrent_calls": 4,
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-viewer",
+            "ledger-operator",
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/v1/dashboard/ledger-summary",
+          "encoding": "json",
+          "group": "ledger",
+          "timeout": "3000ms",
+          "extra_config": {
+            "qos/http-cache": {
+              "shared": true
+            }
+          }
+        },
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/v1/dashboard/payment-summary",
+          "encoding": "json",
+          "group": "payments",
+          "timeout": "3000ms",
+          "extra_config": {}
+        },
+        {
+          "host": [
+            "http://atmos:8088"
+          ],
+          "url_pattern": "/v1/dashboard/automation-summary",
+          "encoding": "json",
+          "group": "automation",
+          "timeout": "3000ms",
+          "is_collection": true,
+          "extra_config": {}
+        },
+        {
+          "host": [
+            "http://accountos:8093"
+          ],
+          "url_pattern": "/v1/dashboard/account-summary",
+          "encoding": "json",
+          "group": "accounts",
+          "timeout": "3000ms",
+          "extra_config": {}
+        }
+      ]
+    },
+    {
+      "_comment": "Aggregated health \u2014 all backends in one call",
+      "endpoint": "/v1/dashboard/health",
+      "method": "GET",
+      "input_headers": [
+        "X-User-ID",
+        "X-Tenant-ID",
+        "X-Roles",
+        "X-Correlation-ID"
+      ],
+      "output_encoding": "json",
+      "timeout": "3000ms",
+      "concurrent_calls": 5,
+      "extra_config": {
+        "auth/validator": {
+          "roles_key": "realm_access.roles",
+          "roles_key_is_nested": true,
+          "roles": [
+            "ledger-admin"
+          ]
+        }
+      },
+      "backend": [
+        {
+          "host": [
+            "http://ledgeros:8081"
+          ],
+          "url_pattern": "/health",
+          "encoding": "json",
+          "group": "ledgeros"
+        },
+        {
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "url_pattern": "/health",
+          "encoding": "json",
+          "group": "paymentos"
+        },
+        {
+          "host": [
+            "http://atmos:8088"
+          ],
+          "url_pattern": "/health",
+          "encoding": "json",
+          "group": "atmos"
+        },
+        {
+          "host": [
+            "http://identos:8091"
+          ],
+          "url_pattern": "/health",
+          "encoding": "json",
+          "group": "identos"
+        },
+        {
+          "host": [
+            "http://accountos:8093"
+          ],
+          "url_pattern": "/health",
+          "encoding": "json",
+          "group": "accountos"
+        }
+      ]
+    }
+  ]
+}

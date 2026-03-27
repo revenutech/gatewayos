@@ -51,14 +51,33 @@ resource "google_artifact_registry_repository_iam_member" "gke_reader" {
   member     = "serviceAccount:${var.gke_sa_email}"
 }
 
-variable "project_id" { type = string }
-variable "region" { type = string }
-variable "repository_name" { type = string }
-variable "immutable_tags" { type = bool; default = false }
-variable "keep_count" { type = number; default = 10 }
-variable "ci_sa_email" { type = string }
-variable "gke_sa_email" { type = string }
-variable "labels" { type = map(string); default = {} }
+variable "project_id" {
+  type = string
+}
+variable "region" {
+  type = string
+}
+variable "repository_name" {
+  type = string
+}
+variable "immutable_tags" {
+  type = bool
+  default = false
+}
+variable "keep_count" {
+  type = number
+  default = 10
+}
+variable "ci_sa_email" {
+  type = string
+}
+variable "gke_sa_email" {
+  type = string
+}
+variable "labels" {
+  type = map(string)
+  default = {}
+}
 
 output "repository_url" {
   value = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.gateway.name}"

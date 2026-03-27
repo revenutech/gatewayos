@@ -23,11 +23,22 @@ resource "google_kms_crypto_key" "gateway" {
   labels = var.labels
 }
 
-variable "project_id" { type = string }
-variable "region" { type = string }
-variable "environment" { type = string }
-variable "protection_level" { type = string; default = "SOFTWARE" }
-variable "labels" { type = map(string); default = {} }
+variable "project_id" {
+  type = string
+}
+variable "region" {
+  type = string
+}
+variable "environment" {
+  type = string
+}
+variable "protection_level" {
+  type = string
+  default = "SOFTWARE"
+}
+variable "labels" {
+  type = map(string)
+  default = {}
+}
 
 output "key_ring_id" { value = google_kms_key_ring.gateway.id }
-output "crypto_key_id" { value = google_kms_crypto_key.gateway.id }

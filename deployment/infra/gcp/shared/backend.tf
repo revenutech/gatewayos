@@ -5,7 +5,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "revenu-terraform-state-gcp"
+    bucket = "revenu-platform-tf-state"
     # prefix is set per environment:
     #   gateway/dev/terraform.tfstate
     #   gateway/staging/terraform.tfstate

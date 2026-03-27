@@ -167,23 +167,65 @@ resource "google_project_iam_member" "ci_gke_developer" {
   member  = "serviceAccount:${google_service_account.gateway_ci.email}"
 }
 
-variable "project_id" { type = string }
-variable "region" { type = string }
-variable "zone" { type = string; default = "southamerica-east1-a" }
-variable "environment" { type = string }
-variable "cluster_name" { type = string }
-variable "regional" { type = bool; default = false }
-variable "network_id" { type = string }
-variable "subnet_id" { type = string }
-variable "node_count" { type = number; default = 1 }
-variable "min_nodes" { type = number; default = 1 }
-variable "max_nodes" { type = number; default = 3 }
-variable "machine_type" { type = string; default = "e2-medium" }
-variable "release_channel" { type = string; default = "REGULAR" }
-variable "binary_auth" { type = bool; default = false }
-variable "labels" { type = map(string); default = {} }
+variable "project_id" {
+  type = string
+}
+variable "region" {
+  type = string
+}
+variable "zone" {
+  type = string
+  default = "southamerica-east1-a"
+}
+variable "environment" {
+  type = string
+}
+variable "cluster_name" {
+  type = string
+}
+variable "regional" {
+  type = bool
+  default = false
+}
+variable "network_id" {
+  type = string
+}
+variable "subnet_id" {
+  type = string
+}
+variable "node_count" {
+  type = number
+  default = 1
+}
+variable "min_nodes" {
+  type = number
+  default = 1
+}
+variable "max_nodes" {
+  type = number
+  default = 3
+}
+variable "machine_type" {
+  type = string
+  default = "e2-medium"
+}
+variable "release_channel" {
+  type = string
+  default = "REGULAR"
+}
+variable "binary_auth" {
+  type = bool
+  default = false
+}
+variable "labels" {
+  type    = map(string)
+  default = {}
+}
 variable "master_authorized_cidrs" {
-  type = list(object({ cidr = string, name = string }))
+  type = list(object({
+    cidr = string
+    name = string
+  }))
   default = [{ cidr = "0.0.0.0/0", name = "all" }]
 }
 
