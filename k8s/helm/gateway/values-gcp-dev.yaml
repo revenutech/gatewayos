@@ -23,11 +23,18 @@ ingress:
   className: gce
   annotations:
     kubernetes.io/ingress.global-static-ip-name: gateway-dev-global-ip
+    networking.gke.io/managed-certificates: gateway-dev-cert
+    networking.gke.io/v1beta1.FrontendConfig: gateway-frontend-config
   hosts:
     - host: gateway.allenty.io
       paths:
         - path: /
           pathType: Prefix
+
+managedCertificate:
+  enabled: true
+  domains:
+    - gateway.allenty.io
 
 networkPolicy:
   enabled: false
