@@ -16,10 +16,20 @@ serviceAccount:
     iam.gke.io/gcp-service-account: gateway-app-dev@revenu-gateway-dev.iam.gserviceaccount.com
 
 service:
-  type: LoadBalancer
-  loadBalancerIP: "34.95.204.158"
+  type: NodePort
 
 ingress:
+  enabled: true
+  className: gce
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gateway-dev-global-ip
+  hosts:
+    - host: gateway.allenty.io
+      paths:
+        - path: /
+          pathType: Prefix
+
+networkPolicy:
   enabled: false
 
 autoscaling:
