@@ -1,13 +1,13 @@
 {
   "keycloak": {
-    "jwks_url": "http://keycloak:8180/realms/ledgeros/protocol/openid-connect/certs",
-    "issuer": "http://keycloak:8180/realms/ledgeros",
+    "jwks_url": "https://auth.allenty.io/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://auth.allenty.io/realms/ledgeros",
     "audience": "revenu-platform",
-    "disable_jwk_security": true
+    "disable_jwk_security": false
   },
   "oauth2": {
     "client_id": "krakend-gateway",
-    "client_secret": "dev-secret-change-me"
+    "client_secret": "a12cc2f4848c20797ee8e61ca3a019a8e5603297ee4d7338feed6e07a6373e03"
   },
   "api_keys": {
     "registry": "dev-test-key-001:dev-key-1:tenant-dev:ledger-viewer,ledger-operator:default:true|dev-test-key-002:dev-key-2:tenant-dev:ledger-admin:premium:true"
