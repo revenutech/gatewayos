@@ -46,7 +46,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: krakend
-          image: devopsfaith/krakend:2.7
+          image: devopsfaith/krakend:2.13
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

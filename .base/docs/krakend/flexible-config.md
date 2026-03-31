@@ -125,7 +125,7 @@ COPY krakend/ /etc/krakend/
 RUN sh /compile-config.sh
 
 # Stage 2: Run with pre-compiled config
-FROM devopsfaith/krakend:2.7
+FROM devopsfaith/krakend:2.13
 COPY --from=compiler /etc/krakend/krakend.json /etc/krakend/krakend.json
 ENV FC_ENABLE=0  # Templates already compiled
 ```
@@ -145,7 +145,7 @@ docker run --rm \
   -e FC_SETTINGS=/etc/krakend/settings \
   -e FC_PARTIALS=/etc/krakend/partials \
   -e FC_TEMPLATES=/etc/krakend/templates \
-  devopsfaith/krakend:2.7 \
+  devopsfaith/krakend:2.13 \
   check -c /etc/krakend/krakend.tmpl
 ```
 

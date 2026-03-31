@@ -20,7 +20,7 @@ All manifests at `k8s/manifests/`.
 
 | Container | Image | Ports | CPU | Memory |
 |-----------|-------|-------|-----|--------|
-| krakend | devopsfaith/krakend:2.7 | 8080, 8090 | 250m-1000m | 128Mi-512Mi |
+| krakend | devopsfaith/krakend:2.13 | 8080, 8090 | 250m-1000m | 128Mi-512Mi |
 | envoy-grpc-transcoder | envoyproxy/envoy:v1.31 | 8085 | 50m-200m | 64Mi-128Mi |
 
 Both containers: readOnly rootFS, drop ALL capabilities, no privilege escalation.
