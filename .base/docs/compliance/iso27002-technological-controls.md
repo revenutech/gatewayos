@@ -81,7 +81,7 @@ classification: Internal
 
 **Gateway Implementation:**
 - **JWKS rotation:** `failed_jwk_key_cooldown: 10s` handles key rotation gracefully
-- **Image pinning:** `krakend:2.13`, `envoy:v1.31-latest`
+- **Image pinning:** `krakend:2.13.3`, `envoy:v1.31-latest`
 - **Planned:** Trivy image scanning, SBOM generation (CA-003)
 - **CVE monitoring:** KrakenD/Envoy release tracking
 

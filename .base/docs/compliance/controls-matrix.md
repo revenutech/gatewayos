@@ -52,7 +52,7 @@ classification: Confidential
 | 5.18 | Access rights | Impl | 3-tier RBAC: `ledger-viewer` < `ledger-operator` < `ledger-admin`, per-endpoint | Sec Architect |
 | 5.19 | Supplier relationships | N/A | Platform-level | — |
 | 5.20 | Supplier agreements | N/A | Platform-level | — |
-| 5.21 | ICT supply chain | Impl | Pinned image versions (`krakend:2.13`, `envoy:v1.31-latest`); SBOM/Trivy planned | DevSecOps |
+| 5.21 | ICT supply chain | Impl | Pinned image versions (`krakend:2.13.3`, `envoy:v1.31-latest`); SBOM/Trivy planned | DevSecOps |
 | 5.22 | Monitoring supplier services | Impl | Backend health: `endpoints/health.json`, `dashboard_v1.json` aggregated health | DevSecOps |
 | 5.23 | Cloud services | N/A | Platform-level (K8s/CSP) | — |
 | 5.24 | Incident management planning | Impl | `operations/incident-response-plan.md` (Phase 5) | DevSecOps |
