@@ -75,7 +75,7 @@ else
     error "JWT validator missing failed_jwk_key_cooldown (key rotation risk)"
 fi
 
-if grep -q "roles_key_is_nested" "${ENDPOINTS_DIR}/ledger_v1.json" 2>/dev/null; then
+if grep -q "roles_key_is_nested" "${TEMPLATES_DIR}/endpoint_ledger_v1.tmpl" 2>/dev/null; then
     pass "RBAC endpoints have roles_key_is_nested: true"
 else
     error "Missing roles_key_is_nested in RBAC endpoints"
