@@ -12,7 +12,6 @@ OUTPUT="${3:-/etc/krakend/krakend.json}"
 
 SETTINGS="$KRAKEND_DIR/settings/${ENV}.json"
 PARTIALS="$KRAKEND_DIR/partials"
-ENDPOINTS="$KRAKEND_DIR/endpoints"
 TEMPLATES="$KRAKEND_DIR/templates"
 TMPL="$KRAKEND_DIR/krakend.tmpl"
 
@@ -29,7 +28,6 @@ output = os.environ["OUTPUT"]
 
 settings_file = f"{krakend_dir}/settings/{env_name}.json"
 partials_dir = f"{krakend_dir}/partials"
-endpoints_dir = f"{krakend_dir}/endpoints"
 templates_dir = f"{krakend_dir}/templates"
 tmpl_file = f"{krakend_dir}/krakend.tmpl"
 
@@ -45,21 +43,13 @@ for f in sorted(os.listdir(partials_dir)):
         with open(fp) as fh:
             partials[f] = fh.read()
 
-# Load all endpoints
-endpoints = {}
-for f in sorted(os.listdir(endpoints_dir)):
-    fp = os.path.join(endpoints_dir, f)
-    if os.path.isfile(fp) and f.endswith('.json'):
-        with open(fp) as fh:
-            endpoints[f"endpoints/{f}"] = fh.read()
-
-# Load templates
+# Load all templates (includes endpoint_*.tmpl and partial *.tmpl)
 templates = {}
 for f in sorted(os.listdir(templates_dir)):
     fp = os.path.join(templates_dir, f)
-    if os.path.isfile(fp):
+    if os.path.isfile(fp) and f.endswith('.tmpl'):
         with open(fp) as fh:
-            templates[f"templates/{f}"] = fh.read()
+            templates[f] = fh.read()
 
 # Read main template
 with open(tmpl_file) as f:
@@ -68,7 +58,7 @@ with open(tmpl_file) as f:
 # Phase 1: Replace {{ template "partials/xxx" . }} and {{ template "xxx.tmpl" . }}
 all_templates = {}
 all_templates.update(partials)
-all_templates.update(endpoints)
+all_templates.update(templates)
 
 def replace_templates(content, depth=0):
     if depth > 10:

@@ -79,7 +79,7 @@ jobs:
             echo "ERROR: jwt_validator.tmpl missing failed_jwk_key_cooldown"
             exit 1
           fi
-          if ! grep -q "roles_key_is_nested" krakend/templates/endpoints/ledger_v1.json; then
+          if ! grep -q "roles_key_is_nested" krakend/templates/endpoint_ledger_v1.tmpl; then
             echo "ERROR: Missing roles_key_is_nested in RBAC endpoints"
             exit 1
           fi
