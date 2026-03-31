@@ -13,7 +13,7 @@ docker run --rm \
   -e FC_SETTINGS=/etc/krakend/settings \
   -e FC_PARTIALS=/etc/krakend/partials \
   -e FC_TEMPLATES=/etc/krakend/templates \
-  devopsfaith/krakend:2.13.3 \
+  devopsfaith/krakend:2.9.4 \
   check -c /etc/krakend/krakend.tmpl
 ```
 
