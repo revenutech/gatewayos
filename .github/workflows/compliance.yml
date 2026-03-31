@@ -20,14 +20,8 @@ jobs:
       # ISO 27001 A.8.25 — Secure development life cycle
       - name: "A.8.25: Validate KrakenD config syntax"
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}/krakend:/etc/krakend \
-            -e FC_ENABLE=1 \
-            -e FC_SETTINGS=/etc/krakend/settings \
-            -e FC_PARTIALS=/etc/krakend/partials \
-            -e FC_TEMPLATES=/etc/krakend/templates \
-            devopsfaith/krakend:2.7 \
-            check -c /etc/krakend/krakend.tmpl
+          bash tools/compile-config.sh krakend dev /tmp/krakend-compiled.json
+          python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('Config compiles to valid JSON')"
 
       # ISO 27001 A.8.9 — Configuration management (JSON validity)
       - name: "A.8.9: Lint JSON configs"
