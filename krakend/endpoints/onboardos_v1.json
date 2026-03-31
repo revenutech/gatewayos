@@ -1,7 +1,7 @@
 {
   "_comment": "OnboardOS — Customer onboarding module (:8092)",
   "_enterprise_equivalent": "endpoints/wildcard — KrakenD Enterprise wildcard routes",
-  "_prefixes": "onboarding, kyc, dd, journeys, documents, leads, risk, rio, aml, screenings, cases, policies, reviews, offboarding, mdm, audit, sessions, milestones, notifications, business-entities, cnpj",
+  "_prefixes": "onboarding, kyc, dd, journeys, documents, leads, risk, rio, aml, screenings, cases, policies, reviews, offboarding, mdm, audit, sessions, milestones, notifications, business-entities, cnpj, oauth, enrichment",
 
   "endpoint": "/v1/onboarding/{path}",
   "method": "GET",
@@ -988,9 +988,53 @@
     }
   }]
 },
+{
+  "endpoint": "/v1/cnpj/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/cnpj/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
 
 {
-  "_comment": "OAuth token endpoint (no JWT required — used to obtain tokens)",
+  "_comment": "OAuth — token, introspect, revoke, client management",
+  "endpoint": "/v1/oauth/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/oauth/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
   "endpoint": "/v1/oauth/{path}",
   "method": "POST",
   "input_headers": ["Content-Type", "Authorization", "X-Correlation-ID"],
@@ -998,6 +1042,1024 @@
   "backend": [{
     "host": ["{{ .backends.onboardos }}"],
     "url_pattern": "/v1/oauth/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/oauth/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/oauth/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/oauth/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/oauth/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Enrichment — person and business entity enrichment",
+  "endpoint": "/v1/enrichment/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/enrichment/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/enrichment/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/enrichment/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/enrichment/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/enrichment/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/enrichment/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/enrichment/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+
+{
+  "_comment": "=== PUT and DELETE methods for all remaining prefixes ===",
+  "_note": "Wildcard routing ensures OnboardOS can add routes without gateway changes",
+
+  "endpoint": "/v1/kyc/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/kyc/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/kyc/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/kyc/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/dd/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/dd/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/dd/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/dd/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/journeys/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/journeys/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/journeys/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/journeys/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/documents/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/documents/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/documents/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/documents/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/leads/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/leads/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/leads/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/leads/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/risk/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/risk/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/risk/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/risk/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/rio/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/rio/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/rio/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/rio/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/aml/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/aml/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/aml/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/aml/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/screenings/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/screenings/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/screenings/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/screenings/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/cases/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/cases/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/cases/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/cases/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/policies/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/policies/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/policies/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/policies/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/reviews/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/reviews/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/reviews/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/reviews/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/offboarding/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/offboarding/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/offboarding/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/offboarding/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/mdm/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/mdm/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/mdm/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/mdm/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/audit/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/audit/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/audit/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/audit/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/sessions/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/sessions/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/sessions/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/sessions/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/milestones/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/milestones/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/milestones/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/milestones/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/notifications/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/notifications/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/notifications/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/notifications/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/business-entities/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/business-entities/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/business-entities/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/business-entities/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/cnpj/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/cnpj/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_onboardos }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/cnpj/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.onboardos }}"],
+    "url_pattern": "/v1/cnpj/{path}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_onboardos }}
