@@ -14,7 +14,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_DIR="${SCRIPT_DIR}/../../krakend/settings"
-ENDPOINTS_DIR="${SCRIPT_DIR}/../../krakend/templates/endpoints"
+ENDPOINTS_DIR="${SCRIPT_DIR}/../../krakend/templates"
 PARTIALS_DIR="${SCRIPT_DIR}/../../krakend/partials"
 TEMPLATES_DIR="${SCRIPT_DIR}/../../krakend/templates"
 STRICT="${1:-}"
@@ -84,10 +84,11 @@ fi
 # Check all protected endpoints have JWT validator
 TOTAL_ENDPOINTS=0
 PROTECTED_ENDPOINTS=0
-for f in "${ENDPOINTS_DIR}"/*.json; do
+for f in "${ENDPOINTS_DIR}"/endpoint_*.tmpl; do
     [ -f "$f" ] || continue
     basename_f=$(basename "$f")
-    [ "$basename_f" = "health.json" ] && continue
+    [ "$basename_f" = "endpoint_health.tmpl" ] && continue
+    [ "$basename_f" = "endpoint_test_v1.tmpl" ] && continue
 
     count=$(grep -c '"endpoint"' "$f" 2>/dev/null || true)
     jwt_count=$(grep -c 'jwt_validator.tmpl' "$f" 2>/dev/null || true)

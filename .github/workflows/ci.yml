@@ -53,7 +53,7 @@ jobs:
       - name: Generate OpenAPI spec
         run: |
           python tools/openapi-generator/generate.py \
-            --endpoints-dir krakend/templates/endpoints \
+            --endpoints-dir krakend/templates \
             --output openapi.yaml
       - name: Upload OpenAPI spec
         uses: actions/upload-artifact@v4
