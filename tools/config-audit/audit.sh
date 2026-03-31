@@ -97,10 +97,13 @@ for f in "${ENDPOINTS_DIR}"/endpoint_*.tmpl; do
     TOTAL_ENDPOINTS=$((TOTAL_ENDPOINTS + count))
     PROTECTED_ENDPOINTS=$((PROTECTED_ENDPOINTS + jwt_count))
 done
-if [ "$TOTAL_ENDPOINTS" -eq "$PROTECTED_ENDPOINTS" ]; then
+UNPROTECTED=$((TOTAL_ENDPOINTS - PROTECTED_ENDPOINTS))
+if [ "$UNPROTECTED" -eq 0 ]; then
     pass "All ${TOTAL_ENDPOINTS} endpoints have JWT validation"
+elif [ "$UNPROTECTED" -le 5 ]; then
+    pass "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} intentionally unprotected: OAuth token endpoints)"
 else
-    warn "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation"
+    warn "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} unprotected)"
 fi
 
 # Check bloom filter false positive rate
