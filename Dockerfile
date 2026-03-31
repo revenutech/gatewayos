@@ -17,7 +17,7 @@ ENV KRAKEND_DIR=/etc/krakend \
 RUN chmod +x /compile-config.sh && sh /compile-config.sh
 
 # Stage 2: Production runtime
-FROM devopsfaith/krakend:2.13
+FROM devopsfaith/krakend:2.13.3
 
 # Copy compiled JSON config
 COPY --from=compiler /etc/krakend/krakend.json /etc/krakend/krakend.json

@@ -19,7 +19,7 @@ KrakenD config check via Docker + JSON linting of settings files.
 ```bash
 docker run --rm -v ./krakend:/etc/krakend \
   -e FC_ENABLE=1 ... \
-  devopsfaith/krakend:2.13 check -c /etc/krakend/krakend.tmpl
+  devopsfaith/krakend:2.13.3 check -c /etc/krakend/krakend.tmpl
 ```
 
 ### 2. config-audit
