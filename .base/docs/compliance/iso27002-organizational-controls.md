@@ -174,7 +174,7 @@ classification: Internal
 ## 5.21 Managing Information Security in the ICT Supply Chain
 
 **Gateway Implementation:**
-- **Image pinning:** `krakend:2.13.3`, `envoy:v1.31-latest` in deployment/Dockerfile
+- **Image pinning:** `krakend:2.9.4`, `envoy:v1.31-latest` in deployment/Dockerfile
 - **Planned:** SBOM generation, Trivy image scanning in CI (CA-003)
 - **Minimal dependencies:** KrakenD CE + Envoy (well-known, audited projects)
 
