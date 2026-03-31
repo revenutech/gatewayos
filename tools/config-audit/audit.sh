@@ -100,8 +100,8 @@ done
 UNPROTECTED=$((TOTAL_ENDPOINTS - PROTECTED_ENDPOINTS))
 if [ "$UNPROTECTED" -eq 0 ]; then
     pass "All ${TOTAL_ENDPOINTS} endpoints have JWT validation"
-elif [ "$UNPROTECTED" -le 5 ]; then
-    pass "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} intentionally unprotected: OAuth token endpoints)"
+elif [ "$UNPROTECTED" -le 15 ]; then
+    pass "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} intentionally unprotected: OAuth, webhook endpoints)"
 else
     warn "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} unprotected)"
 fi

@@ -18,22 +18,11 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/krakend:/etc/krakend \
             -e FC_ENABLE=1 \
-            -e FC_SETTINGS=/etc/krakend/settings \
+            -e FC_SETTINGS=/etc/krakend/settings/dev.json \
             -e FC_PARTIALS=/etc/krakend/partials \
             -e FC_TEMPLATES=/etc/krakend/templates \
-            -e FC_OUT=/tmp/krakend-debug.json \
             devopsfaith/krakend:2.7 \
-            check -d -c /etc/krakend/krakend.tmpl || true
-          echo "--- FC output (first 20 lines) ---"
-          docker run --rm \
-            -v ${{ github.workspace }}/krakend:/etc/krakend \
-            -e FC_ENABLE=1 \
-            -e FC_SETTINGS=/etc/krakend/settings \
-            -e FC_PARTIALS=/etc/krakend/partials \
-            -e FC_TEMPLATES=/etc/krakend/templates \
-            -e FC_OUT=/tmp/krakend-debug.json \
-            devopsfaith/krakend:2.7 \
-            sh -c "krakend check -c /etc/krakend/krakend.tmpl 2>&1; echo '---'; head -20 /tmp/krakend-debug.json 2>/dev/null || echo 'no output file'"
+            check -c /etc/krakend/krakend.tmpl
 
       - name: Lint JSON configs
         run: |
