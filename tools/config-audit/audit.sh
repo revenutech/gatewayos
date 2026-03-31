@@ -14,8 +14,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_DIR="${SCRIPT_DIR}/../../krakend/settings"
-ENDPOINTS_DIR="${SCRIPT_DIR}/../../krakend/endpoints"
+ENDPOINTS_DIR="${SCRIPT_DIR}/../../krakend/templates/endpoints"
 PARTIALS_DIR="${SCRIPT_DIR}/../../krakend/partials"
+TEMPLATES_DIR="${SCRIPT_DIR}/../../krakend/templates"
 STRICT="${1:-}"
 
 ERRORS=0
@@ -68,7 +69,7 @@ echo ""
 echo "--- Security Audit ---"
 
 # Check JWT validator has required fields
-if grep -q "failed_jwk_key_cooldown" "${PARTIALS_DIR}/jwt_validator.tmpl" 2>/dev/null; then
+if grep -q "failed_jwk_key_cooldown" "${TEMPLATES_DIR}/jwt_validator.tmpl" 2>/dev/null; then
     pass "JWT validator has failed_jwk_key_cooldown"
 else
     error "JWT validator missing failed_jwk_key_cooldown (key rotation risk)"
@@ -88,8 +89,10 @@ for f in "${ENDPOINTS_DIR}"/*.json; do
     basename_f=$(basename "$f")
     [ "$basename_f" = "health.json" ] && continue
 
-    count=$(grep -c '"endpoint"' "$f" 2>/dev/null || echo "0")
-    jwt_count=$(grep -c 'jwt_validator.tmpl' "$f" 2>/dev/null || echo "0")
+    count=$(grep -c '"endpoint"' "$f" 2>/dev/null || true)
+    jwt_count=$(grep -c 'jwt_validator.tmpl' "$f" 2>/dev/null || true)
+    count=${count:-0}
+    jwt_count=${jwt_count:-0}
     TOTAL_ENDPOINTS=$((TOTAL_ENDPOINTS + count))
     PROTECTED_ENDPOINTS=$((PROTECTED_ENDPOINTS + jwt_count))
 done
@@ -100,7 +103,7 @@ else
 fi
 
 # Check bloom filter false positive rate
-BF_P=$(grep -o '"P": [0-9.e-]*' "${PARTIALS_DIR}/bloom_filter.tmpl" 2>/dev/null | grep -o '[0-9.e-]*' || echo "unknown")
+BF_P=$(grep -o '"P": [0-9.e-]*' "${TEMPLATES_DIR}/bloom_filter.tmpl" 2>/dev/null | grep -o '[0-9.e-]*' || echo "unknown")
 if [ "$BF_P" != "unknown" ]; then
     # Python comparison for scientific notation
     GOOD=$(python3 -c "print('yes' if float('${BF_P}') <= 0.0001 else 'no')" 2>/dev/null || echo "unknown")

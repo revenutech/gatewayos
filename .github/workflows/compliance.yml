@@ -75,11 +75,11 @@ jobs:
       - name: "A.8.5: Verify JWT validator security settings"
         run: |
           echo "Checking JWT validator..."
-          if ! grep -q "failed_jwk_key_cooldown" krakend/partials/jwt_validator.tmpl; then
+          if ! grep -q "failed_jwk_key_cooldown" krakend/templates/jwt_validator.tmpl; then
             echo "ERROR: jwt_validator.tmpl missing failed_jwk_key_cooldown"
             exit 1
           fi
-          if ! grep -q "roles_key_is_nested" krakend/endpoints/ledger_v1.json; then
+          if ! grep -q "roles_key_is_nested" krakend/templates/endpoints/ledger_v1.json; then
             echo "ERROR: Missing roles_key_is_nested in RBAC endpoints"
             exit 1
           fi
