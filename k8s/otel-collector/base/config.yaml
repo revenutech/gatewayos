@@ -1,0 +1,85 @@
+# =============================================================================
+# OpenTelemetry Collector — GCP Native Export
+# Receives OTLP from KrakenD, exports to Cloud Logging + Cloud Trace
+# ISO 27001: A.12.4.1 (Event logging), A.12.4.3 (Administrator/operator logs)
+# =============================================================================
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    send_batch_size: 256
+    send_batch_max_size: 512
+    timeout: 5s
+
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 256
+    spike_limit_mib: 64
+
+  resourcedetection:
+    detectors: [gcp]
+    timeout: 10s
+    override: false
+
+  resource:
+    attributes:
+      - key: service.name
+        value: revenu-platform-gateway
+        action: upsert
+      - key: service.namespace
+        value: revenu-platform
+        action: upsert
+
+exporters:
+  googlecloud:
+    project: ${GCP_PROJECT_ID}
+    log:
+      default_log_name: revenu-platform-gateway
+    trace:
+      attribute_mappings:
+        - key: http.method
+          replacement: /http/method
+        - key: http.url
+          replacement: /http/url
+        - key: http.status_code
+          replacement: /http/status_code
+
+  # Self-monitoring via Prometheus (optional, for collector health)
+  prometheus:
+    endpoint: 0.0.0.0:8888
+    namespace: otel_collector
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [googlecloud]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [googlecloud]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [googlecloud, prometheus]
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      address: 0.0.0.0:8888
