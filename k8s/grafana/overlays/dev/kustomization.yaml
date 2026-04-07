@@ -29,6 +29,3 @@ patches:
       - op: add
         path: /metadata/annotations/kubernetes.io~1ingress.class
         value: gce
-      - op: add
-        path: /metadata/annotations/kubernetes.io~1ingress.global-static-ip-name
-        value: grafana-dev-ip
