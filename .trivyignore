@@ -1,10 +1,10 @@
-# KrakenD CE 2.9.4 upstream vulnerabilities — no fix available in CE edition.
-# Last CE release: 2.9.4. Versions 2.10+ are Enterprise-only.
-# These CVEs are in the KrakenD Go binary and Alpine base, not in our code.
+# KrakenD CE 2.9.4 (custom build with patched dependencies).
+# go-jose patched to v3.0.5/v4.1.4 — CVE-2026-34986 FIXED.
+# Remaining CVEs are in KrakenD Go binary or Alpine base, not in our code.
 # Reviewed: 2026-04-07
 # Next review: when new KrakenD CE version is released.
 
-# Alpine musl
+# Alpine musl (upstream, no fix in Alpine 3.21)
 CVE-2025-15467
 CVE-2025-47907
 CVE-2025-58183
@@ -12,7 +12,7 @@ CVE-2025-61726
 CVE-2025-61728
 CVE-2025-61729
 
-# Go stdlib / dependencies (compiled into krakend binary)
+# Go stdlib / KrakenD dependencies (compiled into binary, not patchable via replace)
 CVE-2025-22868
 CVE-2025-22874
 CVE-2025-68121
@@ -21,6 +21,3 @@ CVE-2025-69421
 CVE-2026-24051
 CVE-2026-25679
 CVE-2026-33186
-# go-jose JWE decryption panic — mitigated by Lua JWE guard (jwe_guard.lua)
-# that rejects JWE tokens before they reach go-jose. Gateway uses RS256 only.
-CVE-2026-34986
