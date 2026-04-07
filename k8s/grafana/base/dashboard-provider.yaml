@@ -1,0 +1,12 @@
+# Grafana dashboard provisioning — auto-load from /var/lib/grafana/dashboards
+apiVersion: 1
+providers:
+  - name: revenu
+    orgId: 1
+    folder: Gateway
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false
