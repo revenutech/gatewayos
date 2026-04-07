@@ -89,6 +89,7 @@ for f in "${ENDPOINTS_DIR}"/endpoint_*.tmpl; do
     basename_f=$(basename "$f")
     [ "$basename_f" = "endpoint_health.tmpl" ] && continue
     [ "$basename_f" = "endpoint_test_v1.tmpl" ] && continue
+    [ "$basename_f" = "endpoint_dashboard_grafana_v1.tmpl" ] && continue
 
     count=$(grep -c '"endpoint"' "$f" 2>/dev/null || true)
     jwt_count=$(grep -c 'jwt_validator.tmpl' "$f" 2>/dev/null || true)
