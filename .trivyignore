@@ -21,4 +21,6 @@ CVE-2025-69421
 CVE-2026-24051
 CVE-2026-25679
 CVE-2026-33186
+# go-jose JWE decryption panic — mitigated by Lua JWE guard (jwe_guard.lua)
+# that rejects JWE tokens before they reach go-jose. Gateway uses RS256 only.
 CVE-2026-34986
