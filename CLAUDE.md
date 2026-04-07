@@ -2,7 +2,7 @@
 
 ## Identity
 
-Standalone KrakenD v2.13.3 API Gateway for the Revenu Platform. Routes external traffic to all backend modules with JWT validation, rate limiting, circuit breakers, and CORS.
+Standalone KrakenD v2.9.4 (latest CE) API Gateway for the Revenu Platform. Routes external traffic to all backend modules with JWT validation, rate limiting, circuit breakers, and CORS.
 
 **Extracted from:** `ledgeros/krakend/` + `ledgeros/k8s/infrastructure/krakend/` (v1.0.0)
 
@@ -16,7 +16,7 @@ docker run --rm \
   -e FC_SETTINGS=/etc/krakend/settings \
   -e FC_PARTIALS=/etc/krakend/partials \
   -e FC_TEMPLATES=/etc/krakend/templates \
-  devopsfaith/krakend:2.13.3 \
+  devopsfaith/krakend:2.9.4 \
   check -c /etc/krakend/krakend.tmpl   # validate config
 ```
 

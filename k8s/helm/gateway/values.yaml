@@ -7,7 +7,7 @@ replicaCount: 2
 
 image:
   repository: devopsfaith/krakend
-  tag: "2.13.3"
+  tag: "2.9.4"
   pullPolicy: IfNotPresent
 
 envoy:
