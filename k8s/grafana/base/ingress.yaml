@@ -16,10 +16,10 @@ metadata:
   # Annotations set via kustomize overlay per environment
 spec:
   rules:
-    - host: gateway.allenty.io
+    - host: dashboard.allenty.io
       http:
         paths:
-          - path: /dashboard
+          - path: /
             pathType: Prefix
             backend:
               service:
