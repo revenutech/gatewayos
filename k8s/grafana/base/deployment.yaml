@@ -64,8 +64,8 @@ spec:
               value: "false"
             - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
               value: "/var/lib/grafana/dashboards/gateway-dashboard.json"
-            - name: GF_INSTALL_PLUGINS
-              value: "grafana-googlecloud-datasource"
+            # Google Cloud Monitoring datasource is built-in since Grafana 10+
+            # No plugin install needed
           livenessProbe:
             httpGet:
               path: /api/health

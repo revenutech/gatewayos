@@ -27,7 +27,7 @@ patches:
         path: /spec/rules/0/host
         value: dashboard.allenty.io
       - op: add
-        path: /spec/ingressClassName
+        path: /metadata/annotations/kubernetes.io~1ingress.class
         value: gce
       - op: add
         path: /metadata/annotations/kubernetes.io~1ingress.global-static-ip-name
