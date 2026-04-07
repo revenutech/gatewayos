@@ -19,3 +19,16 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/0/value
         value: "https://gateway.allenty.io/dashboard/"
+  - target:
+      kind: Ingress
+      name: grafana
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: gateway.allenty.io
+      - op: add
+        path: /spec/ingressClassName
+        value: gce
+      - op: add
+        path: /metadata/annotations/kubernetes.io~1ingress.global-static-ip-name
+        value: gateway-dev-global-ip
