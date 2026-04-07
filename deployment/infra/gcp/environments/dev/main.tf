@@ -109,3 +109,4 @@ output "ar_repository_url" { value = module.artifact_registry.repository_url }
 output "gateway_app_sa" { value = module.gke.gateway_app_sa_email }
 output "gateway_ci_sa" { value = module.gke.gateway_ci_sa_email }
 output "otel_collector_sa" { value = module.otel_collector.service_account_email }
+output "dashboard_url" { value = module.monitoring.dashboard_url }
