@@ -18,20 +18,20 @@ patches:
     patch: |
       - op: replace
         path: /spec/template/spec/containers/0/env/0/value
-        value: "https://api.revenu.com.br/dashboard/"
+        value: "https://dashboard.revenu.com.br/"
   - target:
       kind: Ingress
       name: grafana
     patch: |
       - op: replace
         path: /spec/rules/0/host
-        value: api.revenu.com.br
+        value: dashboard.revenu.com.br
       - op: add
         path: /spec/ingressClassName
         value: gce
       - op: add
         path: /metadata/annotations/kubernetes.io~1ingress.global-static-ip-name
-        value: gateway-prod-ip
+        value: grafana-prod-ip
   - target:
       kind: Deployment
       name: grafana
