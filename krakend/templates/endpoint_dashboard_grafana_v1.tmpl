@@ -1,0 +1,36 @@
+{
+  "endpoint": "/dashboard/{path}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "input_query_strings": ["*"],
+  "backend": [{
+    "host": ["http://grafana.monitoring.svc.cluster.local:3000"],
+    "url_pattern": "/dashboard/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/dashboard/api/{path}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "input_query_strings": ["*"],
+  "backend": [{
+    "host": ["http://grafana.monitoring.svc.cluster.local:3000"],
+    "url_pattern": "/dashboard/api/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/dashboard/api/{path}",
+  "method": "POST",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "input_query_strings": ["*"],
+  "backend": [{
+    "host": ["http://grafana.monitoring.svc.cluster.local:3000"],
+    "url_pattern": "/dashboard/api/{path}",
+    "encoding": "no-op"
+  }]
+}
