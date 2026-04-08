@@ -32,7 +32,7 @@ curl -s https://api.revenu.com.br/__health
 ## Manual Deployment (Emergency)
 ```bash
 # Only for P1/P2 incidents; requires post-hoc review within 24h
-kubectl set image deployment/krakend krakend=devopsfaith/krakend:2.7 --record
+kubectl set image deployment/krakend krakend=devopsfaith/krakend:2.9.4 --record
 kubectl rollout status deployment/krakend
 ```
 

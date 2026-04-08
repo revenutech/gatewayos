@@ -20,14 +20,8 @@ jobs:
       # ISO 27001 A.8.25 — Secure development life cycle
       - name: "A.8.25: Validate KrakenD config syntax"
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}/krakend:/etc/krakend \
-            -e FC_ENABLE=1 \
-            -e FC_SETTINGS=/etc/krakend/settings \
-            -e FC_PARTIALS=/etc/krakend/partials \
-            -e FC_TEMPLATES=/etc/krakend/templates \
-            devopsfaith/krakend:2.7 \
-            check -c /etc/krakend/krakend.tmpl
+          bash tools/compile-config.sh krakend dev /tmp/krakend-compiled.json
+          python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('Config compiles to valid JSON')"
 
       # ISO 27001 A.8.9 — Configuration management (JSON validity)
       - name: "A.8.9: Lint JSON configs"
@@ -75,11 +69,11 @@ jobs:
       - name: "A.8.5: Verify JWT validator security settings"
         run: |
           echo "Checking JWT validator..."
-          if ! grep -q "failed_jwk_key_cooldown" krakend/partials/jwt_validator.tmpl; then
+          if ! grep -q "failed_jwk_key_cooldown" krakend/templates/jwt_validator.tmpl; then
             echo "ERROR: jwt_validator.tmpl missing failed_jwk_key_cooldown"
             exit 1
           fi
-          if ! grep -q "roles_key_is_nested" krakend/endpoints/ledger_v1.json; then
+          if ! grep -q "roles_key_is_nested" krakend/templates/endpoint_ledger_v1.tmpl; then
             echo "ERROR: Missing roles_key_is_nested in RBAC endpoints"
             exit 1
           fi

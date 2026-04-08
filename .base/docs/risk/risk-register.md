@@ -1,9 +1,9 @@
 ---
 title: "Risk Register & Treatment Plan — API Gateway"
 iso_ref: "ISO/IEC 27005:2022 Cl. 8-10, ISO/IEC 27001:2022 Cl. 6.1.2-6.1.3"
-version: "1.0"
+version: "1.2"
 status: Active
-last_review: 2026-03-25
+last_review: 2026-04-07
 next_review: 2026-06-25
 owner: Security Architect
 classification: Confidential
@@ -32,6 +32,7 @@ classification: Confidential
 | R15 | **Bloom filter false positive** | Legitimate tokens wrongly rejected | High FPR, capacity exceeded | 2 | 2 | **4** | Low | Accept | Sec Architect | A.5.17 | Accepted |
 | R16 | **Redis SPOF** | Redis failure breaks rate limiting + revocation | Single Redis instance, no failover | 3 | 3 | **9** | Medium | Mitigate | DevSecOps | A.8.14, A.8.6 | Partial |
 | R17 | **Geo-blocking evasion** | Attacker uses VPN to bypass geo restrictions | VPN/proxy usage | 3 | 2 | **6** | Medium | Accept + Monitor | Sec Architect | A.8.3 | Accepted |
+| R18 | **CVE-2026-34986 go-jose JWE panic** | Crafted JWE token crashes KrakenD via go-jose panic | KrakenD CE 2.9.4 bundles vulnerable go-jose v3.0.4/v4.0.5 | 2 | 4 | **8** | Medium | Mitigate | DevSecOps | A.8.8, A.8.5, A.5.21 | Treated |
 
 ## Treatment Plan
 
@@ -49,6 +50,7 @@ classification: Confidential
 | R10 | (a) Structured access logs without raw tokens; (b) DLP Lua plugin planned; (c) Log-level filtering (prod=WARNING) | Partial | `lua/access_log.lua`, `settings/prod.json` |
 | R13 | (a) PR review required; (b) Segregation of duties (RACI); (c) Git signed commits planned | Partial | `isms/roles-responsibilities.md` |
 | R16 | (a) Redis Sentinel/Cluster planned; (b) Fail-open design in all Lua scripts | 2026-Q2 | `lua/redis_rate_limit.lua` (fail-open) |
+| R18 | (a) Lua JWE guard rejects 5-segment tokens before go-jose processes them; (b) JWT validator explicitly requires RS256 (JWS only); (c) Malformed tokens (!=3 segments) also rejected; (d) Upgrade to KrakenD Enterprise or alternative gateway planned | Done (mitigation), 2026-Q3 (upgrade) | `lua/jwe_guard.lua`, `jwt_validator.tmpl` (alg: RS256) |
 
 ## Residual Risk Summary
 
@@ -56,7 +58,7 @@ classification: Confidential
 |-------|-------|-------|
 | Critical | 0 | — (all treated below threshold) |
 | High | 2 | R09 (supply chain — partial), R08 (residual after controls) |
-| Medium | 4 | R10, R12, R16, R17 |
+| Medium | 5 | R10, R12, R16, R17, R18 |
 | Low | 2 | R14, R15 |
 | Accepted | 3 | R12 (zero-day), R15 (bloom filter FP), R17 (geo evasion) |
 
@@ -117,3 +119,4 @@ classification: Confidential
 |---------|------|--------|---------|
 | 1.0 | 2026-03-25 | Security Architect | Initial risk register with 17 risks |
 | 1.1 | 2026-03-25 | Security Architect | Added formal risk acceptance records (RAR-001 to RAR-003) |
+| 1.2 | 2026-04-07 | DevSecOps | Added R18 (CVE-2026-34986 go-jose JWE panic) — mitigated via Lua JWE guard |
