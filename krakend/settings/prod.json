@@ -36,7 +36,7 @@
     "tenant_max": 1000
   },
   "cors": {
-    "allow_origins": ["https://app.revenu.com.br"],
+    "allow_origins": ["https://sit.corebanxapp.com.br"],
     "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
     "max_age": "12h"
