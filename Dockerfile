@@ -1,4 +1,7 @@
-FROM devopsfaith/krakend:2.7
+FROM krakend:2.13.4
+
+# Fix CVE-2026-22184 (zlib) - upgrade Alpine packages
+RUN apk update && apk upgrade --no-cache zlib && rm -rf /var/cache/apk/*
 
 COPY krakend/ /etc/krakend/
 
