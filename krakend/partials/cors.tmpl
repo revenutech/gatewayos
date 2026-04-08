@@ -1,5 +1,5 @@
 "security/cors": {
-  "allow_origins": ["{{ env "KRAKEND_URL" }}"{{ range .cors.allow_origins }}, "{{ . }}"{{ end }}],
+  "allow_origins": {{ marshal .cors.allow_origins }},
   "allow_methods": {{ marshal .cors.allow_methods }},
   "allow_headers": {{ marshal .cors.allow_headers }},
   "expose_headers": ["X-Request-ID", "X-Correlation-ID"],

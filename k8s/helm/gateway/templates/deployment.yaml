@@ -52,8 +52,6 @@ spec:
               value: {{ .Values.krakend.fcTemplates }}
             - name: KRAKEND_PORT
               value: {{ .Values.krakend.port | quote }}
-            - name: KRAKEND_URL
-              value: {{ .Values.krakend.url | quote }}
             - name: USAGE_DISABLE
               value: {{ .Values.krakend.usageDisable | quote }}
           {{- if eq .Values.probes.type "httpGet" }}
