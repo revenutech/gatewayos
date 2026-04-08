@@ -138,6 +138,7 @@ jobs:
             -f k8s/helm/gateway/values-gcp-production.yaml \
             --set image.tag=${{ needs.build.outputs.image_tag }} \
             --set configHash=${{ github.sha }} \
+            --set krakend.url=${{ vars.KRAKEND_URL }} \
             --atomic --wait --timeout 5m
 
       - name: Smoke tests

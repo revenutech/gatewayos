@@ -125,6 +125,7 @@ configHash: "PLACEHOLDER"
 
 krakend:
   env: dev
+  url: "http://localhost:8080"
   fcEnable: "1"
   fcSettings: /etc/krakend/settings
   fcPartials: /etc/krakend/partials
