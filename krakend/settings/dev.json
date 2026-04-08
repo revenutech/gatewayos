@@ -37,7 +37,7 @@
     "tenant_max": 500
   },
   "cors": {
-    "allow_origins": ["http://localhost:3000", "http://localhost:8081"],
+    "allow_origins": ["https://sqa.corebanxapp.com.br", "http://localhost:3000", "http://localhost:8081"],
     "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
     "max_age": "12h"
