@@ -1,0 +1,113 @@
+{
+  "endpoint": "/v1/postings",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "json",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    },
+    {{ template "rate_limiter.tmpl" .postings_write }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/postings/{id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    },
+    {{ template "rate_limiter.tmpl" .balances_read }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/balances/{id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    },
+    {{ template "rate_limiter.tmpl" .balances_read }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/balances/{id}",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/settlements",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "json",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/settlements",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }}
+    }
+  }]
+},
+{
+  "endpoint": "/v1/reconciliation/jobs",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "json",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/reconciliation/jobs",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }}
+    }
+  }]
+}

@@ -1,0 +1,53 @@
+{
+  "_comment": "Test endpoint — combined Lua enterprise middleware for integration testing",
+  "endpoint": "/v1/test/echo",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-API-Key", "X-Subscription-Tier", "User-Agent", "Referer", "Origin", "Content-Type", "Cache-Control"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/test_minimal.lua"],
+      "pre": "pre_proxy",
+      "live": false,
+      "allow_open_libs": true
+    },
+    "modifier/lua-proxy": {
+      "sources": ["/etc/krakend/partials/lua/test_minimal.lua"],
+      "post": "post_proxy",
+      "live": false,
+      "allow_open_libs": true
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "Test endpoint POST — combined Lua with schema validation logic",
+  "endpoint": "/v1/test/validate",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-API-Key", "Content-Type", "User-Agent"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/test_minimal.lua"],
+      "pre": "pre_proxy",
+      "live": false,
+      "allow_open_libs": true
+    },
+    "modifier/lua-proxy": {
+      "sources": ["/etc/krakend/partials/lua/test_minimal.lua"],
+      "post": "post_proxy",
+      "live": false,
+      "allow_open_libs": true
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+}

@@ -1,0 +1,68 @@
+{
+  "_comment": "LedgerOS - Detailed Settlement API Endpoints (list, get, post, sweep)",
+  "_iso27001": "A.9.4.1 (Information access restriction)",
+  "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/settlement.json",
+  "endpoint": "/v1/settlements",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "3s",
+  "backend": [{
+    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "url_pattern": "/v1/settlements",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": { "interval": 60, "timeout": 10, "max_errors": 5, "name": "cb-settlements-list", "log_status_change": true },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/v1/settlements/{id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "3s",
+  "backend": [{
+    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "url_pattern": "/v1/settlements/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": { "interval": 60, "timeout": 10, "max_errors": 5, "name": "cb-settlements-get", "log_status_change": true },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/v1/settlements/{id}/post",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "backend": [{
+    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "url_pattern": "/v1/settlements/{id}/post",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": { "interval": 60, "timeout": 10, "max_errors": 5, "name": "cb-settlements-post", "log_status_change": true },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "endpoint": "/v1/settlements/sweep",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "backend": [{
+    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "url_pattern": "/v1/settlements/sweep",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": { "interval": 60, "timeout": 10, "max_errors": 3, "name": "cb-settlements-sweep", "log_status_change": true },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}
