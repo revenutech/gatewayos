@@ -1,0 +1,16 @@
+"security/http": {
+  "allowed_hosts": [],
+  "ssl_redirect": false,
+  "ssl_host": "",
+  "ssl_proxy_headers": {
+    "X-Forwarded-Proto": "https"
+  },
+  "sts_seconds": 31536000,
+  "sts_include_subdomains": true,
+  "frame_deny": true,
+  "content_type_nosniff": true,
+  "browser_xss_filter": true,
+  "content_security_policy": "default-src 'self'",
+  "referrer_policy": "strict-origin-when-cross-origin",
+  "custom_frame_options_value": "DENY"
+}
