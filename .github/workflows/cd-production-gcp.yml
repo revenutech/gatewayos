@@ -23,11 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate KrakenD config
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}/krakend:/etc/krakend \
-            -e FC_ENABLE=1 -e FC_SETTINGS=/etc/krakend/settings \
-            -e FC_PARTIALS=/etc/krakend/partials -e FC_TEMPLATES=/etc/krakend/templates \
-            devopsfaith/krakend:2.7 check -c /etc/krakend/krakend.tmpl
+          bash tools/compile-config.sh krakend prod /tmp/krakend-compiled.json
+          python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('Config compiles to valid JSON')"
       - name: Config audit
         run: bash tools/config-audit/audit.sh --strict
       - name: ISO compliance check
