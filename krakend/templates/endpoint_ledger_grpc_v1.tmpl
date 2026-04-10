@@ -2,7 +2,7 @@
   "_comment": "LedgerOS gRPC endpoints via Envoy transcoder sidecar (127.0.0.1:8085)",
   "_enterprise_equivalent": "backend/grpc — KrakenD Enterprise native gRPC support",
 
-  "endpoint": "/grpc/v1/postings",
+  "endpoint": "/ledgeros/grpc/v1/postings",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
@@ -25,7 +25,7 @@
   }]
 },
 {
-  "endpoint": "/grpc/v1/postings/{id}",
+  "endpoint": "/ledgeros/grpc/v1/postings/{id}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
@@ -48,7 +48,7 @@
   }]
 },
 {
-  "endpoint": "/grpc/v1/balances/{id}",
+  "endpoint": "/ledgeros/grpc/v1/balances/{id}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
@@ -71,7 +71,7 @@
   }]
 },
 {
-  "endpoint": "/grpc/v1/settlements",
+  "endpoint": "/ledgeros/grpc/v1/settlements",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
@@ -93,7 +93,7 @@
   }]
 },
 {
-  "endpoint": "/grpc/v1/reconciliation/jobs",
+  "endpoint": "/ledgeros/grpc/v1/reconciliation/jobs",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
