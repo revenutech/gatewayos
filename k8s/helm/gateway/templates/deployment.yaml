@@ -78,9 +78,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+            {{- if .Values.configMap.enabled }}
             - name: config
               mountPath: /etc/krakend
               readOnly: true
+            {{- end }}
             - name: tmp
               mountPath: /tmp
             {{- if .Values.mtls.enabled }}
@@ -118,9 +120,11 @@ spec:
               mountPath: /tmp
         {{- end }}
       volumes:
+        {{- if .Values.configMap.enabled }}
         - name: config
           configMap:
             name: {{ .Release.Name }}-config
+        {{- end }}
         - name: tmp
           emptyDir:
             sizeLimit: 50Mi

@@ -123,6 +123,10 @@ mtls:
 
 configHash: "PLACEHOLDER"
 
+# ConfigMap for KrakenD config (set to false if config is baked into image)
+configMap:
+  enabled: true
+
 krakend:
   env: dev
   fcEnable: "1"
