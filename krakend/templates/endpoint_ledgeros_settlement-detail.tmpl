@@ -2,7 +2,7 @@
   "_comment": "LedgerOS - Detailed Settlement API Endpoints (list, get, post, sweep)",
   "_iso27001": "A.9.4.1 (Information access restriction)",
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/settlement.json",
-  "endpoint": "/v1/settlements",
+  "endpoint": "/ledgeros/v1/settlements",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
   "input_query_strings": ["*"],
@@ -19,7 +19,7 @@
   }]
 },
 {
-  "endpoint": "/v1/settlements/{id}",
+  "endpoint": "/ledgeros/v1/settlements/{id}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
   "output_encoding": "json",
@@ -35,7 +35,7 @@
   }]
 },
 {
-  "endpoint": "/v1/settlements/{id}/post",
+  "endpoint": "/ledgeros/v1/settlements/{id}/post",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
@@ -51,7 +51,7 @@
   }]
 },
 {
-  "endpoint": "/v1/settlements/sweep",
+  "endpoint": "/ledgeros/v1/settlements/sweep",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",

@@ -3,7 +3,7 @@
   "_enterprise_equivalent": "endpoints/wildcard — KrakenD Enterprise wildcard routes",
   "_prefixes": "onboarding, kyc, dd, journeys, documents, leads, risk, rio, aml, screenings, cases, policies, reviews, offboarding, mdm, audit, sessions, milestones, notifications, business-entities, cnpj, oauth, enrichment",
 
-  "endpoint": "/v1/onboarding/{path}",
+  "endpoint": "/onboardos/v1/onboarding/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -25,7 +25,7 @@
   }]
 },
 {
-  "endpoint": "/v1/onboarding/{path}",
+  "endpoint": "/onboardos/v1/onboarding/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -47,7 +47,7 @@
   }]
 },
 {
-  "endpoint": "/v1/onboarding/{path}",
+  "endpoint": "/onboardos/v1/onboarding/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -69,7 +69,7 @@
   }]
 },
 {
-  "endpoint": "/v1/onboarding/{path}",
+  "endpoint": "/onboardos/v1/onboarding/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -93,7 +93,7 @@
 
 {
   "_comment": "KYC — Know-Your-Customer pipeline",
-  "endpoint": "/v1/kyc/{path}",
+  "endpoint": "/onboardos/v1/kyc/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -115,7 +115,7 @@
   }]
 },
 {
-  "endpoint": "/v1/kyc/{path}",
+  "endpoint": "/onboardos/v1/kyc/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -139,7 +139,7 @@
 
 {
   "_comment": "Due Diligence",
-  "endpoint": "/v1/dd/{path}",
+  "endpoint": "/onboardos/v1/dd/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -161,7 +161,7 @@
   }]
 },
 {
-  "endpoint": "/v1/dd/{path}",
+  "endpoint": "/onboardos/v1/dd/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -185,7 +185,7 @@
 
 {
   "_comment": "KYC Journeys",
-  "endpoint": "/v1/journeys/{path}",
+  "endpoint": "/onboardos/v1/journeys/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -207,7 +207,7 @@
   }]
 },
 {
-  "endpoint": "/v1/journeys/{path}",
+  "endpoint": "/onboardos/v1/journeys/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -231,7 +231,7 @@
 
 {
   "_comment": "Documents — upload, OCR, verification",
-  "endpoint": "/v1/documents/{path}",
+  "endpoint": "/onboardos/v1/documents/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -253,7 +253,7 @@
   }]
 },
 {
-  "endpoint": "/v1/documents/{path}",
+  "endpoint": "/onboardos/v1/documents/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -277,7 +277,7 @@
 
 {
   "_comment": "Leads — pipeline and qualification",
-  "endpoint": "/v1/leads/{path}",
+  "endpoint": "/onboardos/v1/leads/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -299,7 +299,7 @@
   }]
 },
 {
-  "endpoint": "/v1/leads/{path}",
+  "endpoint": "/onboardos/v1/leads/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -323,7 +323,7 @@
 
 {
   "_comment": "Risk assessment",
-  "endpoint": "/v1/risk/{path}",
+  "endpoint": "/onboardos/v1/risk/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -345,7 +345,7 @@
   }]
 },
 {
-  "endpoint": "/v1/risk/{path}",
+  "endpoint": "/onboardos/v1/risk/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -369,7 +369,7 @@
 
 {
   "_comment": "RIO — Brazil risk scoring engine",
-  "endpoint": "/v1/rio/{path}",
+  "endpoint": "/onboardos/v1/rio/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -391,7 +391,7 @@
   }]
 },
 {
-  "endpoint": "/v1/rio/{path}",
+  "endpoint": "/onboardos/v1/rio/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -415,7 +415,7 @@
 
 {
   "_comment": "AML — Anti-money laundering",
-  "endpoint": "/v1/aml/{path}",
+  "endpoint": "/onboardos/v1/aml/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -437,7 +437,7 @@
   }]
 },
 {
-  "endpoint": "/v1/aml/{path}",
+  "endpoint": "/onboardos/v1/aml/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -461,7 +461,7 @@
 
 {
   "_comment": "Screenings",
-  "endpoint": "/v1/screenings/{path}",
+  "endpoint": "/onboardos/v1/screenings/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -483,7 +483,7 @@
   }]
 },
 {
-  "endpoint": "/v1/screenings/{path}",
+  "endpoint": "/onboardos/v1/screenings/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -507,7 +507,7 @@
 
 {
   "_comment": "Cases — case management",
-  "endpoint": "/v1/cases/{path}",
+  "endpoint": "/onboardos/v1/cases/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -529,7 +529,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cases/{path}",
+  "endpoint": "/onboardos/v1/cases/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -553,7 +553,7 @@
 
 {
   "_comment": "Policies",
-  "endpoint": "/v1/policies/{path}",
+  "endpoint": "/onboardos/v1/policies/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -575,7 +575,7 @@
   }]
 },
 {
-  "endpoint": "/v1/policies/{path}",
+  "endpoint": "/onboardos/v1/policies/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -599,7 +599,7 @@
 
 {
   "_comment": "Reviews — verification reviews",
-  "endpoint": "/v1/reviews/{path}",
+  "endpoint": "/onboardos/v1/reviews/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -621,7 +621,7 @@
   }]
 },
 {
-  "endpoint": "/v1/reviews/{path}",
+  "endpoint": "/onboardos/v1/reviews/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -645,7 +645,7 @@
 
 {
   "_comment": "Offboarding",
-  "endpoint": "/v1/offboarding/{path}",
+  "endpoint": "/onboardos/v1/offboarding/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -667,7 +667,7 @@
   }]
 },
 {
-  "endpoint": "/v1/offboarding/{path}",
+  "endpoint": "/onboardos/v1/offboarding/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -691,7 +691,7 @@
 
 {
   "_comment": "MDM — Master Data Management",
-  "endpoint": "/v1/mdm/{path}",
+  "endpoint": "/onboardos/v1/mdm/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -713,7 +713,7 @@
   }]
 },
 {
-  "endpoint": "/v1/mdm/{path}",
+  "endpoint": "/onboardos/v1/mdm/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -737,7 +737,7 @@
 
 {
   "_comment": "Audit",
-  "endpoint": "/v1/audit/{path}",
+  "endpoint": "/onboardos/v1/audit/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -759,7 +759,7 @@
   }]
 },
 {
-  "endpoint": "/v1/audit/{path}",
+  "endpoint": "/onboardos/v1/audit/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -783,7 +783,7 @@
 
 {
   "_comment": "Sessions",
-  "endpoint": "/v1/sessions/{path}",
+  "endpoint": "/onboardos/v1/sessions/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -805,7 +805,7 @@
   }]
 },
 {
-  "endpoint": "/v1/sessions/{path}",
+  "endpoint": "/onboardos/v1/sessions/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -829,7 +829,7 @@
 
 {
   "_comment": "Milestones",
-  "endpoint": "/v1/milestones/{path}",
+  "endpoint": "/onboardos/v1/milestones/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -851,7 +851,7 @@
   }]
 },
 {
-  "endpoint": "/v1/milestones/{path}",
+  "endpoint": "/onboardos/v1/milestones/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -875,7 +875,7 @@
 
 {
   "_comment": "Notifications",
-  "endpoint": "/v1/notifications/{path}",
+  "endpoint": "/onboardos/v1/notifications/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -897,7 +897,7 @@
   }]
 },
 {
-  "endpoint": "/v1/notifications/{path}",
+  "endpoint": "/onboardos/v1/notifications/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -921,7 +921,7 @@
 
 {
   "_comment": "Business entities (PJ)",
-  "endpoint": "/v1/business-entities/{path}",
+  "endpoint": "/onboardos/v1/business-entities/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -943,7 +943,7 @@
   }]
 },
 {
-  "endpoint": "/v1/business-entities/{path}",
+  "endpoint": "/onboardos/v1/business-entities/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -967,7 +967,7 @@
 
 {
   "_comment": "CNPJ lookup",
-  "endpoint": "/v1/cnpj/{path}",
+  "endpoint": "/onboardos/v1/cnpj/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -989,7 +989,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cnpj/{path}",
+  "endpoint": "/onboardos/v1/cnpj/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1013,7 +1013,7 @@
 
 {
   "_comment": "OAuth — token, introspect, revoke, client management",
-  "endpoint": "/v1/oauth/{path}",
+  "endpoint": "/onboardos/v1/oauth/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1035,7 +1035,7 @@
   }]
 },
 {
-  "endpoint": "/v1/oauth/{path}",
+  "endpoint": "/onboardos/v1/oauth/{path}",
   "method": "POST",
   "input_headers": ["Content-Type", "Authorization", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -1049,7 +1049,7 @@
   }]
 },
 {
-  "endpoint": "/v1/oauth/{path}",
+  "endpoint": "/onboardos/v1/oauth/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1071,7 +1071,7 @@
   }]
 },
 {
-  "endpoint": "/v1/oauth/{path}",
+  "endpoint": "/onboardos/v1/oauth/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1095,7 +1095,7 @@
 
 {
   "_comment": "Enrichment — person and business entity enrichment",
-  "endpoint": "/v1/enrichment/{path}",
+  "endpoint": "/onboardos/v1/enrichment/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1117,7 +1117,7 @@
   }]
 },
 {
-  "endpoint": "/v1/enrichment/{path}",
+  "endpoint": "/onboardos/v1/enrichment/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1139,7 +1139,7 @@
   }]
 },
 {
-  "endpoint": "/v1/enrichment/{path}",
+  "endpoint": "/onboardos/v1/enrichment/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1161,7 +1161,7 @@
   }]
 },
 {
-  "endpoint": "/v1/enrichment/{path}",
+  "endpoint": "/onboardos/v1/enrichment/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1187,7 +1187,7 @@
   "_comment": "=== PUT and DELETE methods for all remaining prefixes ===",
   "_note": "Wildcard routing ensures OnboardOS can add routes without gateway changes",
 
-  "endpoint": "/v1/kyc/{path}",
+  "endpoint": "/onboardos/v1/kyc/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1209,7 +1209,7 @@
   }]
 },
 {
-  "endpoint": "/v1/kyc/{path}",
+  "endpoint": "/onboardos/v1/kyc/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1231,7 +1231,7 @@
   }]
 },
 {
-  "endpoint": "/v1/dd/{path}",
+  "endpoint": "/onboardos/v1/dd/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1253,7 +1253,7 @@
   }]
 },
 {
-  "endpoint": "/v1/dd/{path}",
+  "endpoint": "/onboardos/v1/dd/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1275,7 +1275,7 @@
   }]
 },
 {
-  "endpoint": "/v1/journeys/{path}",
+  "endpoint": "/onboardos/v1/journeys/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1297,7 +1297,7 @@
   }]
 },
 {
-  "endpoint": "/v1/journeys/{path}",
+  "endpoint": "/onboardos/v1/journeys/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1319,7 +1319,7 @@
   }]
 },
 {
-  "endpoint": "/v1/documents/{path}",
+  "endpoint": "/onboardos/v1/documents/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1341,7 +1341,7 @@
   }]
 },
 {
-  "endpoint": "/v1/documents/{path}",
+  "endpoint": "/onboardos/v1/documents/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1363,7 +1363,7 @@
   }]
 },
 {
-  "endpoint": "/v1/leads/{path}",
+  "endpoint": "/onboardos/v1/leads/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1385,7 +1385,7 @@
   }]
 },
 {
-  "endpoint": "/v1/leads/{path}",
+  "endpoint": "/onboardos/v1/leads/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1407,7 +1407,7 @@
   }]
 },
 {
-  "endpoint": "/v1/risk/{path}",
+  "endpoint": "/onboardos/v1/risk/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1429,7 +1429,7 @@
   }]
 },
 {
-  "endpoint": "/v1/risk/{path}",
+  "endpoint": "/onboardos/v1/risk/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1451,7 +1451,7 @@
   }]
 },
 {
-  "endpoint": "/v1/rio/{path}",
+  "endpoint": "/onboardos/v1/rio/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1473,7 +1473,7 @@
   }]
 },
 {
-  "endpoint": "/v1/rio/{path}",
+  "endpoint": "/onboardos/v1/rio/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1495,7 +1495,7 @@
   }]
 },
 {
-  "endpoint": "/v1/aml/{path}",
+  "endpoint": "/onboardos/v1/aml/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1517,7 +1517,7 @@
   }]
 },
 {
-  "endpoint": "/v1/aml/{path}",
+  "endpoint": "/onboardos/v1/aml/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1539,7 +1539,7 @@
   }]
 },
 {
-  "endpoint": "/v1/screenings/{path}",
+  "endpoint": "/onboardos/v1/screenings/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1561,7 +1561,7 @@
   }]
 },
 {
-  "endpoint": "/v1/screenings/{path}",
+  "endpoint": "/onboardos/v1/screenings/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1583,7 +1583,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cases/{path}",
+  "endpoint": "/onboardos/v1/cases/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1605,7 +1605,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cases/{path}",
+  "endpoint": "/onboardos/v1/cases/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1627,7 +1627,7 @@
   }]
 },
 {
-  "endpoint": "/v1/policies/{path}",
+  "endpoint": "/onboardos/v1/policies/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1649,7 +1649,7 @@
   }]
 },
 {
-  "endpoint": "/v1/policies/{path}",
+  "endpoint": "/onboardos/v1/policies/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1671,7 +1671,7 @@
   }]
 },
 {
-  "endpoint": "/v1/reviews/{path}",
+  "endpoint": "/onboardos/v1/reviews/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1693,7 +1693,7 @@
   }]
 },
 {
-  "endpoint": "/v1/reviews/{path}",
+  "endpoint": "/onboardos/v1/reviews/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1715,7 +1715,7 @@
   }]
 },
 {
-  "endpoint": "/v1/offboarding/{path}",
+  "endpoint": "/onboardos/v1/offboarding/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1737,7 +1737,7 @@
   }]
 },
 {
-  "endpoint": "/v1/offboarding/{path}",
+  "endpoint": "/onboardos/v1/offboarding/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1759,7 +1759,7 @@
   }]
 },
 {
-  "endpoint": "/v1/mdm/{path}",
+  "endpoint": "/onboardos/v1/mdm/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1781,7 +1781,7 @@
   }]
 },
 {
-  "endpoint": "/v1/mdm/{path}",
+  "endpoint": "/onboardos/v1/mdm/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1803,7 +1803,7 @@
   }]
 },
 {
-  "endpoint": "/v1/audit/{path}",
+  "endpoint": "/onboardos/v1/audit/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1825,7 +1825,7 @@
   }]
 },
 {
-  "endpoint": "/v1/audit/{path}",
+  "endpoint": "/onboardos/v1/audit/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1847,7 +1847,7 @@
   }]
 },
 {
-  "endpoint": "/v1/sessions/{path}",
+  "endpoint": "/onboardos/v1/sessions/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1869,7 +1869,7 @@
   }]
 },
 {
-  "endpoint": "/v1/sessions/{path}",
+  "endpoint": "/onboardos/v1/sessions/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1891,7 +1891,7 @@
   }]
 },
 {
-  "endpoint": "/v1/milestones/{path}",
+  "endpoint": "/onboardos/v1/milestones/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1913,7 +1913,7 @@
   }]
 },
 {
-  "endpoint": "/v1/milestones/{path}",
+  "endpoint": "/onboardos/v1/milestones/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1935,7 +1935,7 @@
   }]
 },
 {
-  "endpoint": "/v1/notifications/{path}",
+  "endpoint": "/onboardos/v1/notifications/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1957,7 +1957,7 @@
   }]
 },
 {
-  "endpoint": "/v1/notifications/{path}",
+  "endpoint": "/onboardos/v1/notifications/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -1979,7 +1979,7 @@
   }]
 },
 {
-  "endpoint": "/v1/business-entities/{path}",
+  "endpoint": "/onboardos/v1/business-entities/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -2001,7 +2001,7 @@
   }]
 },
 {
-  "endpoint": "/v1/business-entities/{path}",
+  "endpoint": "/onboardos/v1/business-entities/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -2023,7 +2023,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cnpj/{path}",
+  "endpoint": "/onboardos/v1/cnpj/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
@@ -2045,7 +2045,7 @@
   }]
 },
 {
-  "endpoint": "/v1/cnpj/{path}",
+  "endpoint": "/onboardos/v1/cnpj/{path}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
