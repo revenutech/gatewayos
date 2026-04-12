@@ -4,12 +4,6 @@ on:
   push:
     branches: [staging]
 
-env:
-  GKE_CLUSTER: gateway-staging-cluster
-  GKE_REGION: southamerica-east1
-  AR_REPO: southamerica-east1-docker.pkg.dev/revenu-gateway-staging/gateway-staging
-  IMAGE_NAME: gateway
-
 jobs:
   ci:
     name: CI Validation
@@ -27,6 +21,14 @@ jobs:
     name: Build, Sign & Deploy to GKE Staging
     needs: ci
     runs-on: ubuntu-latest
+    environment: staging
+    env:
+      # Configurable via GitHub Environment Variables (Settings > Environments > staging)
+      GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+      GKE_CLUSTER: ${{ vars.GKE_CLUSTER }}
+      GKE_LOCATION: ${{ vars.GKE_LOCATION }}
+      AR_REPO: ${{ vars.AR_REPO }}
+      IMAGE_NAME: gateway
     permissions:
       contents: read
       id-token: write
@@ -37,8 +39,8 @@ jobs:
       - id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_STAGING }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_STAGING }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - uses: google-github-actions/setup-gcloud@v2
 
@@ -65,7 +67,7 @@ jobs:
       - uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_REGION }}
+          location: ${{ env.GKE_LOCATION }}
 
       - name: Deploy with Helm (atomic — auto-rollback on failure)
         run: |
