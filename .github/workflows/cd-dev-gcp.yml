@@ -4,16 +4,18 @@ on:
   push:
     branches: [develop]
 
-env:
-  GKE_CLUSTER: gateway-dev-cluster
-  GKE_ZONE: southamerica-east1-a
-  AR_REPO: southamerica-east1-docker.pkg.dev/revenu-gateway-dev/gateway-dev
-  IMAGE_NAME: gateway
-
 jobs:
   build-deploy:
     name: Build & Deploy to GKE Dev
     runs-on: ubuntu-latest
+    environment: dev
+    env:
+      # Configurable via GitHub Environment Variables (Settings > Environments > dev)
+      GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+      GKE_CLUSTER: ${{ vars.GKE_CLUSTER }}
+      GKE_LOCATION: ${{ vars.GKE_LOCATION }}
+      AR_REPO: ${{ vars.AR_REPO }}
+      IMAGE_NAME: gateway
     permissions:
       contents: read
       id-token: write
@@ -25,8 +27,8 @@ jobs:
       - id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_DEV }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_DEV }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - uses: google-github-actions/setup-gcloud@v2
 
@@ -49,7 +51,7 @@ jobs:
       - uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}
+          location: ${{ env.GKE_LOCATION }}
 
       - name: Deploy with Helm
         run: |
