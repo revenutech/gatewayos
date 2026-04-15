@@ -71,8 +71,21 @@ networkPolicy:
 pdb:
   enabled: false
 
-# Keycloak Service Bridge - connects to Keycloak ILB in ledgeros-sqa cluster
+# Service Bridges - connect to ILBs in other clusters within Shared VPC
+
 keycloakBridge:
   enabled: true
   ip: "10.120.0.7"
   port: 8080
+
+ledgerosBridge:
+  enabled: true
+  ip: "10.120.0.6"
+  httpPort: 8081
+  grpcPort: 9081
+
+paymentosBridge:
+  enabled: true
+  ip: "10.120.0.10"
+  httpPort: 8082
+  grpcPort: 9082
