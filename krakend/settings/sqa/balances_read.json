@@ -1,6 +1,6 @@
 {
   "rate_limit": {
-    "global_max": 5000,
-    "tenant_max": 500
+    "global_max": 100000,
+    "tenant_max": 50000
   }
 }
