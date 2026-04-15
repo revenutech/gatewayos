@@ -16,6 +16,7 @@ jobs:
       GKE_LOCATION: ${{ vars.GKE_LOCATION }}
       AR_REPO: ${{ vars.AR_REPO }}
       IMAGE_NAME: gateway
+      ENV_NAME: ${{ vars.ENV_NAME || 'dev' }}
     permissions:
       contents: read
       id-token: write
@@ -38,14 +39,14 @@ jobs:
       # Build & Push
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }} .
-          docker tag ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }} \
-                     ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-latest
+          docker build -t ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ env.ENV_NAME }}-${{ github.sha }} .
+          docker tag ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ env.ENV_NAME }}-${{ github.sha }} \
+                     ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ env.ENV_NAME }}-latest
 
       - name: Push to Artifact Registry
         run: |
-          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-${{ github.sha }}
-          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:dev-latest
+          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ env.ENV_NAME }}-${{ github.sha }}
+          docker push ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ env.ENV_NAME }}-latest
 
       # Deploy via Helm
       - uses: google-github-actions/get-gke-credentials@v2
@@ -56,8 +57,8 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade --install gateway k8s/helm/gateway \
-            -f k8s/helm/gateway/values-gcp-dev.yaml \
-            --set image.tag=dev-${{ github.sha }} \
+            -f k8s/helm/gateway/values-gcp-${{ env.ENV_NAME }}.yaml \
+            --set image.tag=${{ env.ENV_NAME }}-${{ github.sha }} \
             --set configHash=${{ github.sha }} \
             --wait --timeout 5m
 
