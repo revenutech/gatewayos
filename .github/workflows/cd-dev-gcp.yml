@@ -53,6 +53,7 @@ jobs:
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_LOCATION }}
+          project_id: ${{ env.GCP_PROJECT }}
 
       - name: Deploy with Helm
         run: |
