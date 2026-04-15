@@ -52,7 +52,7 @@ cronjob:
 krakend:
   env: sqa
   fcEnable: "1"
-  fcSettings: /etc/krakend/settings
+  fcSettings: /etc/krakend/settings/sqa
   fcPartials: /etc/krakend/partials
   fcTemplates: /etc/krakend/templates
   port: "8080"
