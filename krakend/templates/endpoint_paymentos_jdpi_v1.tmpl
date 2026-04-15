@@ -1,5 +1,53 @@
 {
-  "endpoint": "/paymentos/jdpi/{path}",
+  "_comment": "JDPI Native API — DICT, SPI, QRCode, Account operations",
+
+  "endpoint": "/paymentos/jdpi/connect/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/connect/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/certificates/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/certificates/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "DICT — Diretório de Identificadores de Contas Transacionais",
+  "endpoint": "/paymentos/jdpi/dict/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -13,7 +61,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/{path}",
+    "url_pattern": "/jdpi/dict/{path}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -21,7 +69,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/{path}",
+  "endpoint": "/paymentos/jdpi/dict/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -35,7 +83,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/{path}",
+    "url_pattern": "/jdpi/dict/{path}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -43,7 +91,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/{path}",
+  "endpoint": "/paymentos/jdpi/dict/{path}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -57,7 +105,31 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/{path}",
+    "url_pattern": "/jdpi/dict/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "SPI — Sistema de Pagamentos Instantâneos",
+  "endpoint": "/paymentos/jdpi/spi/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/{path}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -65,9 +137,9 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/{path}",
-  "method": "DELETE",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "endpoint": "/paymentos/jdpi/spi/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia", "X-Tipo-Canal"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }},
@@ -79,7 +151,373 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/{path}",
+    "url_pattern": "/jdpi/spi/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/spi/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "QRCode — QR Code operations",
+  "endpoint": "/paymentos/jdpi/qrcode/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/qrcode/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/qrcode/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/qrcode/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/qrcode/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/qrcode/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Conta PI — Account operations",
+  "endpoint": "/paymentos/jdpi/conta/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/conta/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Devolução — Refund requests",
+  "endpoint": "/paymentos/jdpi/devolucao/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/devolucao/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/devolucao/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/devolucao/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Relato de Infração — Infraction reports",
+  "endpoint": "/paymentos/jdpi/relato-infracao/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/relato-infracao/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/relato-infracao/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/relato-infracao/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/relato-infracao/{path}",
+  "method": "PUT",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/relato-infracao/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Marcação de Fraude — Fraud flags",
+  "endpoint": "/paymentos/jdpi/marcacao-fraude/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/marcacao-fraude/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/marcacao-fraude/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/marcacao-fraude/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "Recuperação de Valores — Value recovery",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "PIX Callback",
+  "endpoint": "/paymentos/jdpi/pix/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }},
+    "auth/validator": {
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pix/{path}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
