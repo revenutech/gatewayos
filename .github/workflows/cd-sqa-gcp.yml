@@ -2,7 +2,7 @@ name: CD — SQA (GCP)
 
 on:
   push:
-    branches: [sqa]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
