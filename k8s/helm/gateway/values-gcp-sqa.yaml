@@ -6,15 +6,14 @@
 replicaCount: 1
 
 image:
-  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-dev/gateway-dev/gateway
-  tag: "dev-v15"
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway/gateway
+  tag: "sqa-latest"
   pullPolicy: Always
 
 serviceAccount:
   create: true
   name: gateway
-  annotations:
-    iam.gke.io/gcp-service-account: gateway-app-dev@revenu-gateway-dev.iam.gserviceaccount.com
+  annotations: {}
 
 service:
   type: NodePort
