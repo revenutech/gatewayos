@@ -1,0 +1,41 @@
+{{- if .Values.ledgerosBridge.enabled }}
+# LedgerOS Service Bridge - connects gateway to LedgerOS ILB in another cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: ledgeros
+  labels:
+    app.kubernetes.io/name: ledgeros-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.ledgerosBridge.httpPort }}
+      targetPort: {{ .Values.ledgerosBridge.httpPort }}
+      protocol: TCP
+    - name: grpc
+      port: {{ .Values.ledgerosBridge.grpcPort }}
+      targetPort: {{ .Values.ledgerosBridge.grpcPort }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: ledgeros
+  labels:
+    app.kubernetes.io/name: ledgeros-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+subsets:
+  - addresses:
+      - ip: {{ .Values.ledgerosBridge.ip | quote }}
+    ports:
+      - name: http
+        port: {{ .Values.ledgerosBridge.httpPort }}
+        protocol: TCP
+      - name: grpc
+        port: {{ .Values.ledgerosBridge.grpcPort }}
+        protocol: TCP
+{{- end }}
