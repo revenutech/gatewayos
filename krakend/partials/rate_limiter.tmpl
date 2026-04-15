@@ -1,7 +1,6 @@
 "qos/ratelimit/router": {
   "max_rate": {{ .rate_limit.global_max }},
   "client_max_rate": {{ .rate_limit.tenant_max }},
-  "strategy": "header",
-  "key": "X-Tenant-ID",
+  "strategy": "ip",
   "every": "1m"
 }
