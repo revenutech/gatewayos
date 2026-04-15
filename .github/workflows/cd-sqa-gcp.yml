@@ -9,15 +9,15 @@ jobs:
   build-deploy:
     name: Build & Deploy to GKE SQA
     runs-on: ubuntu-latest
-    environment: sqa
+    environment: dev
     env:
-      # Configurable via GitHub Environment Variables (Settings > Environments > sqa)
-      GCP_PROJECT: ${{ vars.GCP_PROJECT }}
-      GKE_CLUSTER: ${{ vars.GKE_CLUSTER }}
-      GKE_LOCATION: ${{ vars.GKE_LOCATION }}
-      AR_REPO: ${{ vars.AR_REPO }}
+      # SQA environment values (using dev secrets for auth)
+      GCP_PROJECT: revenu-gateway-sqa
+      GKE_CLUSTER: gateway-sqa
+      GKE_LOCATION: southamerica-east1-a
+      AR_REPO: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway
       IMAGE_NAME: gateway
-      ENV_NAME: ${{ vars.ENV_NAME || 'sqa' }}
+      ENV_NAME: sqa
     permissions:
       contents: read
       id-token: write
