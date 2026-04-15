@@ -112,7 +112,8 @@
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
+    },
+    {{ template "rate_limiter.tmpl" .balances_read }}
   },
   "backend": [{
     "host": ["{{ .backends.ledgeros_http }}"],
