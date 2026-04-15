@@ -12,7 +12,7 @@
   "cache": true,
   "cache_duration": 3600,
   "failed_jwk_key_cooldown": "10s",
-  "disable_jwk_security": false,
+  "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
   "propagate_claims": [
     ["sub", "x-user-id"],
     ["tenant_id", "x-tenant-id"],
