@@ -14,7 +14,8 @@
   "service": {
     "port": 8080,
     "log_level": "WARNING",
-    "return_error_msg": false
+    "return_error_msg": false,
+    "expose_docs": false
   },
   "backends": {
     "ledgeros_http": "http://ledgeros.ledgeros-production.svc.cluster.local:8081",

@@ -35,5 +35,6 @@
     ,{{ template "endpoint_dashboard_v1.tmpl" . }}
     ,{{ template "endpoint_test_v1.tmpl" . }}
     ,{{ template "endpoint_keycloak_v1.tmpl" . }}
+    {{ if .service.expose_docs }},{{ template "endpoint_docs_v1.tmpl" . }}{{ end }}
   ]
 }
