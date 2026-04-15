@@ -1,22 +1,22 @@
-name: CD — Dev (GCP)
+name: CD — SQA (GCP)
 
 on:
   push:
     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   build-deploy:
-    name: Build & Deploy to GKE Dev
+    name: Build & Deploy to GKE SQA
     runs-on: ubuntu-latest
-    environment: dev
+    environment: sqa
     env:
-      # Configurable via GitHub Environment Variables (Settings > Environments > dev)
       GCP_PROJECT: ${{ vars.GCP_PROJECT }}
       GKE_CLUSTER: ${{ vars.GKE_CLUSTER }}
       GKE_LOCATION: ${{ vars.GKE_LOCATION }}
       AR_REPO: ${{ vars.AR_REPO }}
       IMAGE_NAME: gateway
-      ENV_NAME: ${{ vars.ENV_NAME || 'dev' }}
+      ENV_NAME: ${{ vars.ENV_NAME || 'sqa' }}
     permissions:
       contents: read
       id-token: write
