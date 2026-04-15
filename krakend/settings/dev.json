@@ -15,7 +15,8 @@
   "service": {
     "port": 8080,
     "log_level": "DEBUG",
-    "return_error_msg": true
+    "return_error_msg": true,
+    "expose_docs": true
   },
   "backends": {
     "ledgeros_http": "http://ledgeros:8081",
