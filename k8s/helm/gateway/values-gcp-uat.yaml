@@ -1,0 +1,93 @@
+# =============================================================================
+# Gateway — GCP UAT Environment (BASA Connectivity)
+# GKE zonal (sae1-a), Shared VPC, IP Masquerade for BASA
+# =============================================================================
+
+replicaCount: 1
+
+image:
+  # Using SQA registry until UAT has its own Artifact Registry
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway/gateway
+  tag: "sqa-latest"
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  name: gateway
+  annotations: {}
+
+service:
+  type: NodePort
+  httpPort: 8080
+  metricsPort: 8090
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+probes:
+  type: tcpSocket
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+envoy:
+  enabled: false
+
+configMap:
+  enabled: false
+
+configHash: "v1"
+
+cronjob:
+  dataRetention:
+    enabled: false
+
+krakend:
+  env: uat
+  fcEnable: "1"
+  fcSettings: /etc/krakend/settings/uat
+  fcPartials: /etc/krakend/partials
+  fcTemplates: /etc/krakend/templates
+  port: "8080"
+  usageDisable: "1"
+  configFile: /etc/krakend/krakend.tmpl
+
+serviceMonitor:
+  enabled: false
+
+prometheusRule:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+
+pdb:
+  enabled: false
+
+# Service Bridges - connect to ILBs in SQA clusters
+# Initially pointing to SQA services until UAT has its own
+
+keycloakBridge:
+  enabled: true
+  ip: "10.120.0.7"
+  port: 8080
+
+ledgerosBridge:
+  enabled: true
+  ip: "10.120.0.6"
+  httpPort: 8081
+  grpcPort: 9081
+
+paymentosBridge:
+  enabled: true
+  ip: "10.120.0.10"
+  httpPort: 8082
+  grpcPort: 9082
