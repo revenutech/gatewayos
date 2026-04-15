@@ -1,7 +1,10 @@
 FROM krakend:2.13.4
 
-# Fix CVE-2026-22184 (zlib) - upgrade Alpine packages
-RUN apk update && apk upgrade --no-cache zlib && rm -rf /var/cache/apk/*
+# Fix CVEs - upgrade Alpine packages
+# CVE-2026-22184 (zlib)
+# CVE-2026-28390 (openssl)
+# CVE-2026-40200 (musl)
+RUN apk update && apk upgrade --no-cache zlib libcrypto3 libssl3 musl musl-utils && rm -rf /var/cache/apk/*
 
 COPY krakend/ /etc/krakend/
 

@@ -1,7 +1,16 @@
 # KrakenD CE 2.13.4 (official Docker image)
-# All CVEs resolved as of 2026-04-08
-# - Upgraded from deprecated devopsfaith/krakend:2.7 to official krakend:2.13.4
-# - Added apk upgrade for zlib to fix CVE-2026-22184
+# Last review: 2026-04-14
 #
-# No CVEs currently ignored.
-# Next review: on KrakenD version upgrade
+# Alpine package CVEs fixed via Dockerfile:
+# - CVE-2026-22184 (zlib)
+# - CVE-2026-28390 (openssl)
+# - CVE-2026-40200 (musl)
+#
+# Ignored CVEs (pending KrakenD upstream fix):
+
+# CVE-2026-39883: opentelemetry-go PATH hijacking on BSD systems
+# Severity: HIGH | Fixed in: 1.43.0 | KrakenD bundles: v1.41.0
+# Risk: Low for Linux containers (BSD-specific kenv command)
+# Action: Monitor KrakenD releases for otel upgrade
+# Next review: 2026-05-01
+CVE-2026-39883
