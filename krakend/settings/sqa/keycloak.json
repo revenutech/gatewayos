@@ -1,6 +1,6 @@
 {
   "jwks_url": "http://keycloak:8080/realms/ledgeros/protocol/openid-connect/certs",
   "issuer": "http://auth-sqa.internal:8080/realms/ledgeros",
-  "audience": ["account", "krakend-gateway"],
+  "audience": "account",
   "disable_jwk_security": true
 }
