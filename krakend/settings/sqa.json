@@ -1,8 +1,8 @@
 {
   "keycloak": {
     "jwks_url": "http://keycloak:8080/realms/ledgeros/protocol/openid-connect/certs",
-    "issuer": "http://keycloak:8080/realms/ledgeros",
-    "audience": "revenu-platform",
+    "issuer": "http://auth-sqa.internal:8080/realms/ledgeros",
+    "audience": "account",
     "disable_jwk_security": true
   },
   "oauth2": {
@@ -34,8 +34,8 @@
     "port": "6379"
   },
   "rate_limit": {
-    "global_max": 5000,
-    "tenant_max": 500
+    "global_max": 10000,
+    "tenant_max": 5000
   },
   "cors": {
     "allow_origins": ["https://sqa.corebanxapp.com.br", "http://localhost:3000", "http://localhost:8081"],
@@ -105,8 +105,8 @@
   },
   "balances_read": {
     "rate_limit": {
-      "global_max": 5000,
-      "tenant_max": 500
+      "global_max": 10000,
+      "tenant_max": 5000
     }
   }
 }
