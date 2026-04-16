@@ -71,12 +71,11 @@ networkPolicy:
 pdb:
   enabled: false
 
-# Service Bridges - connect to ILBs in SQA clusters
-# Initially pointing to SQA services until UAT has its own
+# Service Bridges - connect to ILBs in UAT/SQA clusters
 
 keycloakBridge:
   enabled: true
-  ip: "10.120.0.7"
+  ip: "10.120.0.22"  # UAT Keycloak ILB in ledgeros-uat cluster
   port: 8080
 
 ledgerosBridge:
