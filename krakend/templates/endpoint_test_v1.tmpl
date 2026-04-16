@@ -1,6 +1,6 @@
 {
   "_comment": "Test endpoint — combined Lua enterprise middleware for integration testing",
-  "endpoint": "/v1/test/echo",
+  "endpoint": "/test/v1/echo",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-API-Key", "X-Subscription-Tier", "User-Agent", "Referer", "Origin", "Content-Type", "Cache-Control"],
   "input_query_strings": ["*"],
@@ -27,7 +27,7 @@
 },
 {
   "_comment": "Test endpoint POST — combined Lua with schema validation logic",
-  "endpoint": "/v1/test/validate",
+  "endpoint": "/test/v1/validate",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-API-Key", "Content-Type", "User-Agent"],
   "output_encoding": "no-op",

@@ -1,0 +1,84 @@
+{
+  "keycloak": {
+    "jwks_url": "http://keycloak:8080/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "http://auth-sit.internal:8080/realms/ledgeros",
+    "audience": "account",
+    "disable_jwk_security": true
+  },
+  "oauth2": {
+    "client_id": "krakend-gateway",
+    "client_secret": "${OAUTH2_CLIENT_SECRET}"
+  },
+  "api_keys": {
+    "registry": ""
+  },
+  "service": {
+    "port": 8080,
+    "log_level": "DEBUG",
+    "return_error_msg": true
+  },
+  "backends": {
+    "ledgeros_http": "http://ledgeros:8081",
+    "ledgeros_grpc": "ledgeros:9081",
+    "paymentos": "http://paymentos:8082",
+    "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
+    "onboardos": "http://onboardos:8092",
+    "keycloak": "http://keycloak:8080"
+  },
+  "redis": {
+    "host": "redis",
+    "port": "6379"
+  },
+  "rate_limit": {
+    "global_max": 10000,
+    "tenant_max": 5000
+  },
+  "cors": {
+    "allow_origins": ["https://sit.corebanxapp.com.br", "http://localhost:3000", "http://localhost:8081"],
+    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "max_age": "12h"
+  },
+  "cb_posting": {
+    "cb_name": "cb-ledgeros-posting",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_paymentos": {
+    "cb_name": "cb-paymentos",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 15
+  },
+  "cb_grpc_posting": {
+    "cb_name": "cb-ledgeros-grpc",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_onboardos": {
+    "cb_name": "cb-onboardos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_keycloak": {
+    "cb_name": "cb-keycloak",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "postings_write": {
+    "rate_limit": {
+      "global_max": 1000,
+      "tenant_max": 100
+    }
+  },
+  "balances_read": {
+    "rate_limit": {
+      "global_max": 10000,
+      "tenant_max": 5000
+    }
+  }
+}

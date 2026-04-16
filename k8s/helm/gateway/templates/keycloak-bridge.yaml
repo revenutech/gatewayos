@@ -1,0 +1,34 @@
+{{- if .Values.keycloakBridge.enabled }}
+# Keycloak Service Bridge - connects gateway to Keycloak ILB in another cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.keycloakBridge.port }}
+      targetPort: {{ .Values.keycloakBridge.port }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+subsets:
+  - addresses:
+      - ip: {{ .Values.keycloakBridge.ip | quote }}
+    ports:
+      - name: http
+        port: {{ .Values.keycloakBridge.port }}
+        protocol: TCP
+{{- end }}

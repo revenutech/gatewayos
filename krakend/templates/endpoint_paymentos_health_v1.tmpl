@@ -1,0 +1,30 @@
+{
+  "endpoint": "/paymentos/health",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/paymentos/live",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/live",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/paymentos/ready",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/ready",
+    "encoding": "no-op"
+  }]
+}

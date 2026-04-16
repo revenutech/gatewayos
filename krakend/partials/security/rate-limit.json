@@ -1,13 +1,21 @@
 {{/* =============================================================================
   Revenu Platform Gateway - Rate Limiting Configuration
   ISO 27001: A.12.1.3 (Capacity management)
-  Tiered rate limiting by X-Tenant-ID
-  Migrated from: ledgeros/deployment/krakend/partials/security/rate-limit.json
+  Rate limiting by IP address
+
+  Valores para ambiente bancário (por minuto):
+  - global_max: 3000 req/min (50 req/s) - limite global do endpoint
+  - tenant_max: 600 req/min (10 req/s) - limite por IP/cliente
+
+  Nota: Usando strategy "ip" pois o header X-Tenant-ID só está disponível
+  após a validação JWT, mas o rate limiter executa antes.
+  Em produção, considerar rate limiting no nível do serviço backend.
+
+  Estes valores são adequados para SQA. Em produção, ajustar conforme SLA.
 ============================================================================= */}}
 "qos/ratelimit/router": {
-  "max_rate": 500,
-  "client_max_rate": 50,
-  "strategy": "header",
-  "key": "X-Tenant-ID",
+  "max_rate": {{ .rate_limit.global_max }},
+  "client_max_rate": {{ .rate_limit.tenant_max }},
+  "strategy": "ip",
   "every": "1m"
 }

@@ -1,0 +1,40 @@
+{
+  "endpoint": "/paymentos/docs",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/docs",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/paymentos/docs/{path}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/docs/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/ledgeros/docs",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/docs",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/ledgeros/docs/{path}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/docs/{path}",
+    "encoding": "no-op"
+  }]
+}

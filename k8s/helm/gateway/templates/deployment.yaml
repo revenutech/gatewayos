@@ -40,10 +40,22 @@ spec:
             - name: metrics
               containerPort: 8090
               protocol: TCP
+          {{- if eq .Values.krakend.fcEnable "1" }}
+          command: ["krakend", "run", "-c", "/etc/krakend/krakend.tmpl"]
+          {{- else }}
           command: ["krakend", "run", "-c", "/etc/krakend/krakend.json"]
+          {{- end }}
           env:
             - name: FC_ENABLE
               value: {{ .Values.krakend.fcEnable | quote }}
+            {{- if eq .Values.krakend.fcEnable "1" }}
+            - name: FC_SETTINGS
+              value: {{ .Values.krakend.fcSettings }}
+            - name: FC_PARTIALS
+              value: {{ .Values.krakend.fcPartials }}
+            - name: FC_TEMPLATES
+              value: {{ .Values.krakend.fcTemplates }}
+            {{- end }}
             - name: KRAKEND_PORT
               value: {{ .Values.krakend.port | quote }}
             - name: USAGE_DISABLE
@@ -72,6 +84,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+            {{- if .Values.configMap.enabled }}
+            - name: config
+              mountPath: /etc/krakend
+              readOnly: true
+            {{- end }}
             - name: tmp
               mountPath: /tmp
             {{- if .Values.mtls.enabled }}
@@ -109,6 +126,11 @@ spec:
               mountPath: /tmp
         {{- end }}
       volumes:
+        {{- if .Values.configMap.enabled }}
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+        {{- end }}
         - name: tmp
           emptyDir:
             sizeLimit: 50Mi
@@ -147,3 +169,7 @@ spec:
                       values:
                         - gateway
                 topologyKey: kubernetes.io/hostname
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
