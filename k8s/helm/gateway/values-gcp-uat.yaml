@@ -88,6 +88,6 @@ ledgerosBridge:
 
 paymentosBridge:
   enabled: true
-  ip: "10.120.0.10"
+  ip: "10.120.0.140"
   httpPort: 8082
   grpcPort: 9082
