@@ -1,13 +1,13 @@
 name: CD — Production (GCP)
 
 on:
-  push:
-    branches: [prod]
   workflow_dispatch:
     inputs:
       image_tag:
         description: "Image tag to deploy (e.g., v1.0.0)"
-        required: false
+        required: true
+  push:
+    tags: ["v*.*.*"]
 
 jobs:
   ci:

@@ -101,5 +101,10 @@
       "global_max": 5000,
       "tenant_max": 500
     }
+  },
+  "tracing": {
+    "otel_host": "otel-collector.monitoring.svc.cluster.local",
+    "otel_port": 4317,
+    "sample_rate": 0.25
   }
 }
