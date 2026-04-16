@@ -1,0 +1,4 @@
+{
+  "client_id": "krakend-gateway",
+  "client_secret": "${OAUTH2_CLIENT_SECRET}"
+}
