@@ -12,6 +12,7 @@ on:
 jobs:
   ci:
     name: CI Validation
+    if: false  # DISABLED - remove this line to enable production deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
