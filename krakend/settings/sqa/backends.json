@@ -8,5 +8,5 @@
   "onboardos": "http://onboardos:8092",
   "accountos": "http://accountos:8093",
   "financeos": "http://financeos:8095",
-  "keycloak": "http://keycloak:8080"
+  "keycloak": "http://10.120.0.7:8080"
 }
