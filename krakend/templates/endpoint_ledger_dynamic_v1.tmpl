@@ -2,7 +2,7 @@
   "_comment": "LedgerOS dynamic routing endpoints — tenant-scoped via JWT claims",
   "_enterprise_equivalent": "endpoints/dynamic-routing — KrakenD Enterprise",
 
-  "endpoint": "/v1/my/postings",
+  "endpoint": "/ledgeros/v1/my/postings",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
@@ -26,7 +26,7 @@
 },
 {
   "_comment": "User-scoped balances — routes to user-specific backend path",
-  "endpoint": "/v1/my/balances",
+  "endpoint": "/ledgeros/v1/my/balances",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
@@ -50,7 +50,7 @@
 },
 {
   "_comment": "Tenant dashboard — aggregated view scoped to JWT tenant",
-  "endpoint": "/v1/my/dashboard",
+  "endpoint": "/ledgeros/v1/my/dashboard",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",

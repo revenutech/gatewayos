@@ -1,0 +1,41 @@
+{{- if .Values.paymentosBridge.enabled }}
+# Paymentos Service Bridge - connects gateway to Paymentos ILB in another cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentos
+  labels:
+    app.kubernetes.io/name: paymentos-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.paymentosBridge.httpPort }}
+      targetPort: {{ .Values.paymentosBridge.httpPort }}
+      protocol: TCP
+    - name: grpc
+      port: {{ .Values.paymentosBridge.grpcPort }}
+      targetPort: {{ .Values.paymentosBridge.grpcPort }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: paymentos
+  labels:
+    app.kubernetes.io/name: paymentos-bridge
+    app.kubernetes.io/component: service-bridge
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+subsets:
+  - addresses:
+      - ip: {{ .Values.paymentosBridge.ip | quote }}
+    ports:
+      - name: http
+        port: {{ .Values.paymentosBridge.httpPort }}
+        protocol: TCP
+      - name: grpc
+        port: {{ .Values.paymentosBridge.grpcPort }}
+        protocol: TCP
+{{- end }}

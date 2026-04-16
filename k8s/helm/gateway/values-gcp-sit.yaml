@@ -1,0 +1,78 @@
+# =============================================================================
+# Gateway — GCP SIT Environment (BASA Connectivity)
+# GKE zonal (sae1-a), Shared VPC, IP Masquerade for BASA
+# =============================================================================
+
+replicaCount: 1
+
+image:
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sit/gateway/gateway
+  tag: "sit-latest"
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  name: gateway
+  annotations: {}
+
+service:
+  type: NodePort
+  httpPort: 8080
+  metricsPort: 8090
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+probes:
+  type: tcpSocket
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+envoy:
+  enabled: false
+
+configMap:
+  enabled: false
+
+configHash: "v1"
+
+cronjob:
+  dataRetention:
+    enabled: false
+
+krakend:
+  env: sit
+  fcEnable: "1"
+  fcSettings: /etc/krakend/settings/sit
+  fcPartials: /etc/krakend/partials
+  fcTemplates: /etc/krakend/templates
+  port: "8080"
+  usageDisable: "1"
+  configFile: /etc/krakend/krakend.tmpl
+
+serviceMonitor:
+  enabled: false
+
+prometheusRule:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+
+pdb:
+  enabled: false
+
+# Keycloak Service Bridge - connects to Keycloak ILB in ledgeros-sit cluster
+keycloakBridge:
+  enabled: true
+  ip: "10.120.0.7"
+  port: 8080

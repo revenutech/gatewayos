@@ -1,0 +1,8 @@
+{
+  "ledgeros_http": "http://ledgeros:8081",
+  "ledgeros_grpc": "ledgeros:9081",
+  "paymentos": "http://paymentos:8082",
+  "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
+  "onboardos": "http://onboardos:8092",
+  "keycloak": "http://keycloak:8080"
+}

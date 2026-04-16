@@ -121,7 +121,17 @@ cronjob:
 mtls:
   enabled: false
 
+# Keycloak Service Bridge - for environments where Keycloak is in another cluster
+keycloakBridge:
+  enabled: false
+  ip: ""
+  port: 8080
+
 configHash: "PLACEHOLDER"
+
+# ConfigMap for KrakenD config (set to false if config is baked into image)
+configMap:
+  enabled: true
 
 krakend:
   env: dev

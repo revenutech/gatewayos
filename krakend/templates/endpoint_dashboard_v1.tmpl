@@ -2,7 +2,7 @@
   "_comment": "Aggregated Dashboard Endpoints — multi-backend in single response",
   "_enterprise_equivalent": "KrakenD CE native feature (multiple backends per endpoint)",
 
-  "endpoint": "/v1/dashboard/overview",
+  "endpoint": "/dashboard/v1/overview",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
@@ -63,7 +63,7 @@
 },
 {
   "_comment": "Aggregated health — all backends in one call",
-  "endpoint": "/v1/dashboard/health",
+  "endpoint": "/dashboard/v1/health",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",

@@ -54,6 +54,7 @@ resources:
     memory: 512Mi
 
 envoy:
+  enabled: false  # Disable gRPC transcoder for dev (no proto descriptor)
   resources:
     requests:
       cpu: 25m
@@ -61,6 +62,10 @@ envoy:
     limits:
       cpu: 100m
       memory: 64Mi
+
+# Use config from Docker image (no ConfigMap override)
+configMap:
+  enabled: false
 
 cronjob:
   dataRetention:
@@ -90,3 +95,18 @@ containerSecurityContext:
 
 krakend:
   env: dev
+
+# Disable Prometheus Operator resources (CRDs not installed)
+serviceMonitor:
+  enabled: false
+
+prometheusRule:
+  enabled: false
+
+# Disable network policies for dev
+networkPolicy:
+  enabled: false
+
+# Disable PDB for single replica
+pdb:
+  enabled: false

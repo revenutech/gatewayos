@@ -1,0 +1,114 @@
+{
+  "endpoint": "/auth/realms/ledgeros/.well-known/openid-configuration",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/.well-known/openid-configuration",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/certs",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/certs",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/token",
+  "method": "POST",
+  "output_encoding": "no-op",
+  "input_headers": ["Content-Type", "Authorization"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/token",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/auth",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "input_query_strings": ["*"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/auth",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/userinfo",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["Authorization"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/userinfo",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/logout",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "input_headers": ["*"],
+  "input_query_strings": ["*"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/logout",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/logout",
+  "method": "POST",
+  "output_encoding": "no-op",
+  "input_headers": ["Content-Type", "Authorization"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/logout",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+},
+{
+  "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/token/introspect",
+  "method": "POST",
+  "output_encoding": "no-op",
+  "input_headers": ["Content-Type", "Authorization"],
+  "backend": [{
+    "host": ["{{ .backends.keycloak }}"],
+    "url_pattern": "/realms/ledgeros/protocol/openid-connect/token/introspect",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_keycloak }}
+    }
+  }]
+}

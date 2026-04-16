@@ -1,0 +1,6 @@
+{
+  "cb_name": "cb-ledgeros-grpc",
+  "cb_max_errors": 5,
+  "cb_interval": 60,
+  "cb_timeout": 10
+}
