@@ -91,8 +91,21 @@ resource "google_monitoring_alert_policy" "pod_restarts" {
   user_labels           = var.labels
 }
 
-variable "project_id" { type = string }
-variable "environment" { type = string }
-variable "alert_email" { type = string }
-variable "slack_webhook_url" { type = string; default = ""; sensitive = true }
-variable "labels" { type = map(string); default = {} }
+variable "project_id" {
+  type = string
+}
+variable "environment" {
+  type = string
+}
+variable "alert_email" {
+  type = string
+}
+variable "slack_webhook_url" {
+  type = string
+  default = ""
+  sensitive = true
+}
+variable "labels" {
+  type    = map(string)
+  default = {}
+}

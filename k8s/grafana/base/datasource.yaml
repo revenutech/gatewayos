@@ -1,0 +1,12 @@
+# Grafana datasource provisioning — Google Cloud Monitoring
+# Grafana auto-discovers GCP project via Workload Identity
+apiVersion: 1
+datasources:
+  - name: Google Cloud Monitoring
+    type: stackdriver
+    uid: google-cloud-monitoring
+    access: proxy
+    isDefault: true
+    jsonData:
+      authenticationType: gce
+    editable: false

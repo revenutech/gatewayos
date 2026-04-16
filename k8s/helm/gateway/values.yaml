@@ -7,7 +7,7 @@ replicaCount: 2
 
 image:
   repository: devopsfaith/krakend
-  tag: "2.7"
+  tag: "2.9.4"
   pullPolicy: IfNotPresent
 
 envoy:
@@ -135,10 +135,7 @@ configMap:
 
 krakend:
   env: dev
-  fcEnable: "1"
-  fcSettings: /etc/krakend/settings
-  fcPartials: /etc/krakend/partials
-  fcTemplates: /etc/krakend/templates
+  fcEnable: "0"
   port: "8080"
   usageDisable: "1"
 

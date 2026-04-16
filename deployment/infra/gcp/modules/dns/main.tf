@@ -29,9 +29,24 @@ resource "google_dns_record_set" "gateway_a" {
   project      = var.project_id
 }
 
-variable "project_id" { type = string }
-variable "environment" { type = string }
-variable "zone_name" { type = string; default = "" }
-variable "domain" { type = string; default = "" }
-variable "ingress_ip" { type = string; default = "" }
-variable "labels" { type = map(string); default = {} }
+variable "project_id" {
+  type = string
+}
+variable "environment" {
+  type = string
+}
+variable "zone_name" {
+  type = string
+  default = ""
+}
+variable "domain" {
+  type = string
+  default = ""
+}
+variable "ingress_ip" {
+  type = string
+  default = ""
+}
+variable "labels" {
+  type = map(string)
+  default =

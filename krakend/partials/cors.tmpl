@@ -1,8 +1,0 @@
-"security/cors": {
-  "allow_origins": {{ marshal .cors.allow_origins }},
-  "allow_methods": {{ marshal .cors.allow_methods }},
-  "allow_headers": {{ marshal .cors.allow_headers }},
-  "expose_headers": ["X-Request-ID", "X-Correlation-ID"],
-  "max_age": "{{ .cors.max_age }}",
-  "allow_credentials": true
-}

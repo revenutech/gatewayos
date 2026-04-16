@@ -7,8 +7,8 @@ Parses KrakenD endpoint JSON files and generates an OpenAPI 3.0.3 specification.
 Supports Go template syntax stripping for parsing.
 
 Usage:
-    python generate.py --endpoints-dir ../../krakend/endpoints --output openapi.yaml
-    python generate.py --endpoints-dir ../../krakend/endpoints --output openapi.json --format json
+    python generate.py --endpoints-dir ../../krakend/templates --output openapi.yaml
+    python generate.py --endpoints-dir ../../krakend/templates --output openapi.json --format json
 """
 
 import argparse
@@ -229,7 +229,7 @@ def generate_spec(endpoints_dir: str) -> dict:
     # Parse all endpoint files
     for filename in sorted(os.listdir(endpoints_dir)):
         filepath = os.path.join(endpoints_dir, filename)
-        if not filename.endswith('.json') or os.path.isdir(filepath):
+        if not (filename.startswith('endpoint_') and filename.endswith('.tmpl')) or os.path.isdir(filepath):
             continue
 
         print(f"  Parsing {filename}...", file=sys.stderr)

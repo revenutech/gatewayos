@@ -1,0 +1,12 @@
+# =============================================================================
+# Monitoring Namespace
+# ISO 27001: A.8.22 (Network segregation)
+# =============================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    kubernetes.io/metadata.name: monitoring
+    app.kubernetes.io/part-of: revenu-platform
+    iso27001: "true"

@@ -88,14 +88,25 @@ resource "google_compute_firewall" "deny_all_ingress" {
   priority      = 65534
 }
 
-variable "project_id" { type = string }
-variable "region" { type = string }
-variable "vpc_name" { type = string }
-variable "subnet_cidr" { type = string }
-variable "pods_cidr" { type = string }
-variable "services_cidr" { type = string }
+variable "project_id" {
+  type = string
+}
+variable "region" {
+  type = string
+}
+variable "vpc_name" {
+  type = string
+}
+variable "subnet_cidr" {
+  type = string
+}
+variable "pods_cidr" {
+  type = string
+}
+variable "services_cidr" {
+  type = string
+}
 
 output "network_id" { value = google_compute_network.vpc.id }
 output "network_name" { value = google_compute_network.vpc.name }
 output "subnet_id" { value = google_compute_subnetwork.app.id }
-output "subnet_name" { value = google_compute_subnetwork.app.name }
