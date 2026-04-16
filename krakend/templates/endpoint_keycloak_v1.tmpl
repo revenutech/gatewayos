@@ -30,7 +30,7 @@
   "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/token",
   "method": "POST",
   "output_encoding": "no-op",
-  "input_headers": ["Content-Type", "Authorization"],
+  "input_headers": ["Content-Type", "Authorization", "X-Forwarded-For", "X-Forwarded-Proto", "X-Forwarded-Host"],
   "backend": [{
     "host": ["{{ .backends.keycloak }}"],
     "url_pattern": "/auth/realms/ledgeros/protocol/openid-connect/token",
@@ -88,7 +88,7 @@
   "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/logout",
   "method": "POST",
   "output_encoding": "no-op",
-  "input_headers": ["Content-Type", "Authorization"],
+  "input_headers": ["Content-Type", "Authorization", "X-Forwarded-For", "X-Forwarded-Proto", "X-Forwarded-Host"],
   "backend": [{
     "host": ["{{ .backends.keycloak }}"],
     "url_pattern": "/auth/realms/ledgeros/protocol/openid-connect/logout",
@@ -102,7 +102,7 @@
   "endpoint": "/auth/realms/ledgeros/protocol/openid-connect/token/introspect",
   "method": "POST",
   "output_encoding": "no-op",
-  "input_headers": ["Content-Type", "Authorization"],
+  "input_headers": ["Content-Type", "Authorization", "X-Forwarded-For", "X-Forwarded-Proto", "X-Forwarded-Host"],
   "backend": [{
     "host": ["{{ .backends.keycloak }}"],
     "url_pattern": "/auth/realms/ledgeros/protocol/openid-connect/token/introspect",
