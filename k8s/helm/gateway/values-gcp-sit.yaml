@@ -73,6 +73,20 @@ pdb:
 
 # Keycloak Service Bridge - connects to Keycloak ILB in ledgeros-sit cluster
 keycloakBridge:
-  enabled: true
-  ip: "10.120.0.7"
+  enabled: false
+  ip: "10.120.1.7"
   port: 8080
+
+# LedgerOS Service Bridge
+ledgerosBridge:
+  enabled: false
+  ip: "10.120.1.6"
+  httpPort: 8081
+  grpcPort: 9081
+
+# PaymentOS Service Bridge
+paymentosBridge:
+  enabled: false
+  ip: "10.120.1.10"
+  httpPort: 8082
+  grpcPort: 9082
