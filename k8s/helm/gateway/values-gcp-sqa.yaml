@@ -6,9 +6,9 @@
 replicaCount: 1
 
 image:
-  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway/gateway
-  tag: "sqa-latest"
-  pullPolicy: Always
+  repository: devopsfaith/krakend
+  tag: "2.9.4"
+  pullPolicy: IfNotPresent
 
 serviceAccount:
   create: true
