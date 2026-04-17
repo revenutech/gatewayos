@@ -24,8 +24,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -48,8 +67,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -70,8 +108,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -92,8 +149,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -114,8 +190,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -136,8 +231,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -160,8 +274,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -182,8 +315,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -204,8 +356,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -269,8 +440,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -293,8 +483,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -315,8 +524,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -339,8 +567,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -361,8 +608,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia", "X-Tipo-Canal"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -385,8 +651,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -407,8 +692,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -429,8 +733,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -453,8 +776,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -477,8 +819,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -499,8 +860,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -523,8 +903,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -545,8 +944,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -567,8 +985,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -591,8 +1028,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -613,8 +1069,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -635,8 +1110,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -659,8 +1153,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -681,8 +1194,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -705,8 +1237,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -727,8 +1278,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -751,8 +1321,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -773,8 +1362,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -795,8 +1403,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -819,8 +1446,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -841,8 +1487,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -865,8 +1530,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -887,8 +1571,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -911,8 +1614,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -933,8 +1655,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -957,8 +1698,27 @@
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
