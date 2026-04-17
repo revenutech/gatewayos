@@ -86,6 +86,6 @@ ledgerosBridge:
 
 paymentosBridge:
   enabled: true
-  ip: "10.120.0.10"  # Paymentos ILB in paymentos-uat cluster
+  ip: "10.120.0.140"  # Paymentos ILB in paymentos-uat cluster
   httpPort: 8082
   grpcPort: 9082
