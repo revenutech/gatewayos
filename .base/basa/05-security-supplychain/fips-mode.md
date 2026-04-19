@@ -25,14 +25,14 @@ Detalhes em:
 | **RHCOS (nodes)** | `install-config.yaml` | 🔴 off | `fips: true` no install-config — **irreversível** |
 | **Cluster OCP control plane** | Herdado do RHCOS | 🔴 off | auto se RHCOS FIPS |
 | **Operators** (cert-manager, OTel, Logging, ACS, Compliance) | Verificar cada | 🟡 | Consultar doc do operator; maioria já é FIPS-compat |
-| **Vault (OCI KMS)** | `protection_mode` | 🟢 HSM | já FIPS 140-2 L3 em staging/prod |
+| **Vault (OCI KMS)** | `protection_mode` | 🟢 HSM | já FIPS 140-2 L3 em uat/pro |
 | **TLS Routes** | cert-manager + RSA2048 | 🟢 | compat FIPS |
 
 ## Cenários suportados v1
 
 1. **Modo normal** (default): runtime não-FIPS. Build de imagem poderia
    ser FIPS-ready (boringcrypto) mas sem nó FIPS para aproveitar.
-2. **Modo parcial dev**: cluster OCP não-FIPS + imagem FIPS-ready — útil
+2. **Modo parcial sqa**: cluster OCP não-FIPS + imagem FIPS-ready — útil
    para testes locais antes de criar cluster FIPS.
 
 ## Cenário v2 (quando exigido)
@@ -104,7 +104,7 @@ annotations:
 1. **V1 sem FIPS** — sem requisito real + complexidade operacional alta.
 2. **FIPS-ready no build** (validar `boringcrypto` funciona em CI, tag opcional).
 3. **Novo cluster dedicado** se ligar — sem conversão.
-4. **Vault prod sempre HSM** — 1 camada FIPS mesmo em v1.
+4. **Vault pro sempre HSM** — 1 camada FIPS mesmo em v1.
 5. **Documento vivo** — atualizar quando operators ganharem/perderem FIPS.
 
 ## Checklist v1 (FIPS-ready only)
@@ -112,6 +112,6 @@ annotations:
 - [ ] Build com `boringcrypto` validado localmente (Dockerfile.ubi9 step opcional).
 - [ ] Tag `-fips` produzida (sem push) em CI como dry-run trimestral.
 - [ ] Doc de operators FIPS-compat mantida aqui.
-- [ ] Vault staging+prod em modo HSM (já coberto em Fase 02).
+- [ ] Vault uat+pro em modo HSM (já coberto em Fase 02).
 - [ ] Decision para ativar FIPS revisada anualmente na Management
       Review (A.9.3).

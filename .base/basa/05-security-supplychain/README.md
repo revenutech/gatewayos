@@ -16,26 +16,15 @@ via OCI Vault + External Secrets Operator.
 | [fips-mode.md](fips-mode.md) | Cross-reference com Fase 01, checklist de ativação |
 | [secrets-flow.md](secrets-flow.md) | OCI Vault → External Secrets Operator → Kubernetes Secret |
 
-## Equivalência com track GCP
-
-| GCP (atual) | Basa |
-|---|---|
-| Cosign keyless signing (GH OIDC) em AR | Cosign keyless em OCIR (mesmo modelo) |
-| Trivy scan CRITICAL/HIGH no `cd-production-gcp.yml` | Trivy idem, `.trivyignore` compartilhado |
-| SBOM CycloneDX + `cosign attest` | Idem |
-| Secret Manager via WIF | OCI Vault via ESO (External Secrets Operator) |
-| Ausência de admission controller | Sigstore policy-controller (opcional) |
-| Trivy ignore list | `.trivyignore` herdado + deltas UBI-específicas |
-
 ## Princípios
 
-1. **Paridade com track GCP** — não introduzir controles que o GCP não tem,
-   a menos que sejam "grátis" no ecossistema Red Hat (ex: Compliance Operator).
+1. **Baseline mínima mandatória** — todo release pro passa por Cosign sign,
+   Trivy scan CRITICAL/HIGH bloqueante e SBOM CycloneDX attest.
 2. **Zero key estática** — tudo via OIDC / Resource Principal / ESO.
-3. **Assinatura e attestation como gate de CD** — prod não aceita imagem
+3. **Assinatura e attestation como gate de CD** — pro não aceita imagem
    sem Cosign sig + SBOM attest.
 4. **SBOM versionado** — publicado como release artifact.
-5. **FIPS-ready**, **não FIPS-on** v1 (ADR-004, Fase 01).
+5. **FIPS-ready**, **não FIPS-on** v1 (Fase 01 + ADR-004).
 
 ## Camadas de defesa
 

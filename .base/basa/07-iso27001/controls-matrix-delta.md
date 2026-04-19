@@ -1,8 +1,8 @@
-# Controls Matrix — Delta OCI/OpenShift
+# Controls Matrix — OCI/OpenShift
 
 Complementa `.base/docs/compliance/controls-matrix.md`. Para cada
-controle Annex A tocado pelo track Basa, mostra **evidência Basa**
-(OCI/OpenShift/Red Hat) em paralelo à evidência GCP existente.
+controle Annex A relevante ao track Basa, mostra a **evidência Basa**
+(OCI/OpenShift/Red Hat) com comandos, console paths e artefatos.
 
 > Lista ordenada pelos 93 controles Annex A (ISO/IEC 27001:2022).
 > Legenda aplicabilidade: ✅ aplica · 🟡 aplica parcialmente · ➖ não aplica.
@@ -13,7 +13,7 @@ controle Annex A tocado pelo track Basa, mostra **evidência Basa**
 |---|---|:-:|---|
 | A.5.1 | Policies for information security | ✅ | Mesma política ISMS; Fase 00 `scope.md` + ADRs |
 | A.5.2 | Information security roles | ✅ | Platform Owner / ISO Lead / SRE Lead / Security Lead (Fase 00 `scope.md`) |
-| A.5.3 | Segregation of duties | ✅ | GitHub environment `production-oci` exige 2 reviewers (Fase 06) |
+| A.5.3 | Segregation of duties | ✅ | GitHub environment `pro-oci` exige 2 reviewers (Fase 06) |
 | A.5.7 | Threat intelligence | ✅ | Red Hat OVAL (Trivy) + CVE feed OCI + KrakenD mailing list (mantido) |
 | A.5.8 | Infosec in project management | ✅ | Esta Fase 00..08 é o artefato |
 | A.5.12 | Classification of information | ✅ | Defined tag `revenu-platform.data-classification` (Fase 02) |
@@ -71,7 +71,7 @@ Red Hat OpenShift ISO 27001).
 | A.7.6 | ✅ | idem |
 | A.7.7 | ✅ | Clear desk — HR |
 | A.7.8 | ✅ | Workstations — HR |
-| A.7.9 | ➖ | Off-premises — laptops não armazenam prod keys |
+| A.7.9 | ➖ | Off-premises — laptops não armazenam chaves de produção |
 | A.7.10 | ✅ | Storage media — OCI gerencia |
 | A.7.11 | ✅ | Supporting utilities — OCI |
 | A.7.12 | ✅ | Cabling — OCI |
@@ -92,7 +92,7 @@ Core para o Basa. Evidências diretas.
 | A.8.6 | Capacity management | ✅ | HPA + Machine Autoscaler (Fase 03) |
 | A.8.7 | Protection against malware | 🟡 | Trivy scan (v1); ACS runtime detection em plano v2 (Fase 05) |
 | A.8.8 | Vulnerability management | ✅ | Trivy em CI + Red Hat OVAL + `.trivyignore` review trimestral (Fase 05) |
-| A.8.9 | Configuration management | ✅ | Helm + Terraform versionados; imagens imutáveis prod OCIR (Fase 02/03) |
+| A.8.9 | Configuration management | ✅ | Helm + Terraform versionados; imagens imutáveis pro OCIR (Fase 02/03) |
 | A.8.10 | Information deletion | ✅ | Vault pending-deletion 30d + Object Storage lifecycle |
 | A.8.11 | Data masking | ✅ | Lua DLP plugin (mantido) + sem PII em labels (Fase 03/04) |
 | A.8.12 | Data leakage prevention | ✅ | Access logs structured + Vector filter (Fase 04) |
@@ -101,13 +101,13 @@ Core para o Basa. Evidências diretas.
 | A.8.15 | Logging | ✅ | OpenShift Logging (Loki) + OCI Audit + VCN flow logs (Fase 02/04) |
 | A.8.16 | Monitoring activities | ✅ | Prometheus + Grafana Operator + OTel + OCI Monitoring alarms (Fase 02/04) |
 | A.8.17 | Clock synchronization | ✅ | NTP RHCOS nativo |
-| A.8.18 | Privileged utility programs | ✅ | Bastion service TTL 1h prod (Fase 02) |
-| A.8.19 | Installation on operational systems | ✅ | Sigstore policy-controller + immutable tags prod (Fase 05) |
+| A.8.18 | Privileged utility programs | ✅ | Bastion service TTL 1h pro (Fase 02) |
+| A.8.19 | Installation on operational systems | ✅ | Sigstore policy-controller + immutable tags pro (Fase 05) |
 | A.8.20 | Networks security | ✅ | VCN + NSG + NetworkPolicy + HSTS (Fase 02/03) |
 | A.8.21 | Security of network services | ✅ | Managed LB + Route + TLS 1.2+ |
 | A.8.22 | Segregation of networks | ✅ | Compartments per env + subnets + namespaces + NetPol (Fase 02/03) |
 | A.8.23 | Web filtering | ✅ | HSTS + EgressFirewall (Fase 03) |
-| A.8.24 | Use of cryptography | ✅ | Vault HSM prod + Cosign + TLS 1.2+ + FIPS-ready (Fase 01/02/05) |
+| A.8.24 | Use of cryptography | ✅ | Vault HSM pro + Cosign + TLS 1.2+ + FIPS-ready (Fase 01/02/05) |
 | A.8.25 | Secure development life cycle | ✅ | CI + trivy + review + Cosign sign (Fase 06) |
 | A.8.26 | Application security requirements | ✅ | JWT RBAC + rate limit + CEL tenant check (mantido) |
 | A.8.27 | Secure system architecture | ✅ | Defense-in-depth (Fase 05 README) |
@@ -115,29 +115,29 @@ Core para o Basa. Evidências diretas.
 | A.8.29 | Security testing in development | ✅ | compliance-oci.yml + audit.sh (Fase 06) |
 | A.8.30 | Outsourced development | ✅ | KrakenD CE + UBI9 + Red Hat operators (Fase 01) |
 | A.8.31 | Separation of environments | ✅ | 3 compartments OCI + 3 clusters OCP + 3 namespaces (Fase 02/03) |
-| A.8.32 | Change management | ✅ | Helm atomic + 2 reviewers prod + change ticket (Fase 06) |
-| A.8.33 | Test information | ✅ | Staging sintético — sem dados reais |
+| A.8.32 | Change management | ✅ | Helm atomic + 2 reviewers pro + change ticket (Fase 06) |
+| A.8.33 | Test information | ✅ | uat sintético — sem dados reais |
 | A.8.34 | Protection during audit | ✅ | Compliance Operator read-only scan |
 
-## Exceções / diferenças OCI vs GCP
+## Notas de implementação
 
-| Controle | GCP | Basa | Delta |
-|---|---|---|---|
-| A.8.7 Malware | Trivy CI | Trivy CI + plan v2 ACS | Mesma postura; ACS documentado como próximo passo |
-| A.8.24 Crypto | Cloud KMS | OCI Vault HSM + FIPS-ready | **Superior** (HSM por default em prod; FIPS mode ativável) |
-| A.8.13 Backup | GKE snapshot | etcd OCP backup + tfstate versioning | Cobertura equivalente |
-| A.8.15 Logging | Cloud Logging | OpenShift Logging + OCI Audit | Mais camadas |
-| A.7 Physical | Google DC | Oracle DC | Equivalente — ambos certificados |
+| Controle | Nota |
+|---|---|
+| A.8.7 Malware | Trivy CI em v1; ACS runtime detection documentado como próximo passo (Fase 05) |
+| A.8.24 Crypto | OCI Vault HSM (FIPS 140-2 L3) em uat + pro; FIPS mode ativável no cluster |
+| A.8.13 Backup | etcd OCP backup + tfstate versioning em OCI Object Storage |
+| A.8.15 Logging | OpenShift Logging (Loki) + OCI Audit + VCN flow logs |
+| A.7 Physical | Delegado à OCI; evidência via certificações Oracle + Red Hat |
 
 ## Controles críticos — evidência rápida
 
 | Ctrl | 1-line evidência Basa |
 |---|---|
-| A.8.2 | `oci iam policy list --compartment-id gateway-basa-prod` |
-| A.8.15 | Console OCI → Logging → Log Groups `gateway-basa-prod-*` |
-| A.8.24 | Console OCI → Vault → Keys `gateway-basa-prod-key-app` (HSM) |
-| A.8.31 | Três compartments + três namespaces separados (`oc get ns gateway-{dev,staging,prod}`) |
-| A.8.32 | GitHub releases + environment `production-oci` 2 reviewers |
+| A.8.2 | `oci iam policy list --compartment-id gateway-basa-pro` |
+| A.8.15 | Console OCI → Logging → Log Groups `gateway-basa-pro-*` |
+| A.8.24 | Console OCI → Vault → Keys `gateway-basa-pro-key-app` (HSM) |
+| A.8.31 | Três compartments + três namespaces separados (`oc get ns gateway-{sqa,uat,pro}`) |
+| A.8.32 | GitHub releases + environment `pro-oci` 2 reviewers |
 | A.5.21 | `cosign verify ... gateway:v1.0.0@sha256:...` |
 
 ## Controles integralmente cobertos pelo operator nativo RH
@@ -150,7 +150,7 @@ Relatório automático entra em `evidence-mapping.md` como recorrente.
 
 ## Checklist pronto-para-código
 
-- [ ] Delta aprovado por ISO Lead.
+- [ ] Controls matrix aprovada por ISO Lead.
 - [ ] controls-matrix.md principal atualizado (coluna extra ou link).
 - [ ] compliance-oci.yml valida que este arquivo existe (Fase 06).
 - [ ] Cada evidência apontando para arquivo/comando concreto.

@@ -3,16 +3,13 @@
 - **Status:** Aceito
 - **Data:** 2026-04-17
 - **Decisores:** Platform Owner, SRE Lead, Security Lead
-- **Relacionado:** ADR-001, equivalence-matrix.md §5
+- **Relacionado:** ADR-001, stack-reference.md §5
 
 ## Contexto
 
-No track GCP, o Gateway usa **GKE ManagedCertificate** (Google-managed,
-emissão via ACME por trás dos panos) para TLS em `gateway.allenty.io` e
-`dashboard.allenty.io`. Renovação e rotação são transparentes.
-
-No OpenShift on OCI, não há equivalente direto gerenciado pelo cloud
-provider. Três caminhos:
+O Gateway precisa de TLS em dois planos: externo (Route público
+`gateway.{env}.oci.allenty.io`) e interno (comunicação serviço↔serviço
+intra-cluster). No OpenShift on OCI existem três caminhos:
 
 1. **cert-manager + Let's Encrypt** (DNS01 via OCI DNS) — Operator padrão
    Kubernetes, emite certificados ACME automaticamente, renova, rotaciona.
@@ -20,8 +17,8 @@ provider. Três caminhos:
    OpenShift Service CA Operator, assina automaticamente certs para
    serviços intra-cluster via annotation.
 3. **Certs manuais** (OCI Certificate Authority ou upload manual) — cert
-   comprado/emitido fora e injetado como Secret. Fora do escopo por não
-   atender "paridade com ManagedCertificate".
+   comprado/emitido fora e injetado como Secret. Fora do escopo por exigir
+   rotação manual, contrariando o critério de zero-config após setup.
 
 ## Opções consideradas
 
@@ -62,8 +59,8 @@ Certs manuais **somente** como quebra-vidro (runbook em Fase 08).
 ## Consequências
 
 ### Positivas
-- Paridade funcional com GKE ManagedCertificate (externo) + adição de
-  cert-manager para intra-cluster.
+- TLS externo auto-renovado via Let's Encrypt + cert-manager para
+  intra-cluster.
 - Rotação automática documentada e auditável.
 - Compliance — evidências prontas para A.8.24.
 
@@ -91,7 +88,7 @@ Certs manuais **somente** como quebra-vidro (runbook em Fase 08).
             zoneName: "oci.allenty.io"
   ```
 - Gateway Route referencia `Certificate` CR emitido por esse issuer.
-- Usar `ClusterIssuer` staging (`letsencrypt-staging`) em dev para evitar
+- Usar `ClusterIssuer` staging (`letsencrypt-staging`) em sqa para evitar
   rate limits.
 
 ### Interno — service-ca

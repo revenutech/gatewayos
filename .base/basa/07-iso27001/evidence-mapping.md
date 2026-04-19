@@ -15,10 +15,10 @@ CLI`, ou artifact do repo.
 
 ### A.5.3 — Segregation of duties
 
-- **GitHub:** Settings → Environments → `production-oci` → Required
+- **GitHub:** Settings → Environments → `pro-oci` → Required
   reviewers = 2.
 - **Screenshot** mensal para `/compliance/evidences/{yyyy-mm}/env-reviewers.png`.
-- **OCI:** Groups (dev/staging/prod separados).
+- **OCI:** Groups (sqa/uat/pro separados).
   ```
   oci iam group list --compartment-id $TENANCY_OCID
   ```
@@ -40,7 +40,7 @@ CLI`, ou artifact do repo.
 
 - **OCI Policies:**
   ```
-  oci iam policy list --compartment-id <gateway-basa-prod-compartment>
+  oci iam policy list --compartment-id <gateway-basa-pro-compartment>
   ```
 - **OCP RBAC:**
   ```
@@ -69,12 +69,12 @@ CLI`, ou artifact do repo.
 
 ### A.5.21 — Supply chain
 
-- **Cosign verify** imagem prod:
+- **Cosign verify** imagem pro:
   ```
   cosign verify \
-    --certificate-identity-regexp "^https://github.com/revenutech/revenu-platform-gateway/.github/workflows/cd-production-oci.yml@refs/tags/v" \
+    --certificate-identity-regexp "^https://github.com/revenutech/revenu-platform-gateway/.github/workflows/cd-pro-oci.yml@refs/tags/v" \
     --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-    gru.ocir.io/revenutech/gateway-basa-prod/gateway:v1.0.0
+    gru.ocir.io/revenutech/gateway-basa-pro/gateway:v1.0.0
   ```
 - **SBOM:**
   ```
@@ -104,7 +104,7 @@ CLI`, ou artifact do repo.
 
 - **Object Storage lifecycle:**
   ```
-  oci os bucket get --name revenu-platform-log-archive-prod --output json | jq .lifecyclePolicyEtag
+  oci os bucket get --name revenu-platform-log-archive-pro --output json | jq .lifecyclePolicyEtag
   ```
 - **Versioning + Retention:**
   ```
@@ -184,11 +184,11 @@ CLI`, ou artifact do repo.
 
 - **Helm release history:**
   ```
-  helm history gateway -n gateway-prod --max 20
+  helm history gateway -n gateway-pro --max 20
   ```
 - **Terraform state:**
   ```
-  oci os object list --bucket-name revenu-platform-tf-state-oci --prefix gateway-basa/prod/
+  oci os object list --bucket-name revenu-platform-tf-state-oci --prefix gateway-basa/pro/
   ```
 
 ### A.8.13 — Backup
@@ -221,11 +221,11 @@ CLI`, ou artifact do repo.
 ### A.8.15 — Logging
 
 - **OpenShift Logging (Loki):**
-  Console → Observe → Logs (filter namespace gateway-prod).
+  Console → Observe → Logs (filter namespace gateway-pro).
 - **OCI Audit:**
   Console → Governance → Audit.
 - **VCN Flow logs:**
-  Console → Logging → Log Groups → `gateway-basa-prod-vcn-flowlogs`.
+  Console → Logging → Log Groups → `gateway-basa-pro-vcn-flowlogs`.
 
 ### A.8.16 — Monitoring activities
 
@@ -244,7 +244,7 @@ CLI`, ou artifact do repo.
 
 - **Immutable tags OCIR:**
   ```
-  oci artifacts container repository get --repository-id <prod-repo-ocid> | jq .data.isImmutable
+  oci artifacts container repository get --repository-id <pro-repo-ocid> | jq .data.isImmutable
   ```
 - **Policy-controller (quando ativo):**
   ```
@@ -270,14 +270,14 @@ CLI`, ou artifact do repo.
   ```
 - **Namespaces PSA labels:**
   ```
-  oc get ns gateway-prod -o=jsonpath='{.metadata.labels}'
+  oc get ns gateway-pro -o=jsonpath='{.metadata.labels}'
   ```
 
 ### A.8.24 — Cryptography
 
 - **Vault HSM:**
   ```
-  oci kms management vault get --vault-id <prod-vault-ocid> | jq .data."vault-type"
+  oci kms management vault get --vault-id <pro-vault-ocid> | jq .data."vault-type"
   ```
   (retorna "DEFAULT" ou "VIRTUAL_PRIVATE" — último é HSM).
 - **TLS Routes:**
@@ -307,11 +307,11 @@ CLI`, ou artifact do repo.
 - **Release history:**
   ```
   gh release list --repo revenutech/revenu-platform-gateway
-  helm history gateway -n gateway-prod
+  helm history gateway -n gateway-pro
   ```
 - **Change tickets:** annotation no Deployment:
   ```
-  oc get deploy gateway -n gateway-prod -o=jsonpath='{.metadata.annotations.platform\.revenu/change-ticket}'
+  oc get deploy gateway -n gateway-pro -o=jsonpath='{.metadata.annotations.platform\.revenu/change-ticket}'
   ```
 
 ### A.8.34 — Audit protection
@@ -341,7 +341,7 @@ oci monitoring alarm list --compartment-id $C > "$OUT/oci/alarms.json"
 
 # OCP
 oc get netpol,psa,scc -A -o yaml > "$OUT/ocp/security.yaml"
-helm history gateway -n gateway-prod --max 20 > "$OUT/ocp/helm-history.txt"
+helm history gateway -n gateway-pro --max 20 > "$OUT/ocp/helm-history.txt"
 oc get compliancecheckresult > "$OUT/ocp/compliance-results.txt"
 
 # GitHub
@@ -365,7 +365,7 @@ echo "Evidence pack: $OUT.tar.gz"
       onboarding/
       management-review/
   ```
-- **Criptografado em repouso** (Object Storage KMS em prod).
+- **Criptografado em repouso** (Object Storage KMS em pro).
 - **Retenção 7 anos** (A.5.33).
 
 ## Checklist pronto-para-código

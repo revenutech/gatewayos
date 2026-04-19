@@ -6,14 +6,14 @@ Coletar logs de pods (stdout/stderr) com **OpenShift Logging** (Vector
 collector + Loki storage) e expor via Grafana. Opcional: forward para OCI
 Logging.
 
-## Equivalência
+## Características
 
-| GCP | Basa |
+| Item | Detalhe |
 |---|---|
-| Cloud Logging (managed, infinite) | OpenShift Logging (Loki) + archive Object Storage |
-| Fluentd default | Vector (performance + menor footprint) |
-| Sinks Cloud Logging | ClusterLogForwarder pode mandar a múltiplos outputs |
-| Retenção Cloud Logging: ajustável | Loki retention: 30d quente + archive 7 anos |
+| Storage | Loki com backend S3-compat (OCI Object Storage) + archive |
+| Collector | Vector (default OCP 4.13+) |
+| Outputs | ClusterLogForwarder suporta múltiplos outputs (Loki default + opcional OCI Logging) |
+| Retenção | 30d quente + archive 7 anos |
 
 ## Instalação
 
@@ -55,7 +55,7 @@ metadata:
   name: logging-loki
   namespace: openshift-logging
 spec:
-  size: 1x.small               # 1x.small (dev/staging), 1x.medium (prod)
+  size: 1x.small               # 1x.small (sqa/uat), 1x.medium (pro)
   storage:
     schemas:
       - version: v13
@@ -206,7 +206,7 @@ LogQL via Grafana ou Console:
 
 ```
 {log_type="application", kubernetes.namespace_name=~"gateway-.*"} |= "error"
-{log_type="application", kubernetes.namespace_name="gateway-prod"} | json | status >= 500
+{log_type="application", kubernetes.namespace_name="gateway-pro"} | json | status >= 500
 ```
 
 ## Forward OCI Logging (bridge)

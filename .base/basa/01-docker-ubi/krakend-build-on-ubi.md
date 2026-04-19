@@ -2,18 +2,18 @@
 
 ## Objetivo
 
-Compilar o binário **KrakenD CE 2.9.4 + patch go-jose** (mesmo que GCP) num
-toolchain suportado pela Red Hat, produzindo um artefato compatível com
-UBI9-minimal em runtime e elegível para FIPS mode.
+Compilar o binário **KrakenD CE 2.9.4 + patch go-jose** num toolchain
+suportado pela Red Hat, produzindo um artefato compatível com UBI9-minimal
+em runtime e elegível para FIPS mode.
 
-## Equivalência GCP ↔ Basa
+## Parâmetros de build
 
-| Item | GCP | Basa |
-|---|---|---|
-| Base build | `golang:1.24.2-alpine3.21` | `ubi9/go-toolset:1.24` (preferido) |
-| Script patch | `build/krakend/patch-deps.sh` | **Reutilizado sem mudanças** |
-| Binário final | musl static-link (Alpine) | glibc dynamic-link (UBI) |
-| LDFLAGS | versão + patched tag | idem |
+| Item | Valor |
+|---|---|
+| Base build | `ubi9/go-toolset:1.24` |
+| Script patch | `build/krakend/patch-deps.sh` |
+| Binário final | glibc dynamic-link |
+| LDFLAGS | versão + tag `patched` |
 
 ## Por que `go-toolset` da Red Hat
 
@@ -93,7 +93,6 @@ Go + git.
 | `go-toolset` atualiza Go minor e quebra build | Pin explícito com `go mod go=1.24.X` + lockfile de go.sum |
 | Patch go-jose se torna upstream | Remover replace quando KrakenD CE publicar versão nova ≥ 2.9.5 |
 | FIPS exige GOEXPERIMENT, incompatível com alguns hashers | Ver `fips-readiness.md` antes de habilitar |
-| Binário glibc não roda em Alpine dev image | Basa não usa Alpine — N/A |
 
 ## Checklist pronto-para-código
 

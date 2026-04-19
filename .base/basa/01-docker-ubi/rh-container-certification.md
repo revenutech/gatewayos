@@ -77,7 +77,7 @@ Execução em CI (Fase 06):
 
 ```
 preflight check container \
-  gru.ocir.io/revenutech/gateway-basa-staging/gateway:2.9.4-basa \
+  gru.ocir.io/revenutech/gateway-basa-uat/gateway:2.9.4-basa \
   --docker-config=$HOME/.docker/config.json
 ```
 
@@ -88,7 +88,7 @@ Saída: `PASSED` / `FAILED` por check (14 checks obrigatórios + 5 opcionais).
 | Check | Atendido por |
 |---|---|
 | HasLicense | `LICENSE` copiado em `/licenses/` |
-| HasUniqueTag | tag não `latest` + immutability em OCIR (prod) |
+| HasUniqueTag | tag não `latest` + immutability em OCIR (pro) |
 | LayerCountAcceptable | Multi-stage produz ~5 layers |
 | HasNoProhibitedPackages | UBI-minimal não traz pacotes banidos |
 | HasRequiredLabel | Labels acima |

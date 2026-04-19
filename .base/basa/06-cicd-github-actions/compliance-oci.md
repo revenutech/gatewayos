@@ -2,9 +2,8 @@
 
 ## Objetivo
 
-Validação ISO 27001 específica do track Basa, complementando o
-`compliance.yml` existente (cloud-agnóstico). Roda em **todo PR** e
-**diariamente**.
+Validação ISO 27001 específica do track Basa. Roda em **todo PR** e
+**diariamente**, complementando validações de `ci.yml` cloud-agnósticas.
 
 ## Trigger
 
@@ -107,12 +106,11 @@ oci-specific-checks:
           grep -q 'defined_tags' "$tf" || { echo "$tf missing defined_tags"; exit 1; }
         done
 
-    # Helm — values-oci-*.yaml com openshift.enabled=true
+    # Helm — values-oci-*.yaml com bloco openshift
     - name: Helm values consistent
       run: |
         for f in k8s/helm/gateway/values-oci-*.yaml; do
           grep -q 'openshift:' "$f" || { echo "$f missing openshift block"; exit 1; }
-          grep -q 'cloud: oci-basa' "$f" || { echo "$f missing cloud=oci-basa"; exit 1; }
         done
 
     # Dockerfile.ubi9 — labels obrigatórias RH cert
@@ -246,7 +244,7 @@ compliance-report:
 
 ## Status checks obrigatórios
 
-Em `main`/`develop`/`staging`:
+Em `main`/`develop`/`uat`:
 - `compliance-oci.yml / iso-documents-basa` — required.
 - `compliance-oci.yml / adr-integrity` — required.
 - `compliance-oci.yml / oci-specific-checks` — required.

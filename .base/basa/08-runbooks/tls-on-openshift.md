@@ -15,7 +15,7 @@ renovação, troubleshooting e rotação manual. Cobre cert externo
 
 - Route novo criado e precisa de cert.
 - Cert vence < 7 dias e cert-manager não renovou.
-- Let's Encrypt rate limit atingido em dev.
+- Let's Encrypt rate limit atingido em sqa.
 - Renovação falhou (DNS01 challenge error).
 - Rotação forçada por incidente de segurança.
 
@@ -80,8 +80,8 @@ Esperado:
 
 3. **Cenário: Let's Encrypt rate limit**
    - Trocar temporariamente para `letsencrypt-staging` issuer.
-   - Aguardar 1 semana antes de voltar a prod.
-   - Em dev, **sempre** usar staging (Fase 03 `values-per-env.md`).
+   - Aguardar 1 semana antes de voltar a pro.
+   - Em sqa, **sempre** usar uat (Fase 03 `values-per-env.md`).
 
 4. **Cenário: OpenShift Route não reflete cert novo**
    - Reconciliar Route:
@@ -137,7 +137,7 @@ Referência: `01-foundation/adr-003-tls-certmanager-vs-service-ca.md`.
 - [ ] `oc get certificate -n gateway-{env}` → Ready=True + Renewal < 60d.
 - [ ] `curl -v https://gateway.{env}.oci.allenty.io/__health 2>&1 | grep 'issuer'`
       mostra Let's Encrypt.
-- [ ] `curl -v https://...` sem warnings de cert (prod com LE prod, dev com LE staging — warning esperado).
+- [ ] `curl -v https://...` sem warnings de cert (pro com LE pro, sqa com LE uat — warning esperado).
 - [ ] Browser test — sem badge de "Not secure".
 
 ## Evidência a gerar
@@ -148,14 +148,14 @@ Referência: `01-foundation/adr-003-tls-certmanager-vs-service-ca.md`.
 
 ## Escalação
 
-- LE rate limit atingido em prod → Security Lead decide sobre fallback
+- LE rate limit atingido em pro → Security Lead decide sobre fallback
   (service-ca interno, cert-manual).
 - DNS01 nunca propaga → network admin + OCI Support.
 - Incidente de segurança envolvendo cert → IRP (`incident-response-oci.md`).
 
 ## Drill
 
-**Trimestral:** forçar `cmctl renew` em staging. Validar
+**Trimestral:** forçar `cmctl renew` em uat. Validar
 autorenewal em 5 min. Registrar em
 `/compliance/evidences/runbooks/drills/{yyyy-q}-tls-drill.md`.
 

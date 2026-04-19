@@ -3,18 +3,18 @@
 ## Objetivo
 
 Provisionar o repositório de imagens no OCIR para a imagem do Gateway, com
-retention policies, imutabilidade de tag (prod) e integração IAM com CI e
-cluster OCP. Equivalente ao `artifact-registry` do track GCP.
+retention policies, imutabilidade de tag (pro) e integração IAM com CI e
+cluster OCP.
 
-## Equivalência GCP ↔ Basa
+## Recursos OCI envolvidos
 
-| GCP | OCI |
+| Item | Tipo OCI |
 |---|---|
-| `google_artifact_registry_repository` | `oci_artifacts_container_repository` |
-| `google_artifact_registry_repository_iam_member` | `oci_identity_policy` com statements específicos |
-| `immutable_tags` (AR) | `is_immutable = true` (OCIR) |
-| `keep_count=10` lifecycle | Retention policy OCIR + manual cleanup (OCIR não tem lifecycle nativo — usar CI job) |
-| CI pull via WIF + `roles/artifactregistry.reader` | Token OCIR via OIDC federation + `use repositories in compartment` policy |
+| Repositório | `oci_artifacts_container_repository` |
+| IAM | `oci_identity_policy` com statements específicos |
+| Imutabilidade | `is_immutable = true` |
+| Retenção | Retention via OCIR + cleanup job (OCIR não tem lifecycle nativo — usar CI) |
+| CI pull | Token OCIR via OIDC federation + `use repositories in compartment` policy |
 
 ## Inputs
 
@@ -23,7 +23,7 @@ variable "compartment_id"    { type = string }
 variable "environment"       { type = string }
 variable "region"            { type = string }
 variable "repository_name"   { type = string }                    # gateway-basa-{env}
-variable "is_immutable"      { type = bool, default = false }     # true em prod
+variable "is_immutable"      { type = bool, default = false }     # true em pro
 variable "is_public"         { type = bool, default = false }
 variable "keep_count"        { type = number, default = 10 }      # usado por job de cleanup
 variable "ci_dynamic_group_id" { type = string }                  # dynamic group do CI (OIDC)
@@ -42,7 +42,7 @@ variable "defined_tags"      { type = map(string) }
 
 ## Retention
 
-OCIR **não tem lifecycle policy nativo** (como AR tem). Duas estratégias:
+OCIR **não tem lifecycle policy nativo**. Duas estratégias:
 
 1. **Job de CI** — workflow `retention-oci.yml` rodando semanalmente:
    - Lista tags via `oci artifacts container image list`.
@@ -54,10 +54,10 @@ V1 adota opção 1. Script entra em `06-cicd-github-actions/`.
 
 ## Imutabilidade
 
-- **Dev:** `is_immutable = false` (sobrescrever `dev-latest` permitido).
-- **Staging:** `is_immutable = false` mas com proteção contra deletar
+- **sqa:** `is_immutable = false` (sobrescrever `sqa-latest` permitido).
+- **uat:** `is_immutable = false` mas com proteção contra deletar
   tags `v*.*.*-rc*`.
-- **Prod:** `is_immutable = true` — uma vez pushado, tag é eterna.
+- **pro:** `is_immutable = true` — uma vez pushado, tag é eterna.
 
 ## Imagem scanning
 
@@ -105,7 +105,7 @@ output "repo_name_full"   { value = "${var.repository_name}/gateway" }
 ```
 
 > URL OCIR: `{region-key}.ocir.io/{tenancy-namespace}/{repo}:{tag}`.
-> Ex: `gru.ocir.io/revenutech/gateway-basa-dev/gateway:v1.0.0`.
+> Ex: `gru.ocir.io/revenutech/gateway-basa-sqa/gateway:v1.0.0`.
 
 ## Decisões de design
 
@@ -120,7 +120,7 @@ output "repo_name_full"   { value = "${var.repository_name}/gateway" }
 
 ## Controles ISO 27001
 
-- A.8.9 — Configuration management (imagens imutáveis em prod).
+- A.8.9 — Configuration management (imagens imutáveis em pro).
 - A.8.8 — Vulnerability management (scanning).
 - A.8.4 — Access to source code / artifacts (IAM policies).
 
@@ -131,5 +131,5 @@ output "repo_name_full"   { value = "${var.repository_name}/gateway" }
 - [ ] CI consegue `docker push` via OIDC federation sem keys estáticas.
 - [ ] OCP pull secret gerado automaticamente (External Secrets Operator
       lê de Vault).
-- [ ] Imagem `v0.0.1-smoke` pushada com sucesso para dev em smoke test
+- [ ] Imagem `v0.0.1-smoke` pushada com sucesso para sqa em smoke test
       pós-apply.

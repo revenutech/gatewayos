@@ -1,7 +1,7 @@
 # Fase 03 — Kubernetes / OpenShift
 
 Especificação do chart Helm e manifests OpenShift-flavored para o Gateway
-no track Basa: **Route** (em vez de Ingress), **SCC** (SecurityContextConstraints),
+no track Basa: **Route**, **SCC** (SecurityContextConstraints),
 **NetworkPolicy compatível com OVN-Kubernetes**, **ServiceMonitor** do
 Prometheus Operator nativo do OpenShift, **HPA** e **PDB**.
 
@@ -9,53 +9,31 @@ Prometheus Operator nativo do OpenShift, **HPA** e **PDB**.
 
 | Documento | Foco |
 |---|---|
-| [helm-chart-structure.md](helm-chart-structure.md) | Chart único ou chart separado, templates novos, valores condicionais |
+| [helm-chart-structure.md](helm-chart-structure.md) | Estrutura do chart, templates, valores por env |
 | [route-vs-ingress.md](route-vs-ingress.md) | OpenShift Route — edge, passthrough, reencrypt, TLS, redirects |
 | [scc-securitycontext.md](scc-securitycontext.md) | SCC restricted-v2 vs custom; compat com UID random |
 | [networkpolicy-ovn.md](networkpolicy-ovn.md) | NetworkPolicy em OVN-K; ingress/egress; namespace egress |
 | [servicemonitor.md](servicemonitor.md) | ServiceMonitor no Prometheus Operator OCP; PrometheusRule |
 | [hpa-pdb.md](hpa-pdb.md) | HorizontalPodAutoscaler + PodDisruptionBudget |
-| [values-per-env.md](values-per-env.md) | `values-oci-{dev,staging,prod}.yaml` — estrutura e defaults |
+| [values-per-env.md](values-per-env.md) | `values-oci-{sqa,uat,pro}.yaml` — estrutura e defaults |
 
-## Equivalência com track GCP
+## Comportamento esperado
 
-| GCP (atual) | Basa |
+| Área | Implementação |
 |---|---|
-| `k8s/helm/gateway/templates/ingress.yaml` (GKE Ingress) | `templates/route.yaml` (OpenShift Route) |
-| `k8s/helm/gateway/templates/managed-certificate.yaml` | `templates/certificate.yaml` (cert-manager) |
-| `k8s/helm/gateway/templates/backend-config.yaml` (GCP) | N/A (Route cobre health check + drain) |
-| `k8s/helm/gateway/templates/networkpolicy.yaml` (Calico) | `templates/networkpolicy.yaml` (OVN-K — mesma API, checar egress) |
-| `values-gcp-{env}.yaml` | `values-oci-{env}.yaml` |
-| `securityContext` do deployment | `SCC` do OpenShift + annotations para UID random |
-| HPA, PDB, ServiceMonitor, ServiceAccount, Deployment | **Reutilizados sem mudanças estruturais** |
-
-## Princípio guia — chart único
-
-Mesmo chart Helm, valores trocam. Novos templates (Route, SCC, Certificate)
-são condicionais (`{{- if .Values.openshift.enabled }}`). Assim:
-
-- `values-gcp-*.yaml` deixa `openshift.enabled: false` → renderiza Ingress + ManagedCertificate.
-- `values-oci-*.yaml` deixa `openshift.enabled: true` → renderiza Route + Certificate + SCC.
-
-ADR implícito registrado em `helm-chart-structure.md`.
-
-## Objetivo: paridade funcional
-
-| Comportamento | GCP | Basa |
-|---|---|---|
-| HTTPS externo com cert gerenciado | GKE ManagedCertificate | cert-manager + Route edge |
-| HTTP → HTTPS redirect | FrontendConfig | Route `insecureEdgeTerminationPolicy: Redirect` |
-| Readiness/liveness | `/__health` | idem |
-| Autoscaling CPU/mem | HPA | HPA (sem mudança) |
-| Max unavailable rollout | PDB | PDB (sem mudança) |
-| Prometheus scrape | ServiceMonitor | ServiceMonitor (mesma API) |
-| NetworkPolicy | Calico | OVN-K (mesma API — checar egress específico) |
-| Pod security | securityContext + PSA | SCC restricted-v2 (mesma postura) |
-| Init container | Não | Opcional — `permissions-init` se precisar preparar filesystem |
+| HTTPS externo com cert gerenciado | cert-manager + Route edge |
+| HTTP → HTTPS redirect | Route `insecureEdgeTerminationPolicy: Redirect` |
+| Readiness/liveness | `/__health` |
+| Autoscaling CPU/mem | HPA |
+| Max unavailable rollout | PDB |
+| Prometheus scrape | ServiceMonitor (OpenShift User Workload Monitoring) |
+| NetworkPolicy | OVN-K (`networking.k8s.io/v1`) |
+| Pod security | SCC `restricted-v2` + PSA `restricted` |
+| Init container | Opcional — `permissions-init` se precisar preparar filesystem |
 
 ## Namespaces
 
-- Dev/staging/prod: `gateway-dev`, `gateway-staging`, `gateway-prod` (ver
+- sqa/uat/pro: `gateway-sqa`, `gateway-uat`, `gateway-pro` (ver
   `naming-conventions.md` da Fase 00).
 - Namespaces criados **pelo cluster-bootstrap** (Fase 02 post-install CR)
   com labels:
@@ -67,9 +45,9 @@ ADR implícito registrado em `helm-chart-structure.md`.
 
 ## Checklist de fechamento da Fase 03
 
-- [ ] Chart único com templates condicionais validado via `helm template`.
-- [ ] Route funcional em OCP dev (após Fase 02 apply).
-- [ ] cert-manager emitindo cert LE staging em dev.
+- [ ] Chart com templates validado via `helm template` para todos os envs.
+- [ ] Route funcional em OCP sqa (após Fase 02 apply).
+- [ ] cert-manager emitindo cert LE staging em sqa.
 - [ ] SCC adequado confirmado (pod roda sem erros).
 - [ ] NetworkPolicy OVN-K testada (conectividade do Gateway para
       backends + bloqueio cross-namespace).

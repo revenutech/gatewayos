@@ -55,7 +55,7 @@ Cada runbook segue o esqueleto:
 |---|---|---|
 | bootstrap-first-apply | quando criar env novo | SRE Lead |
 | tls-on-openshift | trimestral | SRE Lead |
-| rollback | trimestral (staging) | DevEx |
+| rollback | trimestral (uat) | DevEx |
 | dr-failover-cross-region | semestral (mesa) / anual (real) | SRE Lead + Platform Owner |
 | incident-response-oci | trimestral (tabletop) | Security Lead |
 

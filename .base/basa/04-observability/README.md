@@ -16,19 +16,6 @@ OCI Logging.
 | [logging-loki.md](logging-loki.md) | OpenShift Logging via ClusterLogging + Loki |
 | [oci-logging-integration.md](oci-logging-integration.md) | Bridge OTel Collector → OCI Logging + OCI Monitoring |
 
-## Equivalência com track GCP
-
-| GCP (atual) | Basa |
-|---|---|
-| Cloud Monitoring (métricas) | OpenShift Monitoring (Prometheus) + opcional bridge OCI |
-| Cloud Logging (logs app + infra) | OpenShift Logging (Loki) + opcional bridge OCI Logging |
-| Cloud Trace | Red Hat distributed tracing (Tempo) + OCI APM opcional |
-| Grafana em GKE (recente, `dashboard.allenty.io`) | Grafana Operator + `GrafanaDashboard` CRs |
-| OTel Collector (módulo Terraform) | OTel Operator + `OpenTelemetryCollector` CR no cluster |
-| `templates/servicemonitor.yaml` | Mesmo template (reutilizado em Fase 03) |
-| `templates/prometheusrule.yaml` | Mesmo template (reutilizado) |
-| `monitoring/` Terraform GCP dashboards | `GrafanaDashboard` CRs versionados |
-
 ## Princípios
 
 1. **Operators nativos do OpenShift** — Prometheus, Grafana, OTel, Logging.
@@ -95,7 +82,7 @@ OCI Logging.
 
 - [ ] User Workload Monitoring ativo no cluster (Fase 03 já marca).
 - [ ] Grafana Operator instalado; Grafana CR rodando.
-- [ ] Dashboards do track GCP portados para `GrafanaDashboard` CRs.
+- [ ] Dashboards-alvo criados como `GrafanaDashboard` CRs versionados.
 - [ ] OTel Operator instalado; Collector DaemonSet em cada node.
 - [ ] OpenShift Logging (Loki) coletando logs do namespace gateway.
 - [ ] Bridge OCI Logging opcionalmente ativada.

@@ -62,9 +62,9 @@ spec:
 
 | Env | minReplicas | maxReplicas | targetCPU | targetMem |
 |---|---|---|---|---|
-| dev | 1 | 3 | 70 | 80 |
-| staging | 2 | 6 | 60 | 75 |
-| prod | 3 | 10 | 60 | 75 |
+| sqa | 1 | 3 | 70 | 80 |
+| uat | 2 | 6 | 60 | 75 |
+| pro | 3 | 10 | 60 | 75 |
 
 ### Metrics custom (opcional)
 
@@ -112,9 +112,9 @@ spec:
 
 | Env | PDB |
 |---|---|
-| dev | `maxUnavailable: 1` (libera drain livre) |
-| staging | `maxUnavailable: 1` |
-| prod | `minAvailable: 2` (sempre 2 pods up em janela de manutenção) |
+| sqa | `maxUnavailable: 1` (libera drain livre) |
+| uat | `maxUnavailable: 1` |
+| pro | `minAvailable: 2` (sempre 2 pods up em janela de manutenção) |
 
 ## Interação com Machine Autoscaler (OCP)
 
@@ -173,7 +173,7 @@ resources:
     memory: 512Mi
 ```
 
-Em prod Basa, aumentar para `cpu: 500m / memory: 256Mi` (request) dada a
+Em pro Basa, aumentar para `cpu: 500m / memory: 256Mi` (request) dada a
 capacidade maior dos workers E4.Flex 4/16.
 
 ## Drain e rolling update
@@ -188,7 +188,7 @@ strategy:
     maxUnavailable: 0
 ```
 
-Combinado com PDB `minAvailable: 2` em prod → rolling garante sempre pelo
+Combinado com PDB `minAvailable: 2` em pro → rolling garante sempre pelo
 menos 2 pods ativos durante rollout.
 
 ## Graceful shutdown
@@ -206,7 +206,7 @@ lifecycle:
 ## Decisões de design
 
 1. **HPA reutilizado** — mesma lógica CPU+memory.
-2. **PDB reforçado em prod** (`minAvailable: 2` em vez de `maxUnavailable: 1`).
+2. **PDB reforçado em pro** (`minAvailable: 2` em vez de `maxUnavailable: 1`).
 3. **Machine Autoscaler separado** do chart — responsabilidade do cluster.
 4. **PreStop sleep 10s** — evita 502 durante rollout.
 5. **Custom metrics via Prometheus Adapter** fica em Fase 04.
@@ -220,7 +220,7 @@ lifecycle:
 ## Checklist pronto-para-código
 
 - [ ] HPA renderiza com mínimos/máximos por env.
-- [ ] PDB prod renderiza `minAvailable: 2`.
+- [ ] PDB pro renderiza `minAvailable: 2`.
 - [ ] MachineAutoscaler aplicado (fora do chart).
 - [ ] Rolling update com `maxUnavailable: 0`.
 - [ ] PreStop presente, SIGTERM limpo (teste: `kubectl delete pod` sem 502).

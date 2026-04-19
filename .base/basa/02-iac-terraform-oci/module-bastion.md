@@ -4,17 +4,16 @@
 
 Prover acesso administrativo seguro ao control plane OpenShift (API 6443)
 e nodes via **OCI Bastion service** (zero-trust, sessão SSH temporária,
-MFA via OCI IAM). Sem equivalente direto em GCP (que usa IAP Tunnel +
-private GKE endpoint); Basa precisa pois OCP API não pode ficar 100%
-pública.
+MFA via OCI IAM). O bastion é necessário porque o API OCP fica privado
+(não exposto publicamente).
 
-## Equivalência GCP ↔ Basa
+## Capacidades
 
-| GCP | OCI |
+| Item | Detalhe |
 |---|---|
-| IAP TCP tunneling (`gcloud compute ssh --tunnel-through-iap`) | OCI Bastion service (sessions SSH / port-forward) |
-| Cloud Shell com gcloud já autenticado | OCI Cloud Shell ou workstation local com OCI CLI |
-| Master authorized networks | Bastion allowlist + NSG rules |
+| Acesso privilegiado | OCI Bastion service (sessions SSH / port-forward) |
+| Cliente | OCI Cloud Shell ou workstation local com OCI CLI |
+| Controle de acesso | Bastion allowlist + NSG rules |
 
 ## Inputs
 

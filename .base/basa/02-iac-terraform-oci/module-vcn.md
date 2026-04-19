@@ -4,25 +4,25 @@
 
 Criar a rede virtual (VCN) para o cluster OpenShift, com subnets por papel
 (app/lb/bastion), NSGs granulares, route tables, Internet Gateway e
-NAT Gateway. Equivalente ao módulo `vpc` do track GCP.
+NAT Gateway.
 
-## Equivalência GCP ↔ Basa
+## Recursos OCI envolvidos
 
-| GCP | OCI |
+| Componente | Tipo OCI |
 |---|---|
-| `google_compute_network` | `oci_core_vcn` |
-| `google_compute_subnetwork` | `oci_core_subnet` |
-| `google_compute_router_nat` | `oci_core_nat_gateway` |
-| `google_compute_firewall` | `oci_core_network_security_group` + rules |
-| Secondary IP range Pods | `pod_cidr` no install-config OpenShift (não subnet) |
-| Secondary IP range Services | `service_cidr` no install-config OpenShift (não subnet) |
-| VPC Flow Logs | `oci_logging_log` + VCN flow log subscription |
+| Rede virtual | `oci_core_vcn` |
+| Sub-redes | `oci_core_subnet` |
+| NAT egress | `oci_core_nat_gateway` |
+| Firewall | `oci_core_network_security_group` + rules |
+| Pod CIDR | `pod_cidr` no install-config OpenShift (não subnet) |
+| Service CIDR | `service_cidr` no install-config OpenShift (não subnet) |
+| Flow logs | `oci_logging_log` + VCN flow log subscription |
 
 ## Inputs
 
 ```hcl
 variable "compartment_id"   { type = string }
-variable "environment"      { type = string }                    # dev|staging|prod
+variable "environment"      { type = string }                    # sqa|uat|pro
 variable "region"           { type = string }                    # ex: sa-saopaulo-1
 variable "vcn_cidr"         { type = string, default = "10.40.0.0/16" }
 variable "subnet_app_cidr"  { type = string, default = "10.40.0.0/20" }   # /20 → 4k IPs
@@ -90,8 +90,8 @@ output "service_cidr"         { value = var.service_cidr }
 ## Flow logs
 
 OCI Logging subscribe nos flow logs da subnet `subnet_app` para capturar
-tráfego dos nodes (equivalente ao `log_config` das subnets GCP). Log
-Group: `gateway-basa-{env}-vcn-flowlogs`. Retention: 90 dias.
+tráfego dos nodes. Log Group: `gateway-basa-{env}-vcn-flowlogs`.
+Retention: 90 dias.
 
 Destino: opcionalmente shipar para OCI Object Storage via Service Connector
 (fora deste módulo; ver `module-monitoring.md`).
@@ -105,9 +105,10 @@ Destino: opcionalmente shipar para OCI Object Storage via Service Connector
 3. **Service gateway** — sempre presente, permite pull de imagem OCIR sem
    passar pela NAT (custo + latência).
 4. **Sem VPN gateway na v1** — acesso administrativo via Bastion service
-   (ADR futuro se precisar peering cross-cloud).
-5. **CIDR `10.40.0.0/16`** não colide com GCP (GCP usa `10.20.0.0/20` dev,
-   `10.30.0.0/20` prod). Reserva `10.40-10.49` para Basa.
+   (ADR futuro se precisar peering com rede corporativa).
+5. **CIDR `10.40.0.0/16`** reservado para o track Basa (`10.40-10.49`),
+   evitando colisão com quaisquer redes privadas corporativas
+   pré-existentes.
 
 ## Controles ISO 27001
 
@@ -122,4 +123,4 @@ Destino: opcionalmente shipar para OCI Object Storage via Service Connector
 - [ ] `terraform plan` idempotente.
 - [ ] NSG rules testadas com OCI Network Path Analyzer (pós-apply).
 - [ ] Flow logs ativos e visíveis em OCI Logging.
-- [ ] CIDR não colide com GCP VPCs.
+- [ ] CIDR não colide com redes privadas corporativas existentes.

@@ -4,24 +4,23 @@
 
 Provisionar um cluster **Red Hat OpenShift Container Platform (OCP)** sobre
 OCI, usando o **OpenShift Installer em modo UPI (User Provisioned
-Infrastructure)** orquestrado via Terraform + OCI SDK. Equivalente ao
-módulo `gke` do track GCP.
+Infrastructure)** orquestrado via Terraform + OCI SDK.
 
 > **Nota:** Na data da ADR-001 (2026-04-17), **Oracle e Red Hat mantêm
 > parceria oficial** com imagens RHCOS publicadas no OCI Marketplace. O
 > fluxo abaixo é o modelo "assisted UPI" — Terraform cria compute/LB/DNS,
 > o Installer só gera ignition configs e valida o cluster.
 
-## Equivalência GCP ↔ Basa
+## Componentes principais
 
-| GCP | OCI + OpenShift |
+| Item | Detalhe |
 |---|---|
-| `google_container_cluster` (GKE control plane managed) | `oci_core_instance` × 3 (master nodes) + `oci_core_instance` × N (workers) criados pelo Terraform + Installer |
-| `google_container_node_pool` | `MachineSet` CR (pós-install, gerenciado pelo MAO) |
-| Workload Identity | **Service Account + OIDC issuer** do OCP + federação com OCI via Resource Principal |
-| Release channel (GKE) | OCP channel (`stable-4.16`) |
-| Binary Authorization | Sigstore policy-controller (Fase 05) |
-| Network Policy = CALICO | OVN-Kubernetes (default OCP) |
+| Control plane | `oci_core_instance` × 3 (masters) criados via Terraform + Installer |
+| Data plane | `oci_core_instance` × N (workers), `MachineSet` CRs pós-install gerenciados pelo MAO |
+| Identity K8s | Service Account + OIDC issuer do OCP + federação OCI via Resource Principal |
+| Release channel | OCP stable-4.x (`stable-4.16`) |
+| Admission policy | Sigstore policy-controller (Fase 05) |
+| CNI / NetworkPolicy | OVN-Kubernetes (default OCP) |
 
 ## Abordagem — UPI assistido por Terraform
 
@@ -47,7 +46,7 @@ O OpenShift Installer não tem provedor nativo OCI. Fluxo:
 variable "compartment_id"    { type = string }
 variable "environment"       { type = string }
 variable "region"            { type = string }
-variable "cluster_name"      { type = string }                    # gateway-basa-dev-ocp
+variable "cluster_name"      { type = string }                    # gateway-basa-sqa-ocp
 variable "vcn_id"            { type = string }
 variable "subnet_app_id"     { type = string }
 variable "subnet_lb_id"      { type = string }
@@ -63,9 +62,9 @@ variable "master_shape"      { type = string, default = "VM.Standard.E4.Flex" }
 variable "master_ocpus"      { type = number, default = 4 }
 variable "master_memory_gb"  { type = number, default = 16 }
 variable "worker_shape"      { type = string, default = "VM.Standard.E4.Flex" }
-variable "worker_ocpus"      { type = number, default = 2 }       # dev
+variable "worker_ocpus"      { type = number, default = 2 }       # sqa
 variable "worker_memory_gb"  { type = number, default = 8 }
-variable "worker_count"      { type = number, default = 2 }       # dev=2, staging=3, prod=3+
+variable "worker_count"      { type = number, default = 2 }       # sqa=2, uat=3, pro=3+
 variable "fips_enabled"      { type = bool, default = false }
 variable "ocp_version"       { type = string, default = "4.16.20" }
 variable "defined_tags"      { type = map(string) }
@@ -151,7 +150,7 @@ Operator). Em vez disso, fornece um `null_resource` `post_install_configs`
 que aplica via `oc apply` os MachineSets custom:
 
 - `gateway-basa-{env}-worker-a/b/c` — um por AD.
-- `ClusterAutoscaler` CR com `minReplicas: 2, maxReplicas: 10` (dev).
+- `ClusterAutoscaler` CR com `minReplicas: 2, maxReplicas: 10` (sqa).
 
 Alternativa limpa: delegar ao Helm/Kustomize em Fase 03. Decisão registrada
 em `environments.md`.
@@ -170,21 +169,21 @@ Se `var.fips_enabled = true`:
    IPI não existe para OCI oficialmente.
 2. **NLB para API vs LB L7** — OCP API é L4 (HTTPS passthrough); Ingress
    Router aceita L7.
-3. **Worker inicial mínimo** — 2 em dev, 3 em staging/prod. MAO cuida do
+3. **Worker inicial mínimo** — 2 em sqa, 3 em uat/pro. MAO cuida do
    scale-out.
 4. **Boot volume KMS** — todos os instances com boot volume encriptado
    pelo Vault key (module-vault).
 5. **Masters sempre 3** — HA mandatório em OCP; não configurável para
-   economizar (contrário ao GKE zonal dev).
+   economizar.
 
-## Custos estimados (dev)
+## Custos estimados (sqa)
 
 - 3 masters `VM.Standard.E4.Flex` 4 OCPU / 16GB = ~$210/mês.
 - 2 workers `VM.Standard.E4.Flex` 2 OCPU / 8GB = ~$70/mês.
 - 2 LBs = ~$20/mês.
 - Storage (boot volumes 100GB × 5) = ~$15/mês.
-- **Total dev: ~$315/mês** (contra ~$15/mês do GCP dev — OCP é
-  substancialmente mais caro por ser self-managed).
+- **Total sqa: ~$315/mês** (OCP self-managed implica control plane pago,
+  diferente de ofertas Kubernetes managed).
 
 ## Controles ISO 27001
 

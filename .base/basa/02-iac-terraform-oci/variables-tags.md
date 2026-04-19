@@ -11,7 +11,7 @@ recurso, garantindo governança, cost-tracking e evidência ISO 27001.
 variable "tenancy_ocid"          { type = string }
 variable "region"                { type = string }                 # sa-saopaulo-1
 variable "compartment_ocid"      { type = string }                 # gateway-basa-{env}
-variable "environment"           { type = string }                 # dev|staging|prod
+variable "environment"           { type = string }                 # sqa|uat|pro
 variable "base_domain"           { type = string }                 # oci.allenty.io (ou subzone)
 variable "pull_secret"           { type = string, sensitive = true }  # Red Hat pull secret (vault)
 variable "ssh_pub_key"           { type = string }
@@ -41,8 +41,8 @@ Tags dentro do namespace:
 | Tag | Valores válidos | Obrigatória? |
 |---|---|---|
 | `app` | `gateway`, `ledgeros`, `paymentos`, etc. | ✅ |
-| `track` | `basa`, `gcp` | ✅ |
-| `env` | `dev`, `staging`, `prod` | ✅ |
+| `track` | `basa` | ✅ |
+| `env` | `sqa`, `uat`, `pro` | ✅ |
 | `managed-by` | `terraform`, `manual`, `operator` | ✅ |
 | `iso27001` | `true`, `false` | ✅ |
 | `owner` | `platform-team`, `sre`, `security` | ✅ |
@@ -134,18 +134,18 @@ Tag `cost-center` alimenta OCI Cost Analysis. Report mensal automático
 - Sempre `type` e `description`.
 - `sensitive = true` em qualquer variável com secret.
 
-## Exemplo `.tfvars` dev
+## Exemplo `.tfvars` sqa
 
 ```hcl
-# environments/dev/dev.tfvars — NÃO COMMITAR valores sensitive
+# environments/sqa/sqa.tfvars — NÃO COMMITAR valores sensitive
 tenancy_ocid          = "ocid1.tenancy.oc1..abc"
 region                = "sa-saopaulo-1"
 compartment_ocid      = "ocid1.compartment.oc1..xyz"
-environment           = "dev"
-base_domain           = "dev.oci.allenty.io"
+environment           = "sqa"
+base_domain           = "sqa.oci.allenty.io"
 allowed_api_cidrs     = ["186.xxx.xxx.0/24", "203.xxx.xxx.0/24"]
 allowed_bastion_cidrs = ["186.xxx.xxx.0/24"]
-notification_email    = "dev-oncall@revenu.com.br"
+notification_email    = "sqa-oncall@revenu.com.br"
 ssh_pub_key           = "ssh-ed25519 AAAA..."
 # pull_secret lido de env var ou vault, não de tfvars
 ```

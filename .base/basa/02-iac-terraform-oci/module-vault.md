@@ -5,18 +5,18 @@
 Provisionar **OCI Vault** + **Master Encryption Keys** + (opcional) **Secrets**
 para criptografia de boot volumes, dados em repouso em Object Storage, e
 armazenamento de credenciais consumidas pelo Gateway (ex: pull secrets,
-JWKS overrides em dev). Equivalente ao módulo `kms` do track GCP.
+JWKS overrides em sqa).
 
-## Equivalência GCP ↔ Basa
+## Recursos OCI envolvidos
 
-| GCP | OCI |
+| Finalidade | Tipo OCI |
 |---|---|
-| `google_kms_key_ring` | `oci_kms_vault` |
-| `google_kms_crypto_key` | `oci_kms_key` (dentro do vault) |
-| HSM mode (`protection_level = HSM`) | `protection_mode = HSM` (FIPS 140-2 L3) |
-| Rotation period | `key_shape.algorithm` + rotation via API/console |
-| Secret Manager (`google_secret_manager_secret`) | `oci_vault_secret` |
-| CSI Secret Store Driver + WIF | External Secrets Operator + OCI provider |
+| Vault (keyring) | `oci_kms_vault` |
+| Chave de criptografia | `oci_kms_key` |
+| HSM mode | `protection_mode = HSM` (FIPS 140-2 L3) |
+| Rotation | via `oci kms management rotate-key-version` |
+| Secret store | `oci_vault_secret` |
+| Consumo em K8s | External Secrets Operator (OCI provider) |
 
 ## Inputs
 
@@ -30,7 +30,7 @@ variable "key_length"         { type = number, default = 32 }          # 256-bit
 variable "rotation_days"      { type = number, default = 90 }          # docs only; rotation é manual/API
 variable "defined_tags"       { type = map(string) }
 variable "ocp_dynamic_group_id" { type = string }                      # para policy de decrypt
-variable "ci_dynamic_group_id"  { type = string }                      # para policy de gestão de secrets em envs não-prod
+variable "ci_dynamic_group_id"  { type = string }                      # para policy de gestão de secrets em envs não-pro
 ```
 
 ## Recursos
@@ -50,9 +50,9 @@ variable "ci_dynamic_group_id"  { type = string }                      # para po
 
 | Env | Modo | Justificativa |
 |---|---|---|
-| dev | SOFTWARE | custo menor, não contém dados reais |
-| staging | HSM | paridade com prod para testes realistas |
-| prod | HSM | FIPS 140-2 L3, exigência A.8.24 |
+| sqa | SOFTWARE | custo menor, não contém dados reais |
+| uat | HSM | paridade com pro para testes realistas |
+| pro | HSM | FIPS 140-2 L3, exigência A.8.24 |
 
 ## Key rotation
 
@@ -112,14 +112,14 @@ output "secret_pullsecret_id"  { value = oci_vault_secret.secret_pullsecret_rh.i
 
 1. **3 chaves separadas** (app/tfstate/backup) — blast radius reduzido se
    uma chave for comprometida.
-2. **HSM em prod+staging** — custo baixo (~$8/mês por key HSM) e forte
+2. **HSM em pro+uat** — custo baixo (~$8/mês por key HSM) e forte
    evidência A.8.24.
 3. **Secrets manualmente populados** — TF referencia, operador enche via
    runbook. Não commitar secrets no state.
 4. **`prevent_destroy = true`** em `vault`, `key_app` — evita `terraform
    destroy` acidental.
 5. **Deletion protection** — OCI Vault tem "pending deletion period" de
-   7–30 dias (configurável). Usar 30 dias em prod.
+   7–30 dias (configurável). Usar 30 dias em pro.
 
 ## Controles ISO 27001
 
@@ -134,5 +134,5 @@ output "secret_pullsecret_id"  { value = oci_vault_secret.secret_pullsecret_rh.i
 - [ ] `prevent_destroy = true` nos recursos críticos.
 - [ ] Secrets vazios (ou com placeholder) — populados por runbook pós-apply.
 - [ ] OCP dynamic group pode decrypt via ESO.
-- [ ] CI dynamic group pode ler secrets de `gateway-basa-{env}-vault` (exceto prod).
+- [ ] CI dynamic group pode ler secrets de `gateway-basa-{env}-vault` (exceto pro).
 - [ ] Boot volume encryption validada (detalhe no `oci compute instance get`).

@@ -2,18 +2,17 @@
 
 ## Objetivo
 
-Produzir `docker/Dockerfile.ubi9` com paridade funcional ao `Dockerfile`
-atual (Alpine), porém com base **Red Hat UBI9-minimal** no estágio de
-runtime, mantendo o binário KrakenD CE 2.9.4 patchado e a compilação do
-FC Template.
+Produzir `docker/Dockerfile.ubi9` baseado em **Red Hat UBI9-minimal** no
+runtime, com o binário KrakenD CE 2.9.4 patchado e a compilação do FC
+Template.
 
-## Equivalência GCP ↔ Basa
+## Imagens por stage
 
-| Stage | GCP (atual) | Basa (UBI) |
-|---|---|---|
-| 1. Build KrakenD | `golang:1.24.2-alpine3.21` | `registry.access.redhat.com/ubi9/go-toolset:1.24` **ou** `golang:1.24-bookworm` + copy para UBI |
-| 2. Compile FC | `python:3.12-alpine` | `registry.access.redhat.com/ubi9/python-312` |
-| 3. Runtime | `alpine:3.21` | `registry.access.redhat.com/ubi9/ubi-minimal:9.4` |
+| Stage | Imagem |
+|---|---|
+| 1. Build KrakenD | `registry.access.redhat.com/ubi9/go-toolset:1.24` |
+| 2. Compile FC | `registry.access.redhat.com/ubi9/python-312` |
+| 3. Runtime | `registry.access.redhat.com/ubi9/ubi-minimal:9.4` |
 
 ## Desenho (3 stages)
 
@@ -21,14 +20,14 @@ FC Template.
 
 - Base: `ubi9/go-toolset:1.24` (Red Hat build of Go, já FIPS-aware).
 - Instala `git` e `make` via `microdnf` (toolset já tem gcc).
-- Executa `build/krakend/patch-deps.sh` (reutilizado do track GCP).
+- Executa `build/krakend/patch-deps.sh` (script de patch go-jose).
 - Sai com binário `/build/krakend`.
 
 ### Stage 2 — `compiler`
 
 - Base: `ubi9/python-312`.
 - Copia `krakend/` e `tools/compile-config.sh`.
-- Vars: `KRAKEND_DIR=/etc/krakend`, `ENV=dev|staging|prod` (build arg), `OUTPUT=/etc/krakend/krakend.json`.
+- Vars: `KRAKEND_DIR=/etc/krakend`, `ENV=sqa|uat|pro` (build arg), `OUTPUT=/etc/krakend/krakend.json`.
 - Executa `sh /compile-config.sh` → gera JSON estático.
 
 ### Stage 3 — `runtime`
@@ -90,26 +89,26 @@ Arquivo `licenses/` copiado para `/licenses/` na imagem (exigência Red Hat cert
 
 | Arg | Default | Uso |
 |---|---|---|
-| `ENV` | `dev` | passa para compile-config.sh |
+| `ENV` | `sqa` | passa para compile-config.sh |
 | `KRAKEND_VERSION` | `2.9.4` | marca LDFLAGS e LABEL version |
 | `BUILD_SHA` | (vazio) | grava em LABEL para rastreabilidade |
 
-## Diferenças vs Dockerfile GCP — explícitas
+## Características da imagem
 
-| Item | GCP | Basa | Motivo |
-|---|---|---|---|
-| Base runtime | alpine:3.21 | ubi9/ubi-minimal:9.4 | Stack RH, FIPS-ready |
-| Healthcheck | `wget --spider` | `curl -fsS` | UBI não traz busybox; curl é padrão |
-| UID | 1000 (fixo) | 1001 + GID 0 | Compat OpenShift random UID |
-| Package mgr | `apk` | `microdnf` | UBI padrão |
-| Image size | ~30 MB | ~80 MB | Trade-off: maior, mas certificada RH |
+| Item | Valor | Motivo |
+|---|---|---|
+| Base runtime | ubi9/ubi-minimal:9.4 | Stack RH, FIPS-ready |
+| Healthcheck | `curl -fsS` | UBI traz curl por padrão |
+| UID | 1001 + GID 0 | Compat OpenShift random UID |
+| Package mgr | `microdnf` | Padrão do UBI-minimal |
+| Image size | ~80 MB | Inclui certificação RH |
 
 ## Checklist pronto-para-código
 
 - [ ] `docker/Dockerfile.ubi9` criado conforme stages acima.
-- [ ] `.dockerignore` atualizado se necessário (compartilha com GCP).
+- [ ] `.dockerignore` atualizado se necessário.
 - [ ] `docker build -f docker/Dockerfile.ubi9 .` roda localmente.
 - [ ] `docker run` com `--user=$((RANDOM+1000000))` funciona (valida OpenShift-compat).
 - [ ] Healthcheck retorna `200` em `/__health`.
-- [ ] Imagem aprovada por `trivy image --severity CRITICAL,HIGH` sem regressão vs GCP.
+- [ ] Imagem aprovada por `trivy image --severity CRITICAL,HIGH` sem achados não-tratados.
 - [ ] Docs de build referenciados em `01-docker-ubi/krakend-build-on-ubi.md`.

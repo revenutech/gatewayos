@@ -4,16 +4,16 @@
 
 Coletar **traces** e opcionalmente **logs/métricas** via OTel, usando o
 **Red Hat build of OpenTelemetry Operator** (supported) e provisionando
-Collectors no cluster. Equivalente ao módulo `otel-collector` do track GCP.
+Collectors no cluster.
 
-## Equivalência
+## Características
 
-| GCP | Basa |
+| Item | Detalhe |
 |---|---|
-| OTel Collector como Deployment + Terraform | Red Hat OTel Operator + `OpenTelemetryCollector` CR |
-| Export Cloud Trace + Cloud Logging | Export Tempo + Loki (interno) + OCI APM opcional |
-| GCP exporter no binary | Operator + receiver/exporter CRs |
-| gRPC :4317 / HTTP :4318 | idem |
+| Operator | Red Hat OTel Operator + `OpenTelemetryCollector` CR |
+| Exporters-alvo | Tempo + Loki (interno) + OCI APM opcional |
+| Modo | Operator instala Collectors via CR (receiver/exporter declarativos) |
+| Protocolos | gRPC :4317 / HTTP :4318 |
 
 ## Instalação
 
@@ -198,8 +198,7 @@ ou config inline `telemetry/opentelemetry`:
 }
 ```
 
-Isso entra via FC template ou settings (Fase 03 — reutilizar config GCP
-sem mudança de fundo).
+Isso entra via FC template ou settings aplicados em Fase 03.
 
 ## Tempo Operator (traces storage)
 
