@@ -17,7 +17,7 @@ erradicação, recuperação, evidência e RCA.
 
 | Sev | Definição | SLA primeira resposta |
 |---|---|---|
-| SEV-0 | Total outage prod ou data breach ativo | 5 min |
+| SEV-0 | Total outage pro ou data breach ativo | 5 min |
 | SEV-1 | Serviço degradado + customer impact OU sinal de comprometimento | 15 min |
 | SEV-2 | Degradação limitada, workaround disponível | 2 h |
 | SEV-3 | Warning / anomalia sem impacto imediato | next business day |
@@ -72,7 +72,7 @@ oci iam auth-token delete --user-id $USER --auth-token-id $TOKEN
 # Bloquear admission policy para exigir signature atual
 oc apply -f /path/to/policy-controller-enforce.yaml   # se ainda não ativa
 
-# Se imagem maliciosa já em prod — rollback imediato
+# Se imagem maliciosa já em pro — rollback imediato
 # (ver rollback.md)
 ```
 
@@ -81,7 +81,7 @@ oc apply -f /path/to/policy-controller-enforce.yaml   # se ainda não ativa
 ```
 # Rotacionar JWT signing keys no Keycloak (fora do scope OCI)
 # Invalidar cache JWKS local do Gateway:
-oc rollout restart deploy/gateway -n gateway-prod
+oc rollout restart deploy/gateway -n gateway-pro
 # Adicionar tokens comprometidos ao bloom filter de revocation
 ```
 
@@ -96,7 +96,7 @@ oc annotate externalsecret <name> -n <ns> \
   force-sync=$(date +%s) --overwrite
 ```
 
-#### D. Outage prod
+#### D. Outage pro
 
 - Ver `rollback.md` se causa é release recente.
 - Ver `dr-failover-cross-region.md` se região primária caiu.
@@ -105,7 +105,7 @@ oc annotate externalsecret <name> -n <ns> \
 
 ```
 # Reforçar rate-limit temporariamente:
-helm upgrade gateway k8s/helm/gateway -n gateway-prod \
+helm upgrade gateway k8s/helm/gateway -n gateway-pro \
   --reuse-values \
   --set krakend.rateLimit.perClient=10     # override
 
@@ -120,7 +120,7 @@ oci network nsg rules add --nsg-id <lb-nsg> \
 
 ```
 # Logs 2h antes + 2h depois
-oc logs deploy/gateway -n gateway-prod --since=4h > /tmp/evidence/gateway-logs.txt
+oc logs deploy/gateway -n gateway-pro --since=4h > /tmp/evidence/gateway-logs.txt
 
 # Métricas Prometheus snapshot
 curl -g "http://prometheus.openshift-monitoring.svc:9091/api/v1/query_range?query={...}&start=...&end=..." \
@@ -206,7 +206,7 @@ Retention: **7 anos** (A.5.33).
 
 **Trimestral tabletop:** IMT se reúne, recebe cenário, executa runbook
 mentalmente, atualiza documentação. **Semestral real:** simulação em
-staging (ex: pod crash loop, fake alert).
+uat (ex: pod crash loop, fake alert).
 
 Registrar em `/compliance/evidences/runbooks/drills/{yyyy-q}-ir-drill.md`.
 

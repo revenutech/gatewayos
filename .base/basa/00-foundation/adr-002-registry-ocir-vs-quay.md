@@ -3,7 +3,7 @@
 - **Status:** Aceito
 - **Data:** 2026-04-17
 - **Decisores:** Platform Owner, Security Lead
-- **Relacionado:** ADR-004, equivalence-matrix.md §3
+- **Relacionado:** ADR-004, stack-reference.md §3
 
 ## Contexto
 
@@ -36,8 +36,8 @@ ecossistema OCI + Red Hat:
 
 **Adotar OCIR como registry primário** do track Basa.
 
-**Cosign + Trivy** continuam sendo o controle de supply chain primário (mesmo
-padrão do track GCP), rodando sobre OCIR — o registry em si fica neutro.
+**Cosign + Trivy** são o controle de supply chain primário, rodando sobre
+OCIR — o registry em si fica neutro.
 
 **Red Hat Quay** fica documentado como opção para um segundo momento, caso
 exijamos: (a) Clair scanning nativo integrado a OCP, (b) sign policy mais
@@ -47,13 +47,11 @@ rica, (c) geo-replication entre clouds.
 
 1. **Latência e custo de egress** — OCIR intra-região para cluster OpenShift
    na mesma região OCI minimiza custo e latência de pull.
-2. **Paridade com track GCP** — GCP usa Artifact Registry (registry do
-   próprio cloud). Manter simetria em OCI.
-3. **Controle de dados** — OCIR sob tenancy OCI em `sa-saopaulo-1` atende
+2. **Controle de dados** — OCIR sob tenancy OCI em `sa-saopaulo-1` atende
    requisito de residência de dados (B-R01 do risk register).
-4. **Cosign é registry-agnóstico** — segurança de supply chain independe
+3. **Cosign é registry-agnóstico** — segurança de supply chain independe
    do registry escolhido.
-5. **Operacional simples** — não assumir overhead de operar Quay self-hosted
+4. **Operacional simples** — não assumir overhead de operar Quay self-hosted
    sem benefício claro.
 
 ## Consequências
@@ -65,25 +63,25 @@ rica, (c) geo-replication entre clouds.
 
 ### Negativas
 - Scanning nativo OCIR é menos profundo que Clair (Quay) — mitigado por
-  Trivy no pipeline (já padrão GCP).
+  Trivy no pipeline.
 - Admission policy (Sigstore policy-controller) precisa ser instalada
   separadamente (não é nativo OCIR); documentado em Fase 05.
 - Se ACS for adotado (ADR-004), parte da sinergia Quay↔ACS se perde.
 
 ## Notas de implementação (Fase 02 + 05 + 06)
 
-- **Um repo por env**: `gateway-basa-dev`, `gateway-basa-staging`, `gateway-basa-prod`.
+- **Um repo por env**: `gateway-basa-sqa`, `gateway-basa-uat`, `gateway-basa-pro`.
 - **Retention rules**:
-  - dev: keep last 10 tags.
-  - staging: keep last 20 tags + todos `v*.*.*-rc*`.
-  - prod: keep all `v*.*.*` tags (imutáveis) + last 30 outras tags.
-- **Tag immutability** — ativada em prod, desativada em dev.
+  - sqa: keep last 10 tags.
+  - uat: keep last 20 tags + todos `v*.*.*-rc*`.
+  - pro: keep all `v*.*.*` tags (imutáveis) + last 30 outras tags.
+- **Tag immutability** — ativada em pro, desativada em sqa.
 - **Auth CI** — via OIDC Federation (Fase 06) usando `docker login` com
   token curto obtido de `oci iam` + chave de sessão.
 - **Auth pull em OpenShift** — Image Pull Secret gerenciado pelo operator
   de secrets (External Secrets Operator lendo de OCI Vault).
 - **URL padrão**: `{region-code}.ocir.io/{tenancy}/gateway-basa-{env}/gateway:{tag}`
-  (ex: `gru.ocir.io/revenutech/gateway-basa-dev/gateway:dev-abc123`).
+  (ex: `gru.ocir.io/revenutech/gateway-basa-sqa/gateway:sqa-abc123`).
 
 ## Revisão
 

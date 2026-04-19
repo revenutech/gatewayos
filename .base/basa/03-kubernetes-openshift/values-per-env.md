@@ -2,29 +2,23 @@
 
 ## Objetivo
 
-Estrutura e defaults dos arquivos `values-oci-{dev,staging,prod}.yaml` a
+Estrutura e defaults dos arquivos `values-oci-{sqa,uat,pro}.yaml` a
 serem criados em `k8s/helm/gateway/` quando Fase 03 for executada.
 
 ## Localização dos arquivos
 
 ```
 k8s/helm/gateway/
-├── values.yaml                      # defaults neutros (cloud-agnostic)
-├── values-gcp-dev.yaml              # já existente
-├── values-gcp-staging.yaml          # já existente
-├── values-gcp-production.yaml       # já existente
-├── values-oci-dev.yaml              # NOVO
-├── values-oci-staging.yaml          # NOVO
-└── values-oci-production.yaml       # NOVO
+├── values.yaml                      # defaults
+├── values-oci-sqa.yaml
+├── values-oci-uat.yaml
+└── values-oci-pro.yaml
 ```
 
 ## Bloco comum a todos `values-oci-*.yaml`
 
 ```yaml
-cloud: oci-basa
-
 openshift:
-  enabled: true
   scc:
     create: false           # usar restricted-v2 default
   route:
@@ -40,18 +34,9 @@ certManager:
   enabled: true
   issuerRef:
     kind: ClusterIssuer
-    # staging em dev, prod em staging/production
+    # uat em sqa, pro em uat/pro
   duration: 2160h           # 90d
   renewBefore: 360h         # 15d
-
-managedCertificate:
-  enabled: false            # OBRIGATÓRIO false em Basa
-
-ingress:
-  enabled: false            # OBRIGATÓRIO false em Basa
-
-backendConfig:
-  enabled: false            # OBRIGATÓRIO false em Basa
 
 # Pull secret sincronizado via ESO (Fase 05)
 image:
@@ -81,14 +66,14 @@ networkPolicy:
   # backends preenchidos por env
 ```
 
-## `values-oci-dev.yaml`
+## `values-oci-sqa.yaml`
 
 ```yaml
 {{/* herda comum */}}
 
 image:
-  repository: gru.ocir.io/revenutech/gateway-basa-dev/gateway
-  tag: dev-latest
+  repository: gru.ocir.io/revenutech/gateway-basa-sqa/gateway
+  tag: sqa-latest
   pullPolicy: Always
   pullSecret: ocir-pull
 
@@ -110,47 +95,47 @@ autoscaling:
   targetMemoryUtilizationPercentage: 80
 
 pdb:
-  enabled: false            # dev: tolera down total
+  enabled: false            # sqa: tolera down total
 
 openshift:
   route:
-    host: gateway.dev.oci.allenty.io
+    host: gateway.sqa.oci.allenty.io
 
 certManager:
   issuerRef:
     name: letsencrypt-staging     # evita rate-limit LE
-  commonName: gateway.dev.oci.allenty.io
+  commonName: gateway.sqa.oci.allenty.io
   dnsNames:
-    - gateway.dev.oci.allenty.io
+    - gateway.sqa.oci.allenty.io
 
 krakend:
-  env: dev
+  env: sqa
 
 networkPolicy:
   backends:
-    - namespace: ledgeros-dev
+    - namespace: ledgeros-sqa
       app: ledgeros
       port: 8081
-    - namespace: paymentos-dev
+    - namespace: paymentos-sqa
       app: paymentos
       port: 8082
-    - namespace: identos-dev
+    - namespace: identos-sqa
       app: identos
       port: 8091
-    - namespace: atmos-dev
+    - namespace: atmos-sqa
       app: atmos
       port: 8088
 
 prometheusRule:
-  enabled: false             # dev: ruído alto, sem on-call
+  enabled: false             # sqa: ruído alto, sem on-call
 ```
 
-## `values-oci-staging.yaml`
+## `values-oci-uat.yaml`
 
 ```yaml
 image:
-  repository: gru.ocir.io/revenutech/gateway-basa-staging/gateway
-  tag: staging-latest
+  repository: gru.ocir.io/revenutech/gateway-basa-uat/gateway
+  tag: uat-latest
   pullPolicy: Always
   pullSecret: ocir-pull
 
@@ -177,39 +162,39 @@ pdb:
 
 openshift:
   route:
-    host: gateway.staging.oci.allenty.io
+    host: gateway.uat.oci.allenty.io
 
 certManager:
   issuerRef:
     name: letsencrypt-prod
-  commonName: gateway.staging.oci.allenty.io
+  commonName: gateway.uat.oci.allenty.io
   dnsNames:
-    - gateway.staging.oci.allenty.io
+    - gateway.uat.oci.allenty.io
 
 krakend:
-  env: staging
+  env: uat
 
 networkPolicy:
   backends:
-    - namespace: ledgeros-staging
+    - namespace: ledgeros-uat
       app: ledgeros
       port: 8081
-    - namespace: paymentos-staging
+    - namespace: paymentos-uat
       app: paymentos
       port: 8082
-    - namespace: identos-staging
+    - namespace: identos-uat
       app: identos
       port: 8091
-    - namespace: atmos-staging
+    - namespace: atmos-uat
       app: atmos
       port: 8088
 ```
 
-## `values-oci-production.yaml`
+## `values-oci-pro.yaml`
 
 ```yaml
 image:
-  repository: gru.ocir.io/revenutech/gateway-basa-prod/gateway
+  repository: gru.ocir.io/revenutech/gateway-basa-pro/gateway
   # tag OVERRIDE via --set no CD
   tag: v1.0.0
   pullPolicy: IfNotPresent
@@ -248,47 +233,47 @@ certManager:
     - gateway.oci.allenty.io
 
 krakend:
-  env: prod
+  env: pro
 
 networkPolicy:
   backends:
-    - namespace: ledgeros-production
+    - namespace: ledgeros-pro
       app: ledgeros
       port: 8081
-    - namespace: paymentos-production
+    - namespace: paymentos-pro
       app: paymentos
       port: 8082
-    - namespace: identos-production
+    - namespace: identos-pro
       app: identos
       port: 8091
-    - namespace: atmos-production
+    - namespace: atmos-pro
       app: atmos
       port: 8088
 
 prometheusRule:
   enabled: true
 
-# Annotations extras em prod
+# Annotations extras em pro
 annotations:
   platform.revenu/change-ticket: ""  # setado pelo pipeline
 ```
 
 ## Variáveis setadas no pipeline (override `--set`)
 
-- `image.tag` — SHA do commit (`dev-abc123`) ou tag (`v1.0.0`).
+- `image.tag` — SHA do commit (`sqa-abc123`) ou tag (`v1.0.0`).
 - `configHash` — SHA do config compilado.
-- `annotations.platform\.revenu/change-ticket` — ID do PR/ticket (prod).
+- `annotations.platform\.revenu/change-ticket` — ID do PR/ticket (pro).
 
-## Diferenças sintéticas dev → staging → prod
+## Diferenças sintéticas sqa → uat → pro
 
-| Atributo | dev | staging | prod |
+| Atributo | sqa | uat | pro |
 |---|---|---|---|
 | Replicas iniciais | 1 | 2 | 3 |
 | CPU req | 100m | 250m | 500m |
 | Memory req | 64Mi | 128Mi | 256Mi |
 | HPA max | 3 | 6 | 10 |
 | PDB | — | maxUnavail 1 | minAvail 2 |
-| LE issuer | staging | prod | prod |
+| LE issuer | uat | pro | pro |
 | Image pull | Always | Always | IfNotPresent |
 | PrometheusRule | off | on | on |
 | Change ticket annotation | n/a | n/a | obrigatório |
@@ -296,7 +281,7 @@ annotations:
 ## Validação
 
 ```
-for env in dev staging production; do
+for env in sqa uat pro; do
   helm lint k8s/helm/gateway -f k8s/helm/gateway/values-oci-${env}.yaml
   helm template gateway k8s/helm/gateway -f k8s/helm/gateway/values-oci-${env}.yaml \
     | kubeconform -strict -schema-location default -schema-location 'https://raw.githubusercontent.com/.../openshift-json-schema/master/{{.ResourceKind}}-{{.ResourceAPIVersion}}.json'
@@ -307,7 +292,6 @@ done
 
 - [ ] 3 arquivos `values-oci-*.yaml` criados.
 - [ ] `helm lint` passa em cada um.
-- [ ] `helm template` renderiza sem Ingress/BackendConfig/ManagedCertificate.
 - [ ] `helm template` renderiza Route + Certificate + Deployment sem
       `runAsUser` fixo.
 - [ ] Backends do NetworkPolicy refletem realidade de cada env.

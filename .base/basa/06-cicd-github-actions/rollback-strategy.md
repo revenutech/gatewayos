@@ -33,8 +33,8 @@ Disparado quando:
 
 Ação:
 ```
-helm history gateway -n gateway-prod
-helm rollback gateway <revision-num> -n gateway-prod
+helm history gateway -n gateway-pro
+helm rollback gateway <revision-num> -n gateway-pro
 ```
 
 Detalhe completo no runbook em [`../08-runbooks/rollback.md`](../08-runbooks/rollback.md).
@@ -47,9 +47,9 @@ Helm mantém histórico em Secrets K8s (`sh.helm.release.v1.gateway.*`):
 helm upgrade --history-max 20 ...
 ```
 
-- **Dev:** 5 revisões.
-- **Staging:** 10.
-- **Prod:** 20 — cobre ~2 semanas de releases diárias.
+- **sqa:** 5 revisões.
+- **uat:** 10.
+- **pro:** 20 — cobre ~2 semanas de releases diárias.
 
 Secrets rotacionam; não ocupam espaço significativo.
 
@@ -57,7 +57,7 @@ Secrets rotacionam; não ocupam espaço significativo.
 
 | Sinal | Threshold | Ação |
 |---|---|---|
-| Pod não `Ready` em `--timeout` | 10 min (prod) | `helm rollback 0` |
+| Pod não `Ready` em `--timeout` | 10 min (pro) | `helm rollback 0` |
 | `/__health` retorna ≠200 | >2 falhas em 30 requests | `helm rollback 0` |
 | `liveness` probe fail em >50% dos pods | 1 min | Kubernetes reinicia; rollback se persistir |
 | 5xx rate >10% (Prometheus alert `GatewayHighErrorRate`) | 5 min | **manual** (alert ao on-call) |
@@ -75,7 +75,7 @@ tráfego). Ação:
 2. `terraform plan` no revert mostra diff.
 3. `terraform apply`.
 
-**Nunca** fazer `terraform state rm` ou rollback manual de state em prod.
+**Nunca** fazer `terraform state rm` ou rollback manual de state em pro.
 
 Casos destrutivos (ex: `terraform destroy` acidental):
 - Recuperar `terraform.tfstate` de versão anterior no bucket OCI (Fase 02).
@@ -87,18 +87,18 @@ Cenário: Helm rollback reverte para revision N-1, mas a imagem usada
 naquela revision não está mais no OCIR (purged por retention).
 
 Mitigação:
-- **Retention agressiva em prod** — manter `v*.*.*` imutáveis para sempre
+- **Retention agressiva em pro** — manter `v*.*.*` imutáveis para sempre
   (Fase 02).
-- **Tag de release** garantida por 180 dias em staging.
-- **Dev: aceitamos perda** (imagens são triviais de rebuild).
+- **Tag de release** garantida por 180 dias em uat.
+- **sqa: aceitamos perda** (imagens são triviais de rebuild).
 
 ## Rollback em múltiplos envs (cascade)
 
-Se bug chegou a staging + prod quase simultaneamente:
+Se bug chegou a uat + pro quase simultaneamente:
 
 1. **Prod primeiro** (reduz impacto).
-2. Staging depois.
-3. Dev mantém tag buggy para reprodução (debugging).
+2. uat depois.
+3. sqa mantém tag buggy para reprodução (debugging).
 
 ## Incident response integration
 
@@ -114,7 +114,7 @@ Rollback é **parte do IRP** (`.base/docs/operations/incident-response-plan.md`
 Todo rollback:
 1. Slack automático (`#gateway-releases`).
 2. Ticket auto-criado em Linear/Jira com commit que foi revertido.
-3. Release na GitHub marcada como `draft` ou `prerelease` se era prod.
+3. Release na GitHub marcada como `draft` ou `prerelease` se era pro.
 
 ## Permissions / who can rollback
 
@@ -124,7 +124,7 @@ Todo rollback:
 
 ## Testes de rollback
 
-Fire drill **trimestral** em staging:
+Fire drill **trimestral** em uat:
 1. Deploy intencionalmente broken (`image.tag=broken`).
 2. Validar rollback auto dispara.
 3. Medir tempo (target < 5 min).
@@ -132,10 +132,10 @@ Fire drill **trimestral** em staging:
 
 ## Decisões de design
 
-1. **Helm atomic em staging+prod** — automático em falha de deploy.
+1. **Helm atomic em uat+pro** — automático em falha de deploy.
 2. **Rollback manual para degradação pós-deploy** — humano decide.
-3. **Retention Helm prod = 20** revisões.
-4. **Tags prod imutáveis para sempre** — evita "rollback impossível".
+3. **Retention Helm pro = 20** revisões.
+4. **Tags pro imutáveis para sempre** — evita "rollback impossível".
 5. **Drill trimestral** — A.8.6 (capacity & drills).
 
 ## Controles ISO 27001
@@ -149,7 +149,7 @@ Fire drill **trimestral** em staging:
 ## Checklist pronto-para-código
 
 - [ ] Helm history-max ajustado por env.
-- [ ] Rollback auto testado em staging (fire drill).
+- [ ] Rollback auto testado em uat (fire drill).
 - [ ] Runbook manual (Fase 08) referencia este doc.
 - [ ] Slack #gateway-releases recebe notificações.
 - [ ] Auto-ticket configurado (Linear API ou GitHub Issues).

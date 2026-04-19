@@ -1,9 +1,9 @@
-# CD Production — `cd-production-oci.yml`
+# CD PRO — `cd-pro-oci.yml`
 
 ## Objetivo
 
 Deploy em produção apenas via tag `v*.*.*` ou `workflow_dispatch`, com
-todos os gates de staging **mais**:
+todos os gates de uat **mais**:
 
 - **Approval manual** obrigatório (GitHub Environment protection).
 - **Prod-specific Trivy policy** (inclui MEDIUM).
@@ -11,8 +11,6 @@ todos os gates de staging **mais**:
 - **Rollback automático** em falha.
 - **GitHub Release** com SBOM como artifact.
 - **Slack + ticket** em pós-deploy.
-
-Paridade com `cd-production-gcp.yml`.
 
 ## Trigger
 
@@ -32,7 +30,7 @@ on:
 
 ## Environment
 
-`production-oci`:
+`pro-oci`:
 - **2 reviewers** obrigatórios.
 - Branches permitidos: tags `v*.*.*` **apenas**.
 - Wait timer 5 min (opcional — dá chance de cancelar).
@@ -41,8 +39,8 @@ on:
 
 ```yaml
 concurrency:
-  group: cd-production-oci
-  cancel-in-progress: false       # nunca cancela prod mid-flight
+  group: cd-pro-oci
+  cancel-in-progress: false       # nunca cancela pro mid-flight
 ```
 
 ## Jobs — estrutura
@@ -50,17 +48,17 @@ concurrency:
 ```
 ci-revalidate
     ▼
-build-sign-scan   (idem staging + scan MEDIUM)
+build-sign-scan   (idem uat + scan MEDIUM)
     ▼
 deploy            (approval → helm atomic → smoke extensivo → rollback auto)
     ▼
 post-deploy       (Release + Slack + update OCI Vault tag)
 ```
 
-## YAML esqueleto (diffs vs staging)
+## YAML esqueleto (diffs vs uat)
 
 ```yaml
-name: CD — Production (OCI/OpenShift)
+name: CD — PRO (OCI/OpenShift)
 
 on:
   workflow_dispatch:
@@ -73,22 +71,22 @@ on:
     tags: ['v*.*.*']
 
 concurrency:
-  group: cd-production-oci
+  group: cd-pro-oci
   cancel-in-progress: false
 
 env:
-  OCP_NAMESPACE: gateway-prod
+  OCP_NAMESPACE: gateway-pro
   HELM_RELEASE: gateway
   IMAGE_NAME: gateway
 
 jobs:
   ci-revalidate:
-    (igual staging, mas com audit.sh --strict --env=prod)
+    (igual uat, mas com audit.sh --strict --env=pro)
 
   build-sign-scan:
     runs-on: ubuntu-latest
     needs: ci-revalidate
-    environment: production-oci     # approval AQUI (antes de build)
+    environment: pro-oci     # approval AQUI (antes de build)
     permissions:
       contents: read
       id-token: write
@@ -106,83 +104,83 @@ jobs:
             echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
           fi
 
-      # ... OCI CLI + OCIR login (mesmo que staging, com _PROD secrets)
+      # ... OCI CLI + OCIR login (mesmo que uat, com _PRO secrets)
 
       - name: Build
         run: |
           docker build -f docker/Dockerfile.ubi9 \
-            --build-arg ENV=prod \
+            --build-arg ENV=pro \
             --build-arg KRAKEND_VERSION=2.9.4 \
             --build-arg BUILD_SHA=${{ github.sha }} \
-            -t "${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}" .
+            -t "${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}" .
 
       # Trivy PROD policy — inclui MEDIUM
       - name: Trivy image (strict)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+          image-ref: ${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
           format: sarif
           output: trivy.sarif
           exit-code: 1
           severity: CRITICAL,HIGH,MEDIUM
           ignore-unfixed: true
 
-      # Push / Sign / SBOM / Attest / SLSA — idem staging
+      # Push / Sign / SBOM / Attest / SLSA — idem uat
       - id: push
         (idem)
 
       - uses: sigstore/cosign-installer@v3
 
       - name: Cosign sign
-        run: cosign sign --yes "${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
+        run: cosign sign --yes "${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
 
       - name: Generate SBOM
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+          image-ref: ${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
           format: cyclonedx
           output: sbom.cdx.json
 
       - name: Attest SBOM
         run: |
           cosign attest --yes --predicate sbom.cdx.json --type cyclonedx \
-            "${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
+            "${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
 
       - uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}
+          subject-name: ${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
       - uses: actions/upload-artifact@v4
         with:
-          name: sbom-prod-${{ steps.tag.outputs.tag }}
+          name: sbom-pro-${{ steps.tag.outputs.tag }}
           path: sbom.cdx.json
 
   deploy:
     needs: build-sign-scan
     runs-on: ubuntu-latest
-    environment: production-oci     # approval de novo? Não — mesmo environment, já aprovado no build
+    environment: pro-oci     # approval de novo? Não — mesmo environment, já aprovado no build
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      (OCI CLI + kubeconfig do Vault igual staging, com _PROD secrets)
+      (OCI CLI + kubeconfig do Vault igual uat, com _PRO secrets)
 
       - uses: sigstore/cosign-installer@v3
 
       - name: Verify sig + SBOM
         run: |
-          SUBJECT="^https://github.com/revenutech/revenu-platform-gateway/\\.github/workflows/cd-production-oci\\.yml@refs/tags/v"
+          SUBJECT="^https://github.com/revenutech/revenu-platform-gateway/\\.github/workflows/cd-pro-oci\\.yml@refs/tags/v"
           cosign verify \
             --certificate-identity-regexp "$SUBJECT" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-            "${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}@${{ needs.build-sign-scan.outputs.image_digest }}"
+            "${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}@${{ needs.build-sign-scan.outputs.image_digest }}"
           cosign verify-attestation --type cyclonedx \
             --certificate-identity-regexp "$SUBJECT" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-            "${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}@${{ needs.build-sign-scan.outputs.image_digest }}"
+            "${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}@${{ needs.build-sign-scan.outputs.image_digest }}"
 
       - uses: azure/setup-helm@v4
 
@@ -190,8 +188,8 @@ jobs:
         run: |
           helm upgrade --install "${{ env.HELM_RELEASE }}" k8s/helm/gateway \
             -n "${{ env.OCP_NAMESPACE }}" --create-namespace \
-            -f k8s/helm/gateway/values-oci-production.yaml \
-            --set image.repository="${{ secrets.OCIR_REPO_PROD }}/${{ env.IMAGE_NAME }}" \
+            -f k8s/helm/gateway/values-oci-pro.yaml \
+            --set image.repository="${{ secrets.OCIR_REPO_PRO }}/${{ env.IMAGE_NAME }}" \
             --set image.tag="${{ needs.build-sign-scan.outputs.image_tag }}" \
             --set configHash=${{ github.sha }} \
             --set "annotations.platform\.revenu/change-ticket=${{ github.event.inputs.change_ticket || github.ref_name }}" \
@@ -226,7 +224,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: sbom-prod-${{ needs.build-sign-scan.outputs.image_tag }}
+          name: sbom-pro-${{ needs.build-sign-scan.outputs.image_tag }}
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
@@ -254,9 +252,9 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
-## Diferenças vs staging
+## Diferenças vs uat
 
-| Item | Staging | Production |
+| Item | uat | pro |
 |---|---|---|
 | Trigger | push `staging` | tag `v*.*.*` + dispatch |
 | Approval | opcional | **2 reviewers obrigatório** |
@@ -287,7 +285,7 @@ Detalhe completo em [rollback-strategy.md](rollback-strategy.md).
 
 1. **Approval no `build-sign-scan`** (antes de build) — não desperdiça
    build se reviewer rejeitar.
-2. **Trivy MEDIUM** — reduz dívida prod.
+2. **Trivy MEDIUM** — reduz dívida pro.
 3. **Smoke 30s contínuo** — detecta flakiness.
 4. **Tolera 2 falhas em 30** — ~6.6% é threshold SLO.
 5. **SBOM no Release** — evidência pública para parceiros.
@@ -303,8 +301,8 @@ Detalhe completo em [rollback-strategy.md](rollback-strategy.md).
 
 ## Checklist pronto-para-código
 
-- [ ] Workflow `cd-production-oci.yml` criado.
-- [ ] Environment `production-oci` com 2 reviewers + tag restriction.
+- [ ] Workflow `cd-pro-oci.yml` criado.
+- [ ] Environment `pro-oci` com 2 reviewers + tag restriction.
 - [ ] Verify signature bloqueia deploy de imagem não assinada.
 - [ ] Rollback auto testado em fire drill.
 - [ ] Release com SBOM visível em `releases/`.

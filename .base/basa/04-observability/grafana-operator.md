@@ -4,17 +4,17 @@
 
 Instalar e configurar **Grafana Operator** (grafana-operator.github.io) no
 OpenShift, provisionar uma instância Grafana, datasources (Prometheus +
-Loki + Tempo) e **portar os dashboards existentes** do track GCP como
-`GrafanaDashboard` CRs.
+Loki + Tempo) e dashboards do Gateway como `GrafanaDashboard` CRs
+versionados.
 
-## Equivalência
+## Características
 
-| GCP | Basa |
+| Item | Detalhe |
 |---|---|
-| Grafana em GKE namespace dedicado (`dashboard.allenty.io`) | Grafana Operator instala Grafana no namespace `gateway-observability` |
-| Cloud Monitoring dashboards | `GrafanaDashboard` CRs versionados em git |
-| GKE ManagedCertificate TLS | Route edge + cert-manager (mesmo modelo de Fase 03) |
-| Plugin install inline | Plugin install via `GrafanaInstance.spec.deployment.spec.template.spec.initContainers` |
+| Namespace | `gateway-observability` |
+| Dashboards | `GrafanaDashboard` CRs versionados em git |
+| TLS | Route edge + cert-manager (Fase 03) |
+| Plugins | Via `GrafanaInstance.spec.deployment.spec.template.spec.initContainers` |
 
 ## Instalação
 
@@ -167,10 +167,9 @@ spec:
     url: http://tempo-gateway.tempo.svc:3200
 ```
 
-## Dashboards portados
+## Dashboards
 
-Cada dashboard existente (GCP Cloud Monitoring) vira um JSON +
-`GrafanaDashboard` CR.
+Cada dashboard do Gateway é um JSON + `GrafanaDashboard` CR.
 
 ### Estrutura no repo
 

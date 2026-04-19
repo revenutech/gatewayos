@@ -15,15 +15,15 @@ for exigida.
    ao Grafana do cluster.
 3. **Resiliência** — se o cluster OCP cair, ainda há visibilidade em OCI
    Monitoring/Logging.
-4. **SLO cross-cloud** — OCI AD health signals complementam cluster metrics.
+4. **SLO infra-side** — OCI AD health signals complementam cluster metrics.
 
 ## Status — opcional, habilitado por env
 
 | Env | Bridge métricas | Bridge logs | Bridge traces |
 |---|---|---|---|
-| dev | off | off | off |
-| staging | on | off | off |
-| prod | on | on | off (v1) |
+| sqa | off | off | off |
+| uat | on | off | off |
+| pro | on | on | off (v1) |
 
 ## 1. Métricas — Prometheus remote_write → OCI Monitoring
 
@@ -113,15 +113,15 @@ outputs:
         Authorization: ${env:OCI_AUTH_HEADER}     # assinado por ESO cronjob
   ...
 pipelines:
-  - name: prod-to-oci
+  - name: pro-to-oci
     inputRefs: [application]
     outputRefs: [oci-logging, default-loki]
-    filterRefs: [prod-only]
+    filterRefs: [pro-only]
 filters:
-  - name: prod-only
+  - name: pro-only
     type: openshiftLabels
     openshiftLabels:
-      namespaceIncludes: ["gateway-prod"]
+      namespaceIncludes: ["gateway-pro"]
 ```
 
 ### Signed request — desafio
@@ -170,16 +170,16 @@ V1: **off**. Avaliar em v2 quando SRE OCI pedir.
 ## Custos do bridge (estimado)
 
 - **OCI Monitoring remote_write:** ~$0.05 por milhão de data points. Com
-  10k datapoints/min staging = $21/mês; prod = $60–100/mês.
-- **OCI Logging ingest:** ~$0.40/GB. Com 5GB/dia prod = $60/mês.
+  10k datapoints/min uat = $21/mês; pro = $60–100/mês.
+- **OCI Logging ingest:** ~$0.40/GB. Com 5GB/dia pro = $60/mês.
 - **OCI Object Storage (bridge bucket):** trivial (<$5/mês).
 
-Total bridge prod ~$125–200/mês. Aceitar se auditoria OCI-nativa
+Total bridge pro ~$125–200/mês. Aceitar se auditoria OCI-nativa
 obrigatória.
 
 ## Decisões de design
 
-1. **Bridge opcional, off em dev.**
+1. **Bridge opcional, off em sqa.**
 2. **Métricas via remote_write nativo** (Prometheus suporta).
 3. **Logs via bucket intermediário** — evita complicação com OCI
    request signing no Vector.

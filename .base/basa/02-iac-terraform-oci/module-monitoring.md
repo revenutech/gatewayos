@@ -6,16 +6,16 @@ Provisionar a camada de **OCI Monitoring + Logging** para métricas,
 alarmes e logs (infra-level). Complementa, não substitui, o OpenShift
 Monitoring (Prometheus/Grafana) detalhado na Fase 04.
 
-## Equivalência GCP ↔ Basa
+## Recursos OCI envolvidos
 
-| GCP | OCI |
+| Finalidade | Tipo OCI |
 |---|---|
-| `google_monitoring_alert_policy` | `oci_monitoring_alarm` |
-| `google_monitoring_dashboard` | `oci_management_dashboard` (dashboards são JSON ricos) |
-| `google_logging_metric` | `oci_logging_log` + Log Search metrics |
-| `google_logging_sink` | `oci_sch_service_connector` (Service Connector Hub) |
-| Cloud Logging bucket | `oci_logging_log_group` + `oci_logging_log` |
-| PagerDuty / Slack channel | `oci_ons_notification_topic` + subscriptions |
+| Alarmes | `oci_monitoring_alarm` |
+| Dashboards | `oci_management_dashboard` (JSON) |
+| Métricas derivadas de logs | `oci_logging_log` + Log Search metrics |
+| Export de logs | `oci_sch_service_connector` (Service Connector Hub) |
+| Log aggregation | `oci_logging_log_group` + `oci_logging_log` |
+| Notificação | `oci_ons_notification_topic` + subscriptions |
 
 ## Escopo deste módulo
 
@@ -128,8 +128,8 @@ Dashboards de **workload (Prometheus)** ficam em Fase 04.
    de webhook não-gerenciado pela OCI).
 3. **Arquivamento para Object Storage** com lifecycle para Archive Tier
    após 30 dias (custo-efetivo para 7 anos).
-4. **Sem ingestão cross-cloud na v1** — logs OCI ficam na OCI. Bridge
-   opcional para central de logs em Fase 04 via OTel.
+4. **Logs ficam na OCI por default** — Bridge opcional para central de
+   logs em Fase 04 via OTel quando exigido.
 
 ## Controles ISO 27001
 

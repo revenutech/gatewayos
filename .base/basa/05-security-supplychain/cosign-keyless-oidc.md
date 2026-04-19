@@ -5,16 +5,6 @@
 Assinar imagens do Gateway em OCIR sem guardar chave privada, usando
 **Cosign keyless** — certificado efêmero emitido pelo **Fulcio** mediante
 OIDC token do GitHub Actions, registro em **Rekor** para transparência.
-Equivalente ao fluxo já usado no track GCP.
-
-## Equivalência
-
-| GCP (atual) | Basa |
-|---|---|
-| `sigstore/cosign-installer@v3` no workflow | Idem |
-| `cosign sign --yes` contra Artifact Registry | `cosign sign --yes` contra OCIR |
-| GCP registry: Cosign grava `.sig` layer | OCIR idem (especificação OCI artifact) |
-| `cosign verify` com `--certificate-identity` GH repo | Idem |
 
 ## Fluxo (pipeline GitHub Actions)
 
@@ -63,13 +53,13 @@ evita signing de imagem errada em caso de tag mutation.
 
 ```
 cosign verify \
-  --certificate-identity "https://github.com/revenutech/revenu-platform-gateway/.github/workflows/cd-production-oci.yml@refs/tags/v1.0.0" \
+  --certificate-identity "https://github.com/revenutech/revenu-platform-gateway/.github/workflows/cd-pro-oci.yml@refs/tags/v1.0.0" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
   ${OCIR_REPO}/gateway@${DIGEST}
 ```
 
 Policy aceita **apenas**:
-- Subject = workflow path + ref (prod = tag `v*.*.*`).
+- Subject = workflow path + ref (pro = tag `v*.*.*`).
 - Issuer = `https://token.actions.githubusercontent.com`.
 
 ## Admission policy (opcional v1, recomendado v2)
@@ -133,7 +123,7 @@ V1 usa Rekor público (`rekor.sigstore.dev`).
 
 ## Proteção do workflow
 
-GitHub **environment protection** no `production-oci`:
+GitHub **environment protection** no `pro-oci`:
 - Exige aprovação humana.
 - Restringe branches/tags permitidos a `refs/tags/v*.*.*`.
 

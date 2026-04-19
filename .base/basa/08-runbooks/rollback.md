@@ -12,7 +12,7 @@ Complementa [Fase 06 `rollback-strategy.md`](../06-cicd-github-actions/rollback-
 
 - **Owner:** DevEx (on-call).
 - **Backup:** SRE Lead.
-- **Aprovador (prod):** 1 reviewer de `gateway-platform-admins`.
+- **Aprovador (pro):** 1 reviewer de `gateway-platform-admins`.
 
 ## Trigger
 
@@ -26,10 +26,10 @@ Complementa [Fase 06 `rollback-strategy.md`](../06-cicd-github-actions/rollback-
 - [ ] Confirmar sintoma real via Grafana / Loki / Alertmanager — não é falso positivo.
 - [ ] Identificar revisão estável anterior via `helm history`.
 - [ ] Confirmar que imagem da revisão anterior ainda existe em OCIR
-      (prod: imagens `v*.*.*` são imutáveis, sempre disponíveis).
+      (pro: imagens `v*.*.*` são imutáveis, sempre disponíveis).
 - [ ] Abrir ticket de incidente (Linear / Jira).
 - [ ] Notificar `#gateway-critical` no Slack **antes** do rollback.
-- [ ] Aprovador disponível (prod).
+- [ ] Aprovador disponível (pro).
 
 ## Procedimento
 
@@ -37,7 +37,7 @@ Complementa [Fase 06 `rollback-strategy.md`](../06-cicd-github-actions/rollback-
 
 ```
 oci secrets secret-bundle get \
-  --secret-id $OCP_KUBECONFIG_SECRET_OCID_PROD \
+  --secret-id $OCP_KUBECONFIG_SECRET_OCID_PRO \
   --query 'data."secret-bundle-content".content' --raw-output \
   | base64 -d > ~/.kube/config
 chmod 600 ~/.kube/config
@@ -46,7 +46,7 @@ chmod 600 ~/.kube/config
 ### 2. Listar revisões
 
 ```
-helm history gateway -n gateway-prod --max 20
+helm history gateway -n gateway-pro --max 20
 ```
 
 Saída:
@@ -63,14 +63,14 @@ Identificar **última revisão estável** (ex: 22).
 ### 3. Rollback
 
 ```
-helm rollback gateway 22 -n gateway-prod \
+helm rollback gateway 22 -n gateway-pro \
   --wait --timeout 5m
 ```
 
 Ou para a revisão anterior imediata:
 
 ```
-helm rollback gateway 0 -n gateway-prod \
+helm rollback gateway 0 -n gateway-pro \
   --wait --timeout 5m
 ```
 
@@ -79,10 +79,10 @@ helm rollback gateway 0 -n gateway-prod \
 ### 4. Verificar rollout
 
 ```
-kubectl -n gateway-prod rollout status deploy/gateway --timeout=5m
+kubectl -n gateway-pro rollout status deploy/gateway --timeout=5m
 
-oc get pods -n gateway-prod -l app.kubernetes.io/name=gateway
-oc get deploy gateway -n gateway-prod -o yaml \
+oc get pods -n gateway-pro -l app.kubernetes.io/name=gateway
+oc get deploy gateway -n gateway-pro -o yaml \
   | grep 'image:'
 ```
 
@@ -91,7 +91,7 @@ Verificar que a tag da imagem voltou para `v1.3.5` (ou correspondente).
 ### 5. Smoke
 
 ```
-HOST=$(oc get route gateway -n gateway-prod -o jsonpath='{.spec.host}')
+HOST=$(oc get route gateway -n gateway-pro -o jsonpath='{.spec.host}')
 for i in $(seq 1 10); do
   curl -fsS --max-time 5 "https://${HOST}/__health" | head -1
   sleep 1
@@ -108,13 +108,13 @@ Todas 10 retornam 200.
 
 ## Cenário: imagem não disponível em OCIR (emergência)
 
-Se a imagem alvo do rollback foi purged (não deveria acontecer em prod
+Se a imagem alvo do rollback foi purged (não deveria acontecer em pro
 com immutable tags):
 
 1. **Rebuild from git:**
    ```
    git checkout v1.3.5
-   gh workflow run cd-production-oci.yml --ref v1.3.5 \
+   gh workflow run cd-pro-oci.yml --ref v1.3.5 \
      -f image_tag=v1.3.5-rebuild -f change_ticket=ROLLBACK-EMERG
    ```
 2. Aguardar build + push (~10 min).
@@ -129,7 +129,7 @@ Esse é pior caso — documentar RCA para garantir retention policy correta.
 - [ ] Marcar release revertido como `draft` no GitHub.
 - [ ] Iniciar RCA em 48h.
 - [ ] Identificar bug, abrir PR de fix.
-- [ ] Fix em dev → staging → re-deploy prod.
+- [ ] Fix em sqa → uat → re-deploy pro.
 
 ## Evidência a gerar
 
@@ -143,7 +143,7 @@ Esse é pior caso — documentar RCA para garantir retention policy correta.
 
 - Rollback `helm rollback` falha (`error: release gateway failed`):
   → Platform Owner, considerar `helm uninstall` + `helm install` como
-  último recurso **somente em dev**.
+  último recurso **somente em sqa**.
 - Prod em degradação severa e rollback não resolve → invocar
   [incident-response-oci.md](incident-response-oci.md).
 - Múltiplos rollbacks em <24h → freeze de releases + post-mortem
@@ -151,7 +151,7 @@ Esse é pior caso — documentar RCA para garantir retention policy correta.
 
 ## Drill
 
-**Trimestral em staging:**
+**Trimestral em uat:**
 1. Deploy intencional com `image.tag=<known-broken-image>`.
 2. Validar rollback manual dispara em <5 min.
 3. Registrar tempo + passos em
@@ -160,7 +160,7 @@ Esse é pior caso — documentar RCA para garantir retention policy correta.
 ## Relacionado
 
 - Fase 06 — `rollback-strategy.md` (automático).
-- Fase 06 — `cd-production-oci.yml`.
+- Fase 06 — `cd-pro-oci.yml`.
 - [incident-response-oci.md](incident-response-oci.md).
 
 ## Changelog

@@ -2,28 +2,20 @@
 
 ## Objetivo
 
-Replicar a postura de NetworkPolicy do track GCP (Calico) no OpenShift on
-OCI, que usa **OVN-Kubernetes (OVN-K)** como CNI default. Mesma API
-`networking.k8s.io/v1` — comportamento 99% compatível, com detalhes sobre
-egress e namespace selectors.
+Aplicar NetworkPolicy granular no OpenShift on OCI, que usa
+**OVN-Kubernetes (OVN-K)** como CNI default, via API padrão
+`networking.k8s.io/v1` + recursos OpenShift-specific (EgressFirewall,
+AdminNetworkPolicy).
 
-## Compatibilidade Calico ↔ OVN-K
+## Notas sobre OVN-K
 
-| Feature | Calico | OVN-K | Nota |
-|---|---|---|---|
-| `podSelector` ingress | ✅ | ✅ | idem |
-| `podSelector` egress | ✅ | ✅ | idem |
-| `namespaceSelector` | ✅ | ✅ | OVN-K requer label `kubernetes.io/metadata.name` |
-| `ipBlock` (CIDR) egress | ✅ | ✅ | idem |
-| `named port` | ✅ | ✅ | idem |
-| DNS egress | ✅ | ✅ (necessita allow 53/udp + 53/tcp para kube-dns) |
-| Default deny (ingress) | ✅ | ✅ | |
-| Egress policies | ✅ | ✅ (OCP 4.10+) | |
-| Admin NetworkPolicy (ANP) | ❌ | ✅ (cluster-scoped, prioridade) | opcional em Fase 05 |
-| Calico Global NetworkPolicy | ✅ | ❌ | migrar para ANP (OVN-K) se precisar |
-
-**OVN-K tem paridade para o chart atual.** Ajustes: explicitar DNS egress,
-usar label `kubernetes.io/metadata.name` em namespaceSelector.
+| Item | Detalhe |
+|---|---|
+| `namespaceSelector` | Requer label `kubernetes.io/metadata.name` |
+| DNS egress | Allow 53/udp + 53/tcp explícito para `openshift-dns` |
+| Egress policies | Suportado (OCP 4.10+) |
+| Admin NetworkPolicy (ANP) | Suportado (OCP 4.14+); cluster-scoped, prioridade |
+| EgressFirewall | CR OpenShift-specific para egress com DNS names |
 
 ## Política default do namespace
 
@@ -78,12 +70,12 @@ spec:
       ports:
         - port: 8090
           protocol: TCP
-    # HealthCheck / debug via bastion (opcional, apenas dev)
-    {{- if eq .Values.krakend.env "dev" }}
+    # HealthCheck / debug via bastion (opcional, apenas sqa)
+    {{- if eq .Values.krakend.env "sqa" }}
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: gateway-dev
+              kubernetes.io/metadata.name: gateway-sqa
       ports:
         - port: 8080
           protocol: TCP
@@ -203,8 +195,9 @@ Vale em **complemento** à NetworkPolicy. Aplicado por namespace.
 
 ## AdminNetworkPolicy (ANP) — cluster-wide
 
-OCP 4.14+. Substitui Calico Global NetPol. Ex: bloquear todo egress para
-`kube-system` exceto API server. Ficará em Fase 05 como hardening opcional.
+OCP 4.14+. Políticas com prioridade cluster-wide (ex: bloquear todo egress
+para `kube-system` exceto API server). Ficará em Fase 05 como hardening
+opcional.
 
 ## Testes
 
@@ -213,7 +206,7 @@ OCP 4.14+. Substitui Calico Global NetPol. Ex: bloquear todo egress para
    timeout.
 3. **Egress válido:** pod gateway → `ledgeros:8081` — 200.
 4. **Egress inválido:** pod gateway → `paymentos:1234` — timeout.
-5. **DNS:** pod gateway → `kubectl exec ... dig ledgeros.ledgeros-dev` —
+5. **DNS:** pod gateway → `kubectl exec ... dig ledgeros.ledgeros-sqa` —
    resolve.
 
 Automatizar em CI com `kubectl run` temporário (Fase 06).

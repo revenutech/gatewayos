@@ -6,14 +6,14 @@ Configurar o stack de métricas nativo do OpenShift (cluster + user
 workload monitoring), retention adequada, remote_write opcional para
 bridge externa e integração com Alertmanager.
 
-## Equivalência
+## Características
 
-| GCP | Basa |
+| Item | Detalhe |
 |---|---|
-| Cloud Monitoring ingere via GKE integration | OpenShift nativo — Prometheus + Thanos Ruler |
-| Custom Prometheus no GKE | `openshift-user-workload-monitoring` namespace (fornecido) |
-| Retenção ilimitada Cloud Monitoring | Prometheus retenção finita + arquivo Thanos (opcional) |
-| PromQL via Grafana custom | PromQL via Console OCP + Grafana Operator |
+| Prometheus | Nativo OCP — Prometheus + Thanos Ruler |
+| User workload | `openshift-user-workload-monitoring` namespace (fornecido) |
+| Retenção | Prometheus finito (14d) + arquivo Thanos opcional sobre OCI Object Storage |
+| Query UI | Console OCP + Grafana Operator |
 
 ## Stack nativo
 
@@ -134,8 +134,8 @@ OCI Vault.
 
 ## Remote write (bridge)
 
-Para espelhar métricas em OCI Monitoring ou em plataforma centralizada
-multi-cloud:
+Para espelhar métricas em OCI Monitoring ou em plataforma de observabilidade
+centralizada externa:
 
 ```yaml
 prometheus:

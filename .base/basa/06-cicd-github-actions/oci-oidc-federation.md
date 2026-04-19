@@ -3,18 +3,16 @@
 ## Objetivo
 
 Configurar autenticação federada entre **GitHub Actions** e **OCI
-Identity Domain** via OIDC, eliminando API keys estáticas. Equivalente
-ao Workload Identity Federation do GCP.
+Identity Domain** via OIDC, eliminando API keys estáticas.
 
-## Equivalência
+## Componentes
 
-| GCP WIF | OCI OIDC Federation |
+| Item | Papel |
 |---|---|
-| Workload Identity Pool | Identity Domain |
-| Workload Identity Provider (OIDC) | Identity Provider (OIDC) |
-| Service Account impersonation | Group → Dynamic Group → Policy |
-| `google-github-actions/auth@v2` | `oracle-actions/configure-oci-cli` + claim mapping |
-| ID token troca por access token | ID token troca por UPST (User Principal Session Token) |
+| Identity Domain | Emite UPST (User Principal Session Token) trocando OIDC token do GitHub |
+| Identity Provider (OIDC) | Confiança em `https://token.actions.githubusercontent.com` |
+| Group → Dynamic Group | Impersonation do user federado |
+| `oracle-actions/configure-oci-cli` | Action oficial que faz o exchange e configura CLI |
 
 ## Arquitetura
 
@@ -31,7 +29,7 @@ OCI Identity Domain → Identity Provider (GitHub)
 Mapeia para GitHub "user" federado em OCI
         │
         ▼
-User é membro de Group (ex: gateway-ci-dev-group)
+User é membro de Group (ex: gateway-ci-sqa-group)
         │
         ▼
 Group → Policy (permissões no compartment)
@@ -57,36 +55,36 @@ jwt_signature_algorithm: RS256
 
 ### 2. Criar grupos por env
 
-- `gateway-ci-dev-group`
-- `gateway-ci-staging-group`
-- `gateway-ci-prod-group`
+- `gateway-ci-sqa-group`
+- `gateway-ci-uat-group`
+- `gateway-ci-pro-group`
 
 ### 3. IdP Rules — JIT provisioning
 
 No Identity Domain, "Assign a group rule" para mapear automaticamente GH
 → grupo OCI baseado em claims:
 
-**Rule dev:**
+**Rule sqa:**
 ```
 claim: sub
 operator: matches
 value: repo:revenutech/revenu-platform-gateway:ref:refs/heads/develop
-group: gateway-ci-dev-group
+group: gateway-ci-sqa-group
 ```
 
-**Rule staging:**
+**Rule uat:**
 ```
 claim: sub
 value: repo:revenutech/revenu-platform-gateway:ref:refs/heads/staging
-group: gateway-ci-staging-group
+group: gateway-ci-uat-group
 ```
 
-**Rule prod:**
+**Rule pro:**
 ```
 claim: sub
 operator: starts_with
 value: repo:revenutech/revenu-platform-gateway:ref:refs/tags/v
-group: gateway-ci-prod-group
+group: gateway-ci-pro-group
 ```
 
 Amarra execução a branches/tags específicos.
@@ -94,15 +92,15 @@ Amarra execução a branches/tags específicos.
 ### 4. Policies OCI
 
 ```
-Allow group 'Default'/gateway-ci-dev-group to manage all-resources in compartment gateway-basa-dev
-Allow group 'Default'/gateway-ci-dev-group to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/dev/*'
+Allow group 'Default'/gateway-ci-sqa-group to manage all-resources in compartment gateway-basa-sqa
+Allow group 'Default'/gateway-ci-sqa-group to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/sqa/*'
 
-Allow group 'Default'/gateway-ci-staging-group to manage all-resources in compartment gateway-basa-staging
+Allow group 'Default'/gateway-ci-uat-group to manage all-resources in compartment gateway-basa-uat
 ...
 
-Allow group 'Default'/gateway-ci-prod-group to manage repos in compartment gateway-basa-prod where target.repo.name='gateway-basa-prod'
-Allow group 'Default'/gateway-ci-prod-group to use cluster-ocp:gateway-basa-prod-ocp in compartment gateway-basa-prod
-Allow group 'Default'/gateway-ci-prod-group to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/prod/*'
+Allow group 'Default'/gateway-ci-pro-group to manage repos in compartment gateway-basa-pro where target.repo.name='gateway-basa-pro'
+Allow group 'Default'/gateway-ci-pro-group to use cluster-ocp:gateway-basa-pro-ocp in compartment gateway-basa-pro
+Allow group 'Default'/gateway-ci-pro-group to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/pro/*'
 ```
 
 **Prod policy mais restrita** — não `manage all-resources`, apenas o
@@ -169,18 +167,18 @@ Kubeconfig fica armazenado em **OCI Vault Secret** (atualizado pelo
 Terraform Fase 02) — evita commitar ou mover manualmente.
 
 Alternativa: **ServiceAccount token** curto, projetado para CI. Detalhe
-em `cd-dev-oci.md`.
+em `cd-sqa-oci.md`.
 
 ## Secrets GitHub (nomes fixos — ver Fase 00 `naming-conventions.md`)
 
 | Nome | Uso |
 |---|---|
 | `OCI_TENANCY_OCID` | Tenancy OCID |
-| `OCI_REGION_DEV` / `_STAGING` / `_PROD` | Região (ex: `sa-saopaulo-1`) |
+| `OCI_REGION_SQA` / `_UAT` / `_PRO` | Região (ex: `sa-saopaulo-1`) |
 | `OCI_USER_OCID_CI` | (se aplicável) user federado |
-| `OCIR_REPO_DEV` / `_STAGING` / `_PROD` | URL do registry |
-| `OCP_KUBECONFIG_SECRET_OCID_DEV` / ... | OCID do Secret Vault com kubeconfig |
-| `OCP_CLUSTER_API_DEV` / ... | endpoint API OCP (informacional) |
+| `OCIR_REPO_SQA` / `_UAT` / `_PRO` | URL do registry |
+| `OCP_KUBECONFIG_SECRET_OCID_SQA` / ... | OCID do Secret Vault com kubeconfig |
+| `OCP_CLUSTER_API_SQA` / ... | endpoint API OCP (informacional) |
 | `SLACK_WEBHOOK_URL` | reutilizado |
 
 ## Audit & troubleshooting
@@ -192,9 +190,9 @@ em `cd-dev-oci.md`.
 
 ## Cross-account boundary
 
-Se quisermos separar **tenancy dev** de **tenancy prod** (isolamento máximo):
+Se quisermos separar **tenancy sqa** de **tenancy pro** (isolamento máximo):
 - Cada tenancy tem seu Identity Domain + IdP GitHub.
-- Workflow diferente para prod usa `OCI_TENANCY_OCID_PROD`.
+- Workflow diferente para pro usa `OCI_TENANCY_OCID_PRO`.
 - Aumenta isolamento; aumenta complexidade operacional.
 
 **V1 adota:** 1 tenancy, 3 compartments (Fase 02). 2 tenancies fica
@@ -204,7 +202,7 @@ proposta para v2 caso governança exigir.
 
 1. **OIDC federation**, não API keys.
 2. **JIT provisioning via IdP Rules** — user OCI efêmero.
-3. **Rules por ref** — dev/staging/prod amarrados a branch/tag específico.
+3. **Rules por ref** — sqa/uat/pro amarrados a branch/tag específico.
 4. **Prod com policy mínima** (não manage all-resources).
 5. **Kubeconfig em Vault** — não em secret GitHub (rotacionável por TF).
 6. **1 tenancy v1** — 2 tenancies v2 se exigido.
@@ -221,7 +219,7 @@ proposta para v2 caso governança exigir.
 
 - [ ] Identity Domain IdP GitHub configurado.
 - [ ] 3 groups + rules por env criados.
-- [ ] Policies OCI aplicadas (mais restritas em prod).
+- [ ] Policies OCI aplicadas (mais restritas em pro).
 - [ ] Secrets GitHub populados (ver nomes).
 - [ ] Workflow PoC roda `oci iam user get` com sucesso.
 - [ ] Kubeconfig de cada env gravado em Vault Secret.

@@ -7,26 +7,27 @@ admin passwords) chegam aos pods sem nunca aparecer em git, Helm values
 ou env vars do workflow. Baseado em **External Secrets Operator (ESO)**
 com provider OCI.
 
-## Equivalência
+## Componentes
 
-| GCP (atual) | Basa |
+| Item | Tecnologia |
 |---|---|
-| Secret Manager + CSI Secret Store Driver | OCI Vault + External Secrets Operator |
-| WIF (KSA → GSA) para acessar Secret Manager | Resource Principal (pod SA → dynamic group) para acessar OCI Vault |
-| `kubernetes.io/secret.auto-rotate` | ESO `refreshInterval` |
-| Secret como volumeMount via CSI | Secret como Kubernetes Secret regular (gerado por ESO) |
+| Secret store | OCI Vault |
+| Sincronizador | External Secrets Operator (ESO) |
+| Auth | Resource Principal (pod SA → dynamic group) |
+| Rotação | ESO `refreshInterval` + rotação no Vault |
+| Consumo em K8s | Kubernetes Secret regular (gerado por ESO) |
 
 ## Fluxo
 
 ```
-OCI Vault (secret: gateway-prod/ocir-pull)
+OCI Vault (secret: gateway-pro/ocir-pull)
          │
          │ API call (Resource Principal)
          ▼
 External Secrets Operator (namespace: external-secrets)
          │ watch: ExternalSecret CR
          ▼
-Kubernetes Secret (ocir-pull em gateway-prod)
+Kubernetes Secret (ocir-pull em gateway-pro)
          │
          ▼
 Pod do Gateway (imagePullSecrets, envFrom)
@@ -165,7 +166,7 @@ spec:
   refreshInterval: 24h
   secretStoreRef:
     kind: ClusterSecretStore
-    name: oci-vault-prod
+    name: oci-vault-pro
   target:
     name: slack-webhook
   data:
@@ -215,7 +216,7 @@ Se ESO falhar (Vault API down, operator crash), pods podem:
 
 ## Alternativa — Secrets Store CSI Driver + OCI provider
 
-Mais próximo do fluxo GCP atual. Vantagens:
+Vantagens:
 - Secret **não persiste como Kubernetes Secret** — volume montado por pod.
 - Menor superfície de leak em etcd.
 

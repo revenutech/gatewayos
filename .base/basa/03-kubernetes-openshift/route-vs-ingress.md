@@ -1,23 +1,22 @@
-# OpenShift Route — substituto do GKE Ingress
+# OpenShift Route
 
 ## Objetivo
 
 Expor o Gateway externamente via **OpenShift Route** com terminação TLS
 gerenciada por cert-manager, redirect HTTP→HTTPS e (opcional) WAF via
-HAProxy Router annotations. Equivalente à combinação `Ingress +
-ManagedCertificate + FrontendConfig` do track GCP.
+HAProxy Router annotations.
 
-## Equivalência
+## Características
 
-| GCP (Ingress + GCLB) | OpenShift Route |
+| Aspecto | Detalhe |
 |---|---|
-| `kind: Ingress` + `networking.k8s.io/v1` | `kind: Route` + `route.openshift.io/v1` |
-| GCP ManagedCertificate | `Certificate` cert-manager + `spec.tls.{certificate,key}` |
-| FrontendConfig `redirectToHttps` | `spec.tls.insecureEdgeTerminationPolicy: Redirect` |
-| BackendConfig healthCheck | Route usa readiness do Pod (sem config extra) |
-| BackendConfig connectionDraining | Handled pelo HAProxy Router |
-| `annotations: kubernetes.io/ingress.class` | N/A — cluster pode ter múltiplos Ingress Controllers mas Route usa shard default |
-| URL Map multi-path | `Route` = 1 host + 1 path; múltiplos paths = múltiplas Routes |
+| API | `route.openshift.io/v1` |
+| Certificado | `Certificate` cert-manager + Secret referenciado pelo Route |
+| Redirect HTTP→HTTPS | `spec.tls.insecureEdgeTerminationPolicy: Redirect` |
+| Health check | Readiness do Pod (sem config extra) |
+| Connection drain | HAProxy Router |
+| Shard | Default Ingress Controller |
+| Multi-path | `Route` = 1 host + 1 path; múltiplos paths = múltiplas Routes |
 
 ## Tipos de terminação TLS
 
@@ -145,7 +144,6 @@ OpenShift Route com `insecureEdgeTerminationPolicy: Redirect`:
 
 - Router escuta em :80 e :443 por default.
 - Request HTTP → responde 302 para o mesmo host HTTPS.
-- Mesma UX do `redirectToHttps: true` do GCP FrontendConfig.
 
 ## HSTS
 
@@ -170,7 +168,7 @@ OCP Route é **1 host por objeto**. Para `gateway.oci.allenty.io` +
 ## Decisões de design
 
 1. **Edge termination** — simplicidade, cert-manager padrão.
-2. **Redirect HTTP→HTTPS** — paridade com GCP.
+2. **Redirect HTTP→HTTPS** — sem exposição em `:80`.
 3. **HSTS on** — A.8.24.
 4. **Sem WAF na v1** — OCI WAF fica ADR futuro se precisar bloquear ataques
    camada 7.
@@ -185,7 +183,7 @@ OCP Route é **1 host por objeto**. Para `gateway.oci.allenty.io` +
 ## Checklist pronto-para-código
 
 - [ ] `templates/route.yaml` renderiza corretamente sob `openshift.enabled`.
-- [ ] `templates/certificate.yaml` emite via cert-manager staging em dev.
+- [ ] `templates/certificate.yaml` emite via cert-manager uat em sqa.
 - [ ] HTTP → HTTPS redirect validado (`curl -I http://...`).
 - [ ] HSTS header presente.
 - [ ] Route funciona após cert-manager renovar.

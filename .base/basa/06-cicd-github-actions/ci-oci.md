@@ -24,8 +24,8 @@ on:
       - (mesma lista)
 ```
 
-`ci.yml` existente continua rodando sempre (cloud-agnóstico). `ci-oci.yml`
-adiciona gates Basa-specific.
+`ci.yml` cobre validações cloud-agnósticas (config KrakenD, lint de docs).
+`ci-oci.yml` adiciona gates específicos do track Basa.
 
 ## Jobs
 
@@ -69,7 +69,7 @@ dockerfile-ubi-build:
       run: |
         docker build \
           -f docker/Dockerfile.ubi9 \
-          --build-arg ENV=dev \
+          --build-arg ENV=sqa \
           -t gateway-basa:ci-${{ github.sha }} \
           .
     - name: Smoke test
@@ -87,7 +87,7 @@ terraform-validate:
   runs-on: ubuntu-latest
   strategy:
     matrix:
-      env: [dev, staging, production]
+      env: [sqa, uat, pro]
   steps:
     - uses: actions/checkout@v4
     - uses: hashicorp/setup-terraform@v3
@@ -103,37 +103,37 @@ terraform-validate:
       run: terraform fmt -check -recursive deployment/infra/oci/
 ```
 
-### 5. `terraform-plan-dev` (opcional, em PR para `develop`)
+### 5. `terraform-plan-sqa` (opcional, em PR para `develop`)
 
 ```yaml
-terraform-plan-dev:
+terraform-plan-sqa:
   if: github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'deployment/infra/oci/')
   runs-on: ubuntu-latest
   permissions:
     contents: read
     id-token: write
     pull-requests: write
-  environment: dev-oci
+  environment: sqa-oci
   steps:
     - uses: actions/checkout@v4
     - name: Configure OCI CLI
       uses: oracle-actions/configure-oci-cli@v1.3.2
       with:
         tenancy-ocid: ${{ secrets.OCI_TENANCY_OCID }}
-        token-exchange-url: https://auth.${{ secrets.OCI_REGION_DEV }}.oraclecloud.com/v1/oauth2/token
+        token-exchange-url: https://auth.${{ secrets.OCI_REGION_SQA }}.oraclecloud.com/v1/oauth2/token
     - uses: hashicorp/setup-terraform@v3
     - name: Init
-      working-directory: deployment/infra/oci/environments/dev
+      working-directory: deployment/infra/oci/environments/sqa
       run: terraform init -backend-config=...
     - name: Plan
-      working-directory: deployment/infra/oci/environments/dev
+      working-directory: deployment/infra/oci/environments/sqa
       run: terraform plan -no-color -out=plan.tfplan
     - name: Post plan as PR comment
       uses: actions/github-script@v7
       with:
         script: |
           const fs = require('fs');
-          const plan = fs.readFileSync('deployment/infra/oci/environments/dev/plan.tfplan', 'utf8');
+          const plan = fs.readFileSync('deployment/infra/oci/environments/sqa/plan.tfplan', 'utf8');
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
@@ -149,7 +149,7 @@ helm-lint-oci:
   runs-on: ubuntu-latest
   strategy:
     matrix:
-      env: [dev, staging, production]
+      env: [sqa, uat, pro]
   steps:
     - uses: actions/checkout@v4
     - uses: azure/setup-helm@v4
@@ -190,7 +190,7 @@ config-audit:
       run: bash tools/config-audit/audit.sh --strict
 ```
 
-Mesma lógica do track GCP (reutilizada).
+Valida o config KrakenD compilado antes do build.
 
 ## Paralelismo
 
@@ -201,7 +201,7 @@ lint-docs, dockerfile-ubi-lint, terraform-validate, helm-lint-oci,
 trivy-fs, config-audit  → todos em paralelo
 
 dockerfile-ubi-build → needs: dockerfile-ubi-lint
-terraform-plan-dev → needs: terraform-validate (opcional)
+terraform-plan-sqa → needs: terraform-validate (opcional)
 ```
 
 ## Status check obrigatório
@@ -217,8 +217,9 @@ Branch protection em `main`/`staging`/`develop`:
 
 ## Decisões de design
 
-1. **CI cobre ambos os tracks** sem sobreposição — `ci.yml` roda sempre
-   (config KrakenD), `ci-oci.yml` roda só se paths Basa tocados.
+1. **CI dividido em dois workflows** — `ci.yml` roda sempre (config
+   KrakenD, docs), `ci-oci.yml` roda quando paths OCI/OpenShift/UBI9
+   são tocados.
 2. **`dockerfile-ubi-build` no CI** valida sem push — detecta quebras
    cedo.
 3. **Matrix por env** em TF + Helm — pega valores de cada env.

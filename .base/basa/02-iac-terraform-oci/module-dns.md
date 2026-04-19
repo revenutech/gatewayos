@@ -3,29 +3,24 @@
 ## Objetivo
 
 Gerenciar zonas e registros DNS públicos para os hostnames do track Basa.
-Equivalente ao `dns` GCP.
 
-## Equivalência GCP ↔ Basa
+## Recursos OCI envolvidos
 
-| GCP | OCI |
+| Item | Tipo OCI |
 |---|---|
-| `google_dns_managed_zone` | `oci_dns_zone` |
-| `google_dns_record_set` | `oci_dns_rrset` |
-| Delegation via NS na zona pai | Delegation manual na zona raiz `allenty.io` |
+| Zona | `oci_dns_zone` |
+| Record set | `oci_dns_rrset` |
+| Delegation | Manual — NS records na zona pai `allenty.io` |
 
 ## Estratégia de domínios
 
-- Zona raiz `allenty.io` permanece hospedada onde está hoje (GCP Cloud DNS
-  ou registrar).
+- Zona raiz `allenty.io` permanece no registrar/provider atual.
 - Delegar subzona **`oci.allenty.io`** para OCI DNS (NS records na zona
   pai apontando para OCI).
 - Subdomínios por env:
-  - **prod** — `gateway.oci.allenty.io`.
-  - **staging** — `gateway.staging.oci.allenty.io`.
-  - **dev** — `gateway.dev.oci.allenty.io`.
-
-> A decisão de eventualmente migrar `gateway.allenty.io` (prod atual GCP)
-> para o track Basa é pós-cutover, **fora deste módulo**.
+  - **pro** — `gateway.oci.allenty.io`.
+  - **uat** — `gateway.uat.oci.allenty.io`.
+  - **sqa** — `gateway.sqa.oci.allenty.io`.
 
 ## Inputs
 
@@ -33,7 +28,7 @@ Equivalente ao `dns` GCP.
 variable "compartment_id"    { type = string }
 variable "environment"       { type = string }
 variable "zone_name"         { type = string }                   # oci.allenty.io ou {env}.oci.allenty.io
-variable "create_zone"       { type = bool, default = true }     # dev cria zona subdomain; prod usa zona existente
+variable "create_zone"       { type = bool, default = true }     # sqa cria zona subdomain; pro usa zona existente
 variable "records"           {
   type = list(object({
     name     = string
@@ -57,18 +52,18 @@ variable "defined_tags"      { type = map(string) }
 
 ## Registros por env
 
-### Dev
+### sqa
 
 | Nome | Tipo | rdata | TTL | Finalidade |
 |---|---|---|---|---|
 | `gateway` | A | `<ingress LB IP>` | 60 | Public endpoint |
-| `*.gateway` | CNAME | `gateway.dev.oci.allenty.io` | 60 | Wildcard para rotas OpenShift |
-| `api.gateway-basa-dev-ocp` | A | `<api NLB IP>` | 60 | OCP API (acesso via bastion) |
+| `*.gateway` | CNAME | `gateway.sqa.oci.allenty.io` | 60 | Wildcard para rotas OpenShift |
+| `api.gateway-basa-sqa-ocp` | A | `<api NLB IP>` | 60 | OCP API (acesso via bastion) |
 
-### Staging / Prod
+### uat / pro
 
-Análogo. Prod pode ter `gateway.oci.allenty.io` **e** `gateway.allenty.io`
-(CNAME) quando cutover for decidido.
+Análogo, com hostnames `gateway.uat.oci.allenty.io` e
+`gateway.oci.allenty.io`.
 
 ## Delegação
 
@@ -107,7 +102,7 @@ output "zone_name"           { value = var.zone_name }
 
 ## Decisões de design
 
-1. **Subzona por env** — `dev.oci.allenty.io` isola DNS, facilita GitOps
+1. **Subzona por env** — `sqa.oci.allenty.io` isola DNS, facilita GitOps
    e evita interferência cross-env.
 2. **Wildcard CNAME** para rotas OpenShift — OCP Router por default usa
    `*.apps.<cluster>.<base_domain>`, e expomos apps via `*.gateway.<env>.oci.allenty.io`.
@@ -123,5 +118,5 @@ output "zone_name"           { value = var.zone_name }
 
 - [ ] `modules/dns/` criado com suporte a `for_each` em records.
 - [ ] Delegação NS na zona pai feita manualmente e registrada em runbook.
-- [ ] cert-manager consegue solucionar DNS01 em dev.
+- [ ] cert-manager consegue solucionar DNS01 em sqa.
 - [ ] Resolução DNS externa funciona antes de expor o Gateway.

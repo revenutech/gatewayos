@@ -4,7 +4,7 @@
 
 Recuperar o Gateway em região OCI alternativa quando a região primária
 (`sa-saopaulo-1`) estiver indisponível > RTO (4h). Aplica apenas ao
-**track Basa prod**.
+**track Basa pro**.
 
 ## Owner / Backup
 
@@ -31,14 +31,14 @@ Para DR ser viável, manter em estado pronto:
       Storage replication habilitado).
 - [ ] **tfstate** acessível via qualquer região.
 - [ ] **OCIR** com replication para região secundária (ativar replication
-      policy no OCIR prod — decisão em Fase 02 ADR).
+      policy no OCIR pro — decisão em Fase 02 ADR).
 - [ ] **Vault** criado também em `sa-vinhedo-1` com keys correspondentes
       (KMS keys são region-bound; re-criar).
 - [ ] **DNS** — zona `oci.allenty.io` pode apontar para IP do LB
       alternativo (TTL 60s já configurado — Fase 02).
 - [ ] **Código/config:** repo git é single source, acessível de qualquer região.
 - [ ] **OCP install-config** versionado para `sa-vinhedo-1` em
-      `deployment/infra/oci/environments/production-dr/`.
+      `deployment/infra/oci/environments/pro-dr/`.
 - [ ] **Compute capacity reservation** em `sa-vinhedo-1` (compra mensal
       pequena — ~$100/mês — garante shape disponível).
 
@@ -60,11 +60,11 @@ Se confirmed, abrir **incidente P0**, notificar stakeholders.
 Comando mestre (single operator, coordenado):
 
 ```
-cd deployment/infra/oci/environments/production-dr
+cd deployment/infra/oci/environments/pro-dr
 
 terraform init \
   -backend-config="bucket=revenu-platform-tf-state-oci" \
-  -backend-config="key=gateway-basa/production-dr/terraform.tfstate" \
+  -backend-config="key=gateway-basa/pro-dr/terraform.tfstate" \
   -backend-config="region=sa-vinhedo-1"
 
 terraform apply -target=module.vault      # primeiro
@@ -120,13 +120,13 @@ bash tools/dr/apply-bootstrap-manifests.sh
 
 ```
 # Override para região DR:
-gh workflow run cd-production-oci.yml \
+gh workflow run cd-pro-oci.yml \
   --ref v1.4.0 \
   -f image_tag=v1.4.0 \
   -f change_ticket=DR-FAILOVER-${DATE}
 ```
 
-Secrets `OCP_KUBECONFIG_SECRET_OCID_PROD` já foi atualizado para Vault
+Secrets `OCP_KUBECONFIG_SECRET_OCID_PRO` já foi atualizado para Vault
 da região DR no passo 3.
 
 ### 8. Redirecionar DNS
@@ -200,8 +200,8 @@ Documentado em runbook separado `dr-recovery-to-primary.md`
 **Semestral (tabletop):** simular outage, correr mentalmente através do
 procedimento, atualizar runbook.
 
-**Anual (real):** rodar failover completo em ambiente **staging-dr**
-(criar equivalente staging em `sa-vinhedo-1`). Medir RTO real. Registrar
+**Anual (real):** rodar failover completo em ambiente **uat-dr**
+(criar equivalente uat em `sa-vinhedo-1`). Medir RTO real. Registrar
 em `/compliance/evidences/runbooks/drills/{yyyy}-dr-drill.md`.
 
 ## Relacionado

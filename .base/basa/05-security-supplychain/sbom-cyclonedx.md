@@ -4,7 +4,7 @@
 
 Gerar **Software Bill of Materials** no formato CycloneDX para cada
 release, publicá-lo como artifact, assiná-lo com Cosign e anexar como
-attestation à imagem. Equivalente ao fluxo GCP.
+attestation à imagem.
 
 ## Por que CycloneDX (vs SPDX)
 
@@ -40,8 +40,7 @@ syft "${OCIR_REPO}/gateway:${TAG}" -o cyclonedx-json > sbom.cdx.json
 ```
 
 Syft às vezes descobre mais pacotes que Trivy; usar Syft para SBOM e
-Trivy para scan. Custo: dois tools. V1 usa **só Trivy** por simplicidade
-(paridade com GCP).
+Trivy para scan. Custo: dois tools. V1 usa **só Trivy** por simplicidade.
 
 ## Assinatura e attestation
 
@@ -138,9 +137,9 @@ Consumidor pode rodar:
 ```
 cosign verify-attestation \
   --type cyclonedx \
-  --certificate-identity-regexp ".*cd-production-oci\\.yml.*" \
+  --certificate-identity-regexp ".*cd-pro-oci\\.yml.*" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-  gru.ocir.io/revenutech/gateway-basa-prod/gateway:v1.0.0
+  gru.ocir.io/revenutech/gateway-basa-pro/gateway:v1.0.0
 ```
 
 E `trivy sbom sbom.cdx.json --format table` para listar CVEs num SBOM
@@ -154,7 +153,7 @@ se auditoria exigir logs privados.
 
 ## Decisões de design
 
-1. **Só Trivy para SBOM** v1 (paridade GCP).
+1. **Só Trivy para SBOM** v1 — um tool, cobertura suficiente para UBI.
 2. **CycloneDX JSON**, não SPDX.
 3. **Sign + attest** sempre; verificar no deploy.
 4. **SBOM publicado no GitHub Release** — acessível a parceiros.

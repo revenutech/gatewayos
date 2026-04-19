@@ -2,14 +2,14 @@
 
 ## Objetivo
 
-Provisionar, do zero, todo o track Basa em um env novo (dev / staging /
-prod) — do Terraform ao cluster OpenShift pronto para receber o Gateway.
+Provisionar, do zero, todo o track Basa em um env novo (sqa / uat /
+pro) — do Terraform ao cluster OpenShift pronto para receber o Gateway.
 
 ## Owner / Backup
 
 - **Owner:** SRE Lead.
 - **Backup:** Platform Owner.
-- **Aprovador (prod):** ISO Lead + Platform Owner.
+- **Aprovador (pro):** ISO Lead + Platform Owner.
 
 ## Trigger
 
@@ -28,9 +28,9 @@ prod) — do Terraform ao cluster OpenShift pronto para receber o Gateway.
       pronto para delegação NS.
 - [ ] Secrets GitHub populados (nome conforme Fase 00
       `naming-conventions.md`).
-- [ ] Branch `develop`/`staging`/`main` correto e CI verde.
+- [ ] Branch `develop`/`uat`/`main` correto e CI verde.
 - [ ] Compartment `gateway-basa-{env}` já existe no tenancy.
-- [ ] Ticket de mudança aberto (prod).
+- [ ] Ticket de mudança aberto (pro).
 
 ## Procedimento
 
@@ -62,11 +62,11 @@ Só necessário na primeira vez por tenant.
 **Cada env em sua pasta:**
 
 ```
-cd deployment/infra/oci/environments/dev
+cd deployment/infra/oci/environments/sqa
 
 terraform init \
   -backend-config="bucket=revenu-platform-tf-state-oci" \
-  -backend-config="key=gateway-basa/dev/terraform.tfstate" \
+  -backend-config="key=gateway-basa/sqa/terraform.tfstate" \
   -backend-config="region=sa-saopaulo-1" \
   -backend-config="endpoints={s3=\"https://<NS>.compat.objectstorage.sa-saopaulo-1.oraclecloud.com\"}" \
   -backend-config="access_key=$OCI_S3_ACCESS_KEY" \
@@ -139,7 +139,7 @@ oci vault secret create-base64 \
 ### 6. Aguardar OpenShift install
 
 ```
-tail -f deployment/infra/oci/environments/dev/.terraform/openshift-install.log
+tail -f deployment/infra/oci/environments/sqa/.terraform/openshift-install.log
 # Install completo: ~45 min
 ```
 
@@ -225,10 +225,10 @@ Atualizar `OCP_KUBECONFIG_SECRET_OCID_{ENV}` nos secrets do GitHub.
 
 ```
 git checkout develop
-git push origin develop     # trigger cd-dev-oci.yml
+git push origin develop     # trigger cd-sqa-oci.yml
 ```
 
-Validar em Actions → CD — Dev (OCI/OpenShift) → verde.
+Validar em Actions → CD — SQA (OCI/OpenShift) → verde.
 
 ## Pós-check
 

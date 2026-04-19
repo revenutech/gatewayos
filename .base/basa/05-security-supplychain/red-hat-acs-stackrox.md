@@ -17,8 +17,7 @@ um dos gatilhos do ADR-004 ocorrer.
 
 1. Incidente em que runtime detection teria evitado dano.
 2. Requisito regulatório novo (SOC 2 Type II, FedRAMP, PCI DSS runtime).
-3. Adoção de ACS no track GCP → paridade.
-4. Ingresso de módulos stateful no Basa (LedgerOS, Paymentos).
+3. Ingresso de módulos stateful no Basa (LedgerOS, Paymentos).
 
 ## O que ACS entrega
 
@@ -88,7 +87,7 @@ spec:
         maxReplicas: 5
 ```
 
-### Secured Cluster (por cluster OCP — dev / staging / prod)
+### Secured Cluster (por cluster OCP — sqa / uat / pro)
 
 ```yaml
 apiVersion: platform.stackrox.io/v1alpha1
@@ -134,9 +133,9 @@ spec:
 
 1. **Fase A — Install em modo observe**. ACS observa, não bloqueia.
    Duração: 30 dias.
-2. **Fase B — Enforce em dev**. Policies em block. Tune por 14 dias.
-3. **Fase C — Enforce em staging**.
-4. **Fase D — Enforce em prod**. Escolher janela com on-call reforçado.
+2. **Fase B — Enforce em sqa**. Policies em block. Tune por 14 dias.
+3. **Fase C — Enforce em uat**.
+4. **Fase D — Enforce em pro**. Escolher janela com on-call reforçado.
 
 ## Integrações
 
@@ -150,7 +149,7 @@ spec:
 - Subscription Red Hat ACS: **~$200/node/mês** (verificar SKU atual).
 - Compute Central (Postgres): ~$80/mês.
 - Compute Sensor/Collector: overhead ~5% por node.
-- **Total prod (3 workers):** ~$700/mês apenas licença.
+- **Total pro (3 workers):** ~$700/mês apenas licença.
 
 ## Alternativas se ACS não for aprovado
 
@@ -160,7 +159,7 @@ spec:
 
 ## Decisões de design
 
-1. **Roll-out gradual** — evita bloquear prod sem tune.
+1. **Roll-out gradual** — evita bloquear pro sem tune.
 2. **CORE_BPF** no Collector — sem kmod (mais leve, RHCOS 4.16+).
 3. **Bypass via annotation** — break-glass para emergências.
 4. **Policies-as-code** — `SecurityPolicy` CRs versionadas em git.
@@ -177,8 +176,8 @@ spec:
 
 - [ ] Subscription Red Hat ACS aprovada.
 - [ ] ADR-004 atualizado para "Aceito — em adoção".
-- [ ] Central deployado em cluster dedicado (ou prod — trade-off).
-- [ ] SecuredCluster em dev/staging/prod.
+- [ ] Central deployado em cluster dedicado (ou pro — trade-off).
+- [ ] SecuredCluster em sqa/uat/pro.
 - [ ] Policies iniciais importadas e tunadas.
 - [ ] Slack / ticket integration ativa.
 - [ ] Runbook de break-glass em Fase 08.

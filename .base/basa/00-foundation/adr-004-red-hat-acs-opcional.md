@@ -3,7 +3,7 @@
 - **Status:** Aceito — **opcional, não bloqueante** para v1 do track Basa
 - **Data:** 2026-04-17
 - **Decisores:** Platform Owner, Security Lead
-- **Relacionado:** ADR-002, equivalence-matrix.md §10
+- **Relacionado:** ADR-002, stack-reference.md §10
 
 ## Contexto
 
@@ -15,19 +15,19 @@
 - Compliance profiles (CIS Kubernetes / OpenShift, NIST, PCI).
 - Network segmentation simulator (recomenda NetworkPolicies).
 
-O track GCP hoje **não usa** ACS — o controle equivalente é Trivy no CI,
-NetworkPolicy manual e ausência de admission controller.
+A baseline de segurança do Gateway já inclui Trivy no CI, NetworkPolicy
+manual por namespace e ausência de admission controller cluster-wide.
 
 ## Opções consideradas
 
-1. **Adotar ACS desde a v1 do Basa** — paridade com plano RH "completo".
-2. **Não adotar** — manter Trivy + NetworkPolicy manual, igual ao GCP.
+1. **Adotar ACS desde a v1 do Basa** — cobertura RH "completa".
+2. **Não adotar** — manter Trivy + NetworkPolicy manual + Sigstore
+   policy-controller opcional como admission leve.
 3. **Adotar como opcional / Fase futura** — documentar caminho, mas não
    bloquear v1.
 
 | Critério | Adotar v1 | Não adotar | Opcional |
 |---|---|---|---|
-| Paridade com GCP | 🟡 supera (não é equivalente) | 🟢 | 🟢 |
 | Cobertura de controles ISO | 🟢 melhora A.8.9, A.8.16, A.8.22 | 🟡 | 🟢 |
 | Esforço operacional | 🔴 alto (tunar policies) | 🟢 | 🟢 |
 | Custo licença ACS | 🔴 subscription adicional | 🟢 | 🟢 |
@@ -36,30 +36,27 @@ NetworkPolicy manual e ausência de admission controller.
 
 ## Decisão
 
-**Não adotar ACS na v1 do track Basa.** Manter paridade com GCP:
-Trivy no CI + NetworkPolicy manual + Sigstore policy-controller (opcional)
-como admission.
+**Não adotar ACS na v1 do track Basa.** Manter a baseline: Trivy no CI +
+NetworkPolicy manual + Sigstore policy-controller (opcional) como admission.
 
 **Documentar plano de adoção futura** em `05-security-supplychain/red-hat-acs-stackrox.md`,
 com policies-alvo, custo e gatilhos para ativar.
 
 ## Justificativa
 
-1. **Paridade com GCP** — introduzir ACS no Basa cria divergência funcional
-   entre tracks (controles disponíveis em OCI, não em GCP). Para "gêmeo", é
-   desejável similaridade.
-2. **Custo / complexidade** — ACS exige operação dedicada (tunar policies
-   para não bloquear workloads legítimos). Não há bandwidth garantido.
-3. **Valor marginal sobre Trivy** — para gateway stateless sem dados
+1. **Custo / complexidade** — ACS exige operação dedicada (tunar policies
+   para não bloquear workloads legítimos). Não há bandwidth garantido para
+   assumir esse eixo operacional na v1.
+2. **Valor marginal sobre Trivy** — para gateway stateless sem dados
    sensíveis locais, o ganho de runtime detection é menor que em workloads
    stateful/críticos.
-4. **Reversibilidade** — adotar ACS depois é fácil (operator install +
+3. **Reversibilidade** — adotar ACS depois é fácil (operator install +
    aplicar CRs); desfazer policies que bloquearam deploys é caro.
 
 ## Consequências
 
 ### Positivas
-- V1 do Basa entrega paridade sem inflar escopo.
+- V1 do Basa entrega controles ISO sem inflar escopo.
 - Time não precisa dominar StackRox antes de primeiro deploy.
 - Decisão reversível — operator disponível no OperatorHub quando desejado.
 
@@ -73,7 +70,7 @@ com policies-alvo, custo e gatilhos para ativar.
 
 ## Mitigações (obrigatórias mesmo sem ACS)
 
-- **Trivy no CI** bloqueia CRITICAL/HIGH antes do push (já padrão).
+- **Trivy no CI** bloqueia CRITICAL/HIGH antes do push.
 - **Sigstore policy-controller** opcional como admission leve (apenas
   verifica assinatura Cosign). Documentar em 05.
 - **NetworkPolicy exhaustiva** por namespace (ingress e egress explícitos).
@@ -85,7 +82,6 @@ com policies-alvo, custo e gatilhos para ativar.
 - Incidente em que runtime detection teria evitado dano.
 - Requerimento regulatório novo (ex: SOC 2 Type II com exigência de
   runtime monitoring).
-- Adoção de ACS no track GCP → reavaliar paridade.
 - Escopo do Basa crescer para módulos stateful (LedgerOS, Paymentos).
 
 ## Notas de implementação futura (referência)

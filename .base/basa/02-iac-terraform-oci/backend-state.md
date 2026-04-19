@@ -4,16 +4,16 @@
 
 Armazenar o state do Terraform do track Basa em **OCI Object Storage**,
 criptografado, versionado e com locking, por env, sem credenciais
-estáticas. Equivalente ao backend `gcs` do track GCP.
+estáticas.
 
-## Equivalência GCP ↔ Basa
+## Características
 
-| GCP | OCI |
+| Aspecto | Configuração |
 |---|---|
-| `backend "gcs"` + bucket `revenu-platform-tf-state` | `backend "s3"` (compatível S3 do Object Storage) + bucket `revenu-platform-tf-state-oci` |
-| GCS lock nativo (beta) | Lockfile no próprio Object Storage via `lockfile.tf` + OCI native locking via `use_lockfile = true` (TF ≥ 1.10) |
-| Encryption default (Google-managed key) | Encryption por `kms_key_id` do Vault (key_tfstate) |
-| Versioning default on | Versioning explícito habilitado |
+| Backend | `backend "s3"` (S3 Compatibility do OCI Object Storage) em bucket `revenu-platform-tf-state-oci` |
+| Locking | Native lockfile via `use_lockfile = true` (TF ≥ 1.10) |
+| Encryption | `kms_key_id` do Vault (`key_tfstate`) |
+| Versioning | Habilitado explicitamente |
 
 ## Bucket
 
@@ -23,18 +23,18 @@ Estrutura:
 ```
 revenu-platform-tf-state-oci  (single bucket, region: sa-saopaulo-1)
 ├── gateway-basa/
-│   ├── dev/
+│   ├── sqa/
 │   │   └── terraform.tfstate
-│   ├── staging/
+│   ├── uat/
 │   │   └── terraform.tfstate
-│   └── prod/
+│   └── pro/
 │       └── terraform.tfstate
 └── ...  # outros módulos / projetos
 ```
 
 Configuração:
 - **Versioning:** Enabled.
-- **Encryption:** `kms_key_id = <key_tfstate_ocid>` (Vault do env **prod**
+- **Encryption:** `kms_key_id = <key_tfstate_ocid>` (Vault do env **pro**
   — todos os envs criptografam com a mesma key master para consistência;
   revisar em ADR se isolamento por env for exigido).
 - **Lifecycle:** versões não-atuais expiram em 365 dias.
@@ -68,10 +68,10 @@ terraform {
 ## Inicialização (por env)
 
 ```
-cd deployment/infra/oci/environments/dev
+cd deployment/infra/oci/environments/sqa
 terraform init \
   -backend-config="bucket=revenu-platform-tf-state-oci" \
-  -backend-config="key=gateway-basa/dev/terraform.tfstate" \
+  -backend-config="key=gateway-basa/sqa/terraform.tfstate" \
   -backend-config="region=sa-saopaulo-1" \
   -backend-config="access_key=$OCI_S3_ACCESS_KEY" \
   -backend-config="secret_key=$OCI_S3_SECRET_KEY"
@@ -108,25 +108,25 @@ Com `use_lockfile = true` (Terraform 1.10+), lock é gravado como objeto
 
 ## State em 3 buckets? (rejeitado)
 
-Alternativa considerada: bucket separado por env (`tf-state-oci-dev`,
+Alternativa considerada: bucket separado por env (`tf-state-oci-sqa`,
 etc.). Rejeitado — aumenta superfície IAM e complicação de lifecycle.
 Um bucket com prefixos + IAM por prefix é o padrão da indústria.
 
 ## IAM no bucket
 
 ```
-Allow dynamic-group gateway-ci-dev-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/dev/*'
-Allow dynamic-group gateway-ci-staging-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/staging/*'
-Allow dynamic-group gateway-ci-prod-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/prod/*'
+Allow dynamic-group gateway-ci-sqa-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/sqa/*'
+Allow dynamic-group gateway-ci-uat-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/uat/*'
+Allow dynamic-group gateway-ci-pro-dg to manage object-family in compartment revenu-platform-shared where target.bucket.name='revenu-platform-tf-state-oci' and target.object.name like 'gateway-basa/pro/*'
 ```
 
-CI dev não acessa state de prod. Princípio de menor privilégio (A.8.2).
+CI sqa não acessa state de pro. Princípio de menor privilégio (A.8.2).
 
 ## Decisões de design
 
 1. **Bucket único, prefixo por env** — simplifica admin, IAM granular
    via path prefix.
-2. **Encryption com key_tfstate** do Vault prod — centraliza rotação da
+2. **Encryption com key_tfstate** do Vault pro — centraliza rotação da
    key que protege todo o histórico de state.
 3. **Versioning + Retention** — recovery de corrupção + proteção contra
    delete acidental.
@@ -143,6 +143,6 @@ CI dev não acessa state de prod. Princípio de menor privilégio (A.8.2).
 
 - [ ] Bucket criado via TF root ou manual, com versioning + KMS.
 - [ ] Customer Secret Keys rotacionadas por env (CI consome via secret GH).
-- [ ] IAM policies testadas (CI dev tenta acessar state prod → negado).
+- [ ] IAM policies testadas (CI sqa tenta acessar state pro → negado).
 - [ ] `use_lockfile = true` funciona (simular lock concorrente).
 - [ ] Runbook de recovery escrito (referência em Fase 08).

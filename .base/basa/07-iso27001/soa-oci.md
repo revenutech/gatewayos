@@ -10,7 +10,7 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 
 - **Aplicáveis no Basa:** 92 dos 93 controles Annex A (99%).
 - **Não-aplicáveis:** 1 (A.7.9 Security of assets off-premises —
-  laptops não armazenam material criptográfico prod).
+  laptops não armazenam material criptográfico pro).
 - **Implementados ao final da Fase 06:** 85.
 - **Documentados apenas (execução futura):** 7 — majoritariamente
   hardening opcional (ACS, FIPS, tracing).
@@ -23,7 +23,7 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 |---|:-:|:-:|---|
 | A.5.1 Policies | ✅ | ✅ | ISMS existente aplicável ao Basa sem alteração |
 | A.5.2 Roles | ✅ | ✅ | RACI Fase 00 `scope.md` |
-| A.5.3 Segregation | ✅ | ✅ | 2 reviewers prod (Fase 06) |
+| A.5.3 Segregation | ✅ | ✅ | 2 reviewers pro (Fase 06) |
 | A.5.4 Mgmt commitment | ✅ | ✅ | Management Review cobre Basa |
 | A.5.5 Contact with authorities | ✅ | ✅ | inalterado |
 | A.5.6 Special interest groups | ✅ | ✅ | Red Hat security mailing list adicionada |
@@ -84,7 +84,7 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 | A.7.6 Working in secure areas | ✅ | ✅ | delegado OCI |
 | A.7.7 Clear desk/screen | ✅ | ✅ | HR policy |
 | A.7.8 Siting of equipment | ✅ | ✅ | WFH guidelines |
-| A.7.9 Off-premises | ➖ | — | **Não-aplicável** — laptops não armazenam key material prod (tudo em Vault). Justificativa da exclusão formal abaixo. |
+| A.7.9 Off-premises | ➖ | — | **Não-aplicável** — laptops não armazenam key material pro (tudo em Vault). Justificativa da exclusão formal abaixo. |
 | A.7.10 Storage media | ✅ | ✅ | OCI gerencia; Vault delete |
 | A.7.11 Supporting utilities | ✅ | ✅ | delegado OCI |
 | A.7.12 Cabling | ✅ | ✅ | delegado OCI |
@@ -112,7 +112,7 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 | A.8.15 Logging | ✅ | ✅ | Loki + OCI Audit |
 | A.8.16 Monitoring | ✅ | ✅ | Prom/OTel/OCI |
 | A.8.17 Clock sync | ✅ | ✅ | RHCOS NTP |
-| A.8.18 Privileged utilities | ✅ | ✅ | Bastion TTL 1h prod |
+| A.8.18 Privileged utilities | ✅ | ✅ | Bastion TTL 1h pro |
 | A.8.19 Installation | ✅ | 📝 | policy-controller documentado (opcional v1) |
 | A.8.20 Networks | ✅ | ✅ | VCN + NSG |
 | A.8.21 Network services | ✅ | ✅ | LB managed |
@@ -124,10 +124,10 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 | A.8.27 Secure architecture | ✅ | ✅ | defense-in-depth |
 | A.8.28 Secure coding | ✅ | ✅ | Trivy secret scan |
 | A.8.29 Security testing | ✅ | ✅ | compliance-oci.yml |
-| A.8.30 Outsourced dev | ✅ | ✅ | KrakenD CE + UBI |
+| A.8.30 Outsourced sqa | ✅ | ✅ | KrakenD CE + UBI |
 | A.8.31 Env separation | ✅ | ✅ | compartments |
-| A.8.32 Change mgmt | ✅ | ✅ | 2 reviewers prod |
-| A.8.33 Test info | ✅ | ✅ | staging sintético |
+| A.8.32 Change mgmt | ✅ | ✅ | 2 reviewers pro |
+| A.8.33 Test info | ✅ | ✅ | uat sintético |
 | A.8.34 Audit protection | ✅ | 📝 | Compliance Operator (documentado) |
 
 ## Exclusão formal de A.7.9
@@ -137,7 +137,7 @@ controle Annex A, declara aplicabilidade no track Basa e a justificativa.
 **Declaração de não-aplicabilidade:**
 Equipamentos off-premises (laptops de desenvolvedores) **não armazenam
 material criptográfico de produção** do track Basa. Todo segredo é
-gerenciado via **OCI Vault** (HSM em staging+prod) e entregue a pods via
+gerenciado via **OCI Vault** (HSM em uat+pro) e entregue a pods via
 **External Secrets Operator**. Desenvolvedores acessam infra de produção
 apenas via **OCI Bastion** com TTL curto (1h) e MFA — nenhum token
 persistente.

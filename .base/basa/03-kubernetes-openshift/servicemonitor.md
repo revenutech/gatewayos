@@ -3,19 +3,17 @@
 ## Objetivo
 
 Expor métricas do Gateway ao **OpenShift User Workload Monitoring**
-(Prometheus Operator nativo do OCP) via `ServiceMonitor` CR —
-reutilizando o template já existente no chart GCP sem modificações
-estruturais.
+(Prometheus Operator nativo do OCP) via `ServiceMonitor` CR.
 
-## Equivalência
+## Como o OpenShift expõe Prometheus
 
-| GCP (GKE) | OpenShift |
+| Componente | Comportamento |
 |---|---|
-| Prometheus Operator instalado manualmente | **Nativo** — habilitar `enableUserWorkload: true` no `cluster-monitoring-config` |
-| Label `release: kube-prometheus-stack` no ServiceMonitor | Label não necessária; OpenShift Prometheus pega de qualquer namespace user monitorado |
-| Cloud Monitoring sink | OpenShift Monitoring ingere nativo; OCI Monitoring recebe via OTel (Fase 04) |
-| Custom dashboards Grafana | Grafana Operator + Dashboards CR (Fase 04) |
-| Alertas via Cloud Monitoring | `PrometheusRule` + Alertmanager (já existe) |
+| Prometheus Operator | Nativo no OCP — habilitar via `enableUserWorkload: true` no `cluster-monitoring-config` |
+| Label de scrape | ServiceMonitor sem label especial — Prometheus pega qualquer namespace user monitorado |
+| Export cross-plataforma | OCI Monitoring pode receber via OTel (Fase 04) |
+| Dashboards | Grafana Operator + Dashboards CR (Fase 04) |
+| Alerting | `PrometheusRule` + Alertmanager |
 
 ## Habilitar User Workload Monitoring
 
@@ -69,7 +67,7 @@ spec:
 {{- end }}
 ```
 
-Sem mudança para OpenShift. Funciona em GCP e OCP.
+ServiceMonitor é a API padrão — funciona sem customizações.
 
 ## Ajuste Basa — endpoint HTTPS (opcional)
 

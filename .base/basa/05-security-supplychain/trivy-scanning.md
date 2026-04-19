@@ -5,16 +5,7 @@
 Scan de vulnerabilidades e misconfigurations em 3 dimensões:
 **filesystem** (código + deps), **image** (container pushado), e
 **config** (Helm, Dockerfile, Terraform). Bloqueio em CI baseado em
-severity. Paridade direta com track GCP.
-
-## Equivalência
-
-| GCP (atual) | Basa |
-|---|---|
-| `aquasecurity/trivy-action@master` com CRITICAL/HIGH | Idem |
-| `.trivyignore` na raiz do repo | **Reutilizado** + deltas UBI-específicos |
-| `ignore-unfixed: true` | Idem |
-| Scan de imagem pré-push | Idem |
+severity.
 
 ## Dimensões de scan
 
@@ -62,9 +53,9 @@ Inclui:
 - `k8s/helm/gateway/templates/*.yaml` (após `helm template`)
 - `deployment/infra/oci/**/*.tf`
 
-## `.trivyignore` — herança e deltas
+## `.trivyignore` — convenção
 
-### Herdado do GCP (mantém mesma convenção)
+### Lista base
 
 ```
 # KrakenD CE upstream CVEs — mitigados por Lua JWE guard + go-jose patch
@@ -116,9 +107,9 @@ Resultados visíveis em **GitHub Security tab → Code scanning alerts**.
 
 | Env | Severity | Fixable only? | Block CI? |
 |---|---|---|---|
-| dev | CRITICAL, HIGH | sim | não (warn) |
-| staging | CRITICAL, HIGH | sim | sim |
-| prod | CRITICAL, HIGH, MEDIUM | sim | sim |
+| sqa | CRITICAL, HIGH | sim | não (warn) |
+| uat | CRITICAL, HIGH | sim | sim |
+| pro | CRITICAL, HIGH, MEDIUM | sim | sim |
 
 Prod rodou adicional `MEDIUM` — protege contra acúmulo de dívida.
 
@@ -154,7 +145,7 @@ spec:
   source: community-operators
 ```
 
-Gera `VulnerabilityReport` CRs para cada pod rodando. Scoped para `prod`
+Gera `VulnerabilityReport` CRs para cada pod rodando. Scoped para `pro`
 v2.
 
 ## Integração com Grafana
@@ -181,7 +172,7 @@ no Grafana Operator (Fase 04) mostra CVE count por severity, aging, etc.
 ## Checklist pronto-para-código
 
 - [ ] `trivy fs` em `ci-oci.yml`.
-- [ ] `trivy image` em `cd-staging-oci.yml` e `cd-production-oci.yml`.
+- [ ] `trivy image` em `cd-uat-oci.yml` e `cd-pro-oci.yml`.
 - [ ] `trivy config` sobre `helm template` + `terraform show`.
 - [ ] `.trivyignore` com comentários de review date + justificativa.
 - [ ] SARIF upload ativo.

@@ -3,18 +3,18 @@
 ## Objetivo
 
 Garantir que o pod do Gateway obedeça ao padrão OpenShift de atribuição
-aleatória de UID **e** mantenha as proteções já aplicadas no track GCP
-(non-root, no privilege escalation, read-only fs, drop ALL capabilities).
+aleatória de UID e aplique proteções de hardening mandatórias (non-root,
+no privilege escalation, read-only fs, drop ALL capabilities).
 
-## Equivalência
+## Componentes relevantes
 
-| K8s vanilla / GCP | OpenShift |
+| Item | Comportamento |
 |---|---|
-| `securityContext.runAsUser: 1000` | SCC escolhe UID do range do namespace (`openshift.io/sa.scc.uid-range`) |
-| `securityContext.runAsGroup: 1000` | SCC atribui GID 0 por default (suficiente quando fs tem `chgrp -R 0`) |
-| `securityContext.fsGroup: 1000` | SCC `fsGroup: RunAsAny` / `MustRunAs` conforme escolhido |
-| PodSecurityAdmission `restricted` | SCC `restricted-v2` (equivalente moderno) |
-| Calico NetPol | OVN-K NetPol |
+| UID do container | SCC escolhe UID do range do namespace (`openshift.io/sa.scc.uid-range`) |
+| GID | SCC atribui GID 0 por default (compat com `chgrp -R 0` no filesystem) |
+| fsGroup | SCC `fsGroup: RunAsAny` / `MustRunAs` conforme escolhido |
+| Pod Security Admission | `restricted` label aplicada no namespace |
+| Baseline de SCC | `restricted-v2` (shipped com OCP 4.12+) |
 
 ## SCC padrão a usar — `restricted-v2`
 
@@ -40,12 +40,7 @@ e compatível com todas as restrições.
 ```yaml
 securityContext:
   runAsNonRoot: true
-  # NÃO definir runAsUser quando openshift.enabled — SCC atribui
-  {{- if not .Values.openshift.enabled }}
-  runAsUser: {{ .Values.securityContext.runAsUser }}
-  runAsGroup: {{ .Values.securityContext.runAsGroup }}
-  fsGroup: {{ .Values.securityContext.fsGroup }}
-  {{- end }}
+  # runAsUser / runAsGroup / fsGroup: omitidos — SCC atribui
   seccompProfile:
     type: RuntimeDefault
 ```

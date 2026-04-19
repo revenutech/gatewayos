@@ -3,7 +3,7 @@
 - **Status:** Aceito
 - **Data:** 2026-04-17
 - **Decisores:** Platform Owner, SRE Lead, Security Lead
-- **Relacionado:** ADR-003, equivalence-matrix.md §2
+- **Relacionado:** ADR-003, stack-reference.md §2
 
 ## Contexto
 
@@ -62,13 +62,13 @@ opções viáveis na OCI:
 - Upgrades são responsabilidade do time (runbook em Fase 08).
 - Instalação IPI na OCI tem menos docs que AWS/Azure; primeiro bootstrap
   exige atenção (runbook dedicado em 08).
-- Maior superfície operacional que GKE.
+- Maior superfície operacional que Kubernetes totalmente gerenciado.
 
 ## Alternativa adiada
 
 **OpenShift Dedicated / ROSA-like na OCI** — Red Hat não oferece managed
-OpenShift na OCI (disponível em AWS/Azure/GCP, não OCI na data da ADR).
-Reavaliar quando/se Red Hat + Oracle anunciarem parceria managed.
+OpenShift na OCI na data da ADR. Reavaliar quando/se Red Hat + Oracle
+anunciarem parceria managed.
 
 ## Notas de implementação (entram nas Fases 02–03)
 

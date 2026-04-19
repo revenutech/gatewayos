@@ -1,4 +1,4 @@
-# Environments (dev / staging / prod)
+# Environments (sqa / uat / pro)
 
 ## Objetivo
 
@@ -27,12 +27,12 @@ Cada `main.tf` declara:
 
 ## Dimensionamento por env
 
-### Dev
+### sqa
 
 | Item | Valor | Observação |
 |---|---|---|
-| Compartment | `gateway-basa-dev` | |
-| Region | `sa-saopaulo-1` | mesma do GCP dev para paridade |
+| Compartment | `gateway-basa-sqa` | |
+| Region | `sa-saopaulo-1` | primária para todos os envs |
 | VCN CIDR | `10.40.0.0/16` | |
 | Masters | 3 × `VM.Standard.E4.Flex` 4 OCPU / 16 GB | mínimo OCP |
 | Workers | 2 × `VM.Standard.E4.Flex` 2 OCPU / 8 GB | autoscaler 2–4 |
@@ -46,29 +46,29 @@ Cada `main.tf` declara:
 **Custo estimado:** ~$350/mês (OCP self-managed é caro; runbook em Fase 08
 discute stop/start em horário não-útil para economia).
 
-### Staging
+### uat
 
 | Item | Valor | Observação |
 |---|---|---|
-| Compartment | `gateway-basa-staging` | |
+| Compartment | `gateway-basa-uat` | |
 | Region | `sa-saopaulo-1` | |
 | VCN CIDR | `10.41.0.0/16` | |
 | Masters | 3 × `VM.Standard.E4.Flex` 4 OCPU / 16 GB | |
 | Workers | 3 × `VM.Standard.E4.Flex` 2 OCPU / 8 GB | autoscaler 3–6 |
-| Vault | HSM | paridade prod |
+| Vault | HSM | paridade pro |
 | OCIR | mutable + protected RC tags | |
 | Bastion TTL | 3h | |
 | Flow logs retention | 60 dias | |
-| OCP version | 4.16.x (mesma minor de prod) | |
+| OCP version | 4.16.x (mesma minor de pro) | |
 | FIPS | off (pode ligar para drill) | |
 
 **Custo estimado:** ~$450/mês.
 
-### Production
+### pro
 
 | Item | Valor | Observação |
 |---|---|---|
-| Compartment | `gateway-basa-prod` | |
+| Compartment | `gateway-basa-pro` | |
 | Region | `sa-saopaulo-1` (primária) + DR `sa-vinhedo-1` (futuro) | |
 | VCN CIDR | `10.42.0.0/16` | |
 | Masters | 3 × `VM.Standard.E4.Flex` 4 OCPU / 16 GB | |
@@ -103,7 +103,7 @@ direto; dependency graph cuida da ordem.
 
 ## Per-env overrides importantes
 
-| Var | dev | staging | prod |
+| Var | sqa | uat | pro |
 |---|---|---|---|
 | `master_shape` | E4.Flex 4/16 | E4.Flex 4/16 | E4.Flex 4/16 |
 | `worker_ocpus` | 2 | 2 | 4 |
@@ -114,7 +114,7 @@ direto; dependency graph cuida da ordem.
 | `bastion_ttl` | 10800 | 10800 | 3600 |
 | `flow_log_retention_days` | 30 | 60 | 90 |
 | `fips_enabled` | false | false | false (v1) |
-| `notification_email` | dev-oncall@revenu | staging-oncall@revenu | oncall@revenu |
+| `notification_email` | sqa-oncall@revenu | uat-oncall@revenu | oncall@revenu |
 
 ## Separação por compartment (A.8.31)
 
@@ -123,9 +123,9 @@ Cada env em seu próprio **compartment** OCI:
 ```
 tenancy root
 └── revenu-platform
-    ├── gateway-basa-dev
-    ├── gateway-basa-staging
-    └── gateway-basa-prod
+    ├── gateway-basa-sqa
+    ├── gateway-basa-uat
+    └── gateway-basa-pro
 ```
 
 Policies escritas com `in compartment id ${compartment}` — impede
@@ -138,7 +138,7 @@ Todos os recursos recebem:
 ```
 revenu-platform.app        = gateway
 revenu-platform.track      = basa
-revenu-platform.env        = {dev|staging|prod}
+revenu-platform.env        = {sqa|uat|pro}
 revenu-platform.managed-by = terraform
 revenu-platform.iso27001   = true
 revenu-platform.owner      = platform-team

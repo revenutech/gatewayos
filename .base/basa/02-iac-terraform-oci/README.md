@@ -23,7 +23,7 @@ ambientes, backend de estado e convenções de variáveis.
 
 | Documento | Finalidade |
 |---|---|
-| [environments.md](environments.md) | Como dev/staging/prod compõem módulos, dimensionamento e custos |
+| [environments.md](environments.md) | Como sqa/uat/pro compõem módulos, dimensionamento e custos |
 | [backend-state.md](backend-state.md) | Backend Terraform em OCI Object Storage + locking |
 | [variables-tags.md](variables-tags.md) | Inputs padronizados, defined tags, freeform tags |
 
@@ -32,9 +32,9 @@ ambientes, backend de estado e convenções de variáveis.
 ```
 deployment/infra/oci/
 ├── environments/
-│   ├── dev/main.tf
-│   ├── staging/main.tf
-│   └── production/main.tf
+│   ├── sqa/main.tf
+│   ├── uat/main.tf
+│   └── pro/main.tf
 ├── modules/
 │   ├── vcn/
 │   ├── openshift/
@@ -49,19 +49,6 @@ deployment/infra/oci/
     └── variables.tf      # var root (tenancy_ocid, region, etc.)
 ```
 
-## Equivalência com track GCP
-
-| GCP (atual) | Basa (OCI) |
-|---|---|
-| `deployment/infra/gcp/modules/vpc` | `modules/vcn` |
-| `deployment/infra/gcp/modules/gke` | `modules/openshift` |
-| `deployment/infra/gcp/modules/artifact-registry` | `modules/ocir` |
-| `deployment/infra/gcp/modules/kms` | `modules/vault` |
-| `deployment/infra/gcp/modules/dns` | `modules/dns` |
-| `deployment/infra/gcp/modules/monitoring` | `modules/monitoring` |
-| `deployment/infra/gcp/modules/otel-collector` | Ver Fase 04 (não é Terraform no Basa — OperatorHub) |
-| N/A (GKE tem private endpoint) | `modules/bastion` (necessário para OCP privado) |
-
 ## Princípios
 
 1. **Um módulo por domínio** — módulos pequenos, composição em `environments/`.
@@ -69,7 +56,7 @@ deployment/infra/oci/
 3. **Zero recurso fora de compartment** — cada env em seu compartment OCI
    próprio (A.8.31 — Separation of environments).
 4. **Estado remoto** sempre (Object Storage), `prevent_destroy` em recursos
-   críticos (Vault keys, OCIR repos imutáveis de prod).
+   críticos (Vault keys, OCIR repos imutáveis de pro).
 5. **Provider pinado** — versões fixas em `shared/providers.tf`.
 
 ## Ordem de apply (dependências)
@@ -87,7 +74,7 @@ deployment/infra/oci/
 ## Checklist de fechamento da Fase 02
 
 - [ ] Todos os 7 módulos especificados com inputs/outputs/resources.
-- [ ] `environments/dev/main.tf` pseudo-código completo.
+- [ ] `environments/sqa/main.tf` pseudo-código completo.
 - [ ] Backend state documentado com locking.
 - [ ] Defined tags e namespaces `revenu-platform.*` listadas.
 - [ ] ADRs 001–003 referenciados nas decisões.
