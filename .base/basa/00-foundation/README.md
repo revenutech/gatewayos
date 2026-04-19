@@ -19,6 +19,7 @@ registrar aqui.
 | [adr-002-registry-ocir-vs-quay.md](adr-002-registry-ocir-vs-quay.md) | Escolha: OCIR vs Quay.io como registry primário |
 | [adr-003-tls-certmanager-vs-service-ca.md](adr-003-tls-certmanager-vs-service-ca.md) | Estratégia TLS: cert-manager (externo) + service-ca (interno) |
 | [adr-004-red-hat-acs-opcional.md](adr-004-red-hat-acs-opcional.md) | Red Hat ACS (StackRox) como opcional, não bloqueante |
+| [EMAIL-ENTREGA-BASA.md](EMAIL-ENTREGA-BASA.md) | E-mail formal de entrega ao BASA com delimitação de responsabilidade (trilha de auditoria) |
 
 ## Checklist de fechamento da Fase 00
 
