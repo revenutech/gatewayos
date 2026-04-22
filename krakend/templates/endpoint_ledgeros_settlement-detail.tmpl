@@ -4,10 +4,13 @@
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/settlement.json",
   "endpoint": "/ledgeros/v1/settlements",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "input_query_strings": ["*"],
   "output_encoding": "json",
   "timeout": "3s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/settlements",
@@ -21,9 +24,12 @@
 {
   "endpoint": "/ledgeros/v1/settlements/{id}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "output_encoding": "json",
   "timeout": "3s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/settlements/{id}",
@@ -37,9 +43,12 @@
 {
   "endpoint": "/ledgeros/v1/settlements/{id}/post",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
   "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/settlements/{id}/post",
@@ -53,9 +62,12 @@
 {
   "endpoint": "/ledgeros/v1/settlements/sweep",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
   "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/settlements/sweep",
