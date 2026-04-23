@@ -6,9 +6,8 @@
 replicaCount: 1
 
 image:
-  # Using SQA registry until UAT has its own Artifact Registry
-  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway/gateway
-  tag: "sqa-latest"
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-uat/gateway/gateway
+  tag: "uat-latest"
   pullPolicy: Always
 
 serviceAccount:
