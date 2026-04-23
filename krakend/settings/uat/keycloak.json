@@ -2,5 +2,5 @@
   "jwks_url": "http://keycloak:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
   "issuer": "https://uat.corebanxapp.com.br/auth/realms/ledgeros",
   "audience": "account",
-  "disable_jwk_security": true
+  "disable_jwk_security": false
 }
