@@ -76,7 +76,7 @@ pdb:
 
 keycloakBridge:
   enabled: true
-  ip: "10.120.0.7"
+  ip: "10.120.0.22"
   port: 8080
 
 ledgerosBridge:
