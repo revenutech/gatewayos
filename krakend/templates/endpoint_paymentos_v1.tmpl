@@ -1,7 +1,7 @@
 {
   "endpoint": "/paymentos/v1/pix/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -42,7 +42,7 @@
 {
   "endpoint": "/paymentos/v1/pix/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -83,7 +83,7 @@
 {
   "endpoint": "/paymentos/v1/ted/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -124,7 +124,7 @@
 {
   "endpoint": "/paymentos/v1/boleto/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -165,7 +165,7 @@
 {
   "endpoint": "/paymentos/v1/payments/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -206,7 +206,7 @@
 {
   "endpoint": "/paymentos/v1/payments/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -247,7 +247,7 @@
 {
   "endpoint": "/paymentos/v1/ach/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -288,7 +288,7 @@
 {
   "endpoint": "/paymentos/v1/ach/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -329,7 +329,7 @@
 {
   "endpoint": "/paymentos/v1/fednow/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -370,7 +370,7 @@
 {
   "endpoint": "/paymentos/v1/fednow/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
