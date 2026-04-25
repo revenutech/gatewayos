@@ -85,8 +85,10 @@ ledgerosBridge:
   httpPort: 8081
   grpcPort: 9081
 
+# Paymentos bridge DISABLED - paymentos now colocated in gateway-uat cluster
+# Access via internal DNS: paymentos.paymentos.svc.cluster.local:8082
 paymentosBridge:
-  enabled: true
-  ip: "10.120.0.10"
-  httpPort: 8082
-  grpcPort: 9082
+  enabled: false
+  # ip: "10.120.0.10"
+  # httpPort: 8082
+  # grpcPort: 9082
