@@ -74,10 +74,12 @@ pdb:
 # Service Bridges - connect to ILBs in SQA clusters
 # Initially pointing to SQA services until UAT has its own
 
+# KEYCLOAK MIGRATION: Bridge disabled - using MCS DNS instead
+# Access via: keycloak.keycloak.svc.clusterset.local:8080
 keycloakBridge:
-  enabled: true
-  ip: "10.120.0.22"
-  port: 8080
+  enabled: false
+  # ip: "10.120.0.22"  # Legacy ILB IP - no longer used
+  # port: 8080
 
 ledgerosBridge:
   enabled: true
