@@ -4,9 +4,30 @@
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/reconciliation.json",
   "endpoint": "/ledgeros/v1/reconciliation/jobs/{id}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
   "output_encoding": "json",
   "timeout": "3s",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin", "ledger-auditor"]
+    }
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/reconciliation/jobs/{id}",
@@ -20,10 +41,31 @@
 {
   "endpoint": "/ledgeros/v1/reconciliation/jobs/{id}/matches",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID"],
   "input_query_strings": ["*"],
   "output_encoding": "json",
   "timeout": "5s",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin", "ledger-auditor"]
+    }
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/reconciliation/jobs/{id}/matches",
@@ -37,9 +79,30 @@
 {
   "endpoint": "/ledgeros/v1/reconciliation/matches/{id}/approve",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
   "timeout": "5s",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/reconciliation/matches/{id}/approve",
@@ -53,9 +116,30 @@
 {
   "endpoint": "/ledgeros/v1/reconciliation/matches/{id}/reject",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
   "timeout": "5s",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
   "backend": [{
     "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
     "url_pattern": "/v1/reconciliation/matches/{id}/reject",
