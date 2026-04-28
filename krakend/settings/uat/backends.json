@@ -1,7 +1,7 @@
 {
   "ledgeros_http": "http://ledgeros:8081",
   "ledgeros_grpc": "ledgeros:9081",
-  "paymentos": "http://paymentos:8082",
+  "paymentos": "http://paymentos.paymentos.svc.clusterset.local:8082",
   "atmos": "http://atmos:8088",
   "identos": "http://identos:8091",
   "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",

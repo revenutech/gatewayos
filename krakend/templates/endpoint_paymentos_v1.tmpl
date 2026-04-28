@@ -1,14 +1,10 @@
 {
+  "_comment": "=== PIX - POST ===",
   "endpoint": "/paymentos/v1/pix/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "{{ .keycloak.jwks_url }}",
@@ -16,40 +12,27 @@
       "audience": ["{{ .keycloak.audience }}"],
       "cache": true,
       "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
       "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
       "propagate_claims": [
         ["sub", "x-user-id"],
         ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
+        ["realm_access.roles", "x-roles"]
+      ]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/v1/pix/{path}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
+    "encoding": "no-op"
   }]
 },
 {
+  "_comment": "=== PIX - GET ===",
   "endpoint": "/paymentos/v1/pix/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "{{ .keycloak.jwks_url }}",
@@ -57,40 +40,27 @@
       "audience": ["{{ .keycloak.audience }}"],
       "cache": true,
       "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
       "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
       "propagate_claims": [
         ["sub", "x-user-id"],
         ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+        ["realm_access.roles", "x-roles"]
+      ]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/v1/pix/{path}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
+    "encoding": "no-op"
   }]
 },
 {
-  "endpoint": "/paymentos/v1/ted/{path}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "_comment": "=== PIX - PATCH ===",
+  "endpoint": "/paymentos/v1/pix/{path}",
+  "method": "PATCH",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "{{ .keycloak.jwks_url }}",
@@ -98,40 +68,55 @@
       "audience": ["{{ .keycloak.audience }}"],
       "cache": true,
       "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
       "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
       "propagate_claims": [
         ["sub", "x-user-id"],
         ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/pix/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== TED - POST ===",
+  "endpoint": "/paymentos/v1/ted/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/v1/ted/{path}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
+    "encoding": "no-op"
   }]
 },
 {
-  "endpoint": "/paymentos/v1/boleto/{path}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "_comment": "=== TED - GET ===",
+  "endpoint": "/paymentos/v1/ted/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "{{ .keycloak.jwks_url }}",
@@ -139,26 +124,465 @@
       "audience": ["{{ .keycloak.audience }}"],
       "cache": true,
       "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
       "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
       "propagate_claims": [
         ["sub", "x-user-id"],
         ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== BOLETO - POST ===",
+  "endpoint": "/paymentos/v1/boleto/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/v1/boleto/{path}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== BOLETO - GET ===",
+  "endpoint": "/paymentos/v1/boleto/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
     }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/boleto/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== BOLETO - DELETE ===",
+  "endpoint": "/paymentos/v1/boleto/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/boleto/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== PAYMENTS - POST ===",
+  "endpoint": "/paymentos/v1/payments/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/payments/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== PAYMENTS - GET ===",
+  "endpoint": "/paymentos/v1/payments/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/payments/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== ACH - POST ===",
+  "endpoint": "/paymentos/v1/ach/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ach/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== ACH - GET ===",
+  "endpoint": "/paymentos/v1/ach/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ach/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== CHEQUE - POST ===",
+  "endpoint": "/paymentos/v1/cheque/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/cheque/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== CHEQUE - GET ===",
+  "endpoint": "/paymentos/v1/cheque/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/cheque/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== FEDNOW - POST ===",
+  "endpoint": "/paymentos/v1/fednow/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/fednow/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== FEDNOW - GET ===",
+  "endpoint": "/paymentos/v1/fednow/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/fednow/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== WIRE - POST ===",
+  "endpoint": "/paymentos/v1/wire/{path}",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/wire/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== WIRE - GET ===",
+  "endpoint": "/paymentos/v1/wire/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/wire/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== LEDGER BALANCE - GET ===",
+  "endpoint": "/paymentos/v1/ledger/balance/{account_id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ledger/balance/{account_id}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== ROUTING - GET ===",
+  "endpoint": "/paymentos/v1/routing/{path}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/routing/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== AUDIT LOGS - GET ===",
+  "endpoint": "/paymentos/v1/audit/logs",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/audit/logs",
+    "encoding": "no-op"
   }]
 }
