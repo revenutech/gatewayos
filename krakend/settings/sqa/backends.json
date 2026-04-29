@@ -8,5 +8,5 @@
   "onboardos": "http://onboardos.default.svc.clusterset.local:8092",
   "accountos": "http://accountos:8093",
   "financeos": "http://financeos:8095",
-  "keycloak": "http://keycloak.keycloak.svc.clusterset.local:8080/auth"
+  "keycloak": "http://keycloak.keycloak.svc.clusterset.local:8080"
 }
