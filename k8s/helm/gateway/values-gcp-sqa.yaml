@@ -72,11 +72,13 @@ pdb:
   enabled: false
 
 # Service Bridges - connect to ILBs in other clusters within Shared VPC
+# Note: Keycloak uses MCS (Multi-Cluster Services) instead of bridge
+# DNS: keycloak.keycloak.svc.clusterset.local:8080
 
 keycloakBridge:
-  enabled: true
-  ip: "10.120.0.7"
-  port: 8080
+  enabled: false
+  # ip: "10.120.0.7"  # Disabled - using MCS
+  # port: 8080
 
 ledgerosBridge:
   enabled: true
