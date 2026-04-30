@@ -1,0 +1,44 @@
+# =============================================================================
+# ServiceImport - Multi-Cluster Services (MCS) - SQA
+# Purpose: Import keycloak service from keycloak-sqa cluster
+# DNS: keycloak.keycloak.svc.clusterset.local
+# =============================================================================
+#
+# This ServiceImport enables the gateway-sqa cluster to access Keycloak
+# running in the keycloak-sqa cluster via MCS DNS.
+#
+# Prerequisites:
+# - Both clusters must be registered in the same GKE Fleet
+# - MCS feature must be enabled in the Fleet
+# - ServiceExport must exist in keycloak-sqa cluster
+# - keycloak namespace must exist in this cluster
+#
+# Usage in KrakenD:
+# - JWKS URL: http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs
+# - Backend: http://keycloak.keycloak.svc.clusterset.local:8080
+#
+# =============================================================================
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/part-of: basa-integration
+    environment: sqa
+---
+apiVersion: net.gke.io/v1
+kind: ServiceImport
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/component: mcs
+    app.kubernetes.io/part-of: basa-integration
+    environment: sqa
+spec:
+  type: ClusterSetIP
+  ports:
+  - port: 8080
+    protocol: TCP
