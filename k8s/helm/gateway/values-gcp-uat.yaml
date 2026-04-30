@@ -73,10 +73,12 @@ pdb:
 
 # Service Bridges - connect to ILBs in UAT/SQA clusters
 
+# KEYCLOAK MIGRATION: Bridge disabled - using MCS DNS instead
+# Access via: keycloak.keycloak.svc.clusterset.local:8080
 keycloakBridge:
-  enabled: true
-  ip: "10.120.0.22"  # UAT Keycloak ILB in ledgeros-uat cluster
-  port: 8080
+  enabled: false
+  # ip: "10.120.0.22"  # Legacy ILB IP - using MCS DNS instead
+  # port: 8080
 
 ledgerosBridge:
   enabled: true
@@ -84,8 +86,10 @@ ledgerosBridge:
   httpPort: 8081
   grpcPort: 9081
 
+# Paymentos bridge DISABLED - paymentos now colocated in gateway-uat cluster
+# Access via internal DNS: paymentos.paymentos.svc.cluster.local:8082
 paymentosBridge:
-  enabled: true
-  ip: "10.120.0.140"  # Paymentos ILB in paymentos-uat cluster
-  httpPort: 8082
-  grpcPort: 9082
+  enabled: false
+  # ip: "10.120.0.140"  # Legacy ILB IP - using MCS DNS instead
+  # httpPort: 8082
+  # grpcPort: 9082

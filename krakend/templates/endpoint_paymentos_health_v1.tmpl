@@ -1,4 +1,14 @@
 {
+  "endpoint": "/paymentos/__ready",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/__ready",
+    "encoding": "no-op"
+  }]
+},
+{
   "endpoint": "/paymentos/health",
   "method": "GET",
   "output_encoding": "no-op",
