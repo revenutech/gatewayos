@@ -1,7 +1,7 @@
 {
   "keycloak": {
-    "jwks_url": "http://keycloak.keycloak.svc.clusterset.local:8080/realms/ledgeros/protocol/openid-connect/certs",
-    "issuer": "https://sqa.corebanxapp.com.br/realms/ledgeros",
+    "jwks_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
     "audience": "account",
     "disable_jwk_security": true
   },
