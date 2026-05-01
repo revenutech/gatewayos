@@ -6,9 +6,9 @@
 replicaCount: 1
 
 image:
-  repository: devopsfaith/krakend
-  tag: "2.9.4"
-  pullPolicy: IfNotPresent
+  repository: southamerica-east1-docker.pkg.dev/revenu-gateway-sqa/gateway/gateway
+  tag: "sqa-latest"
+  pullPolicy: Always
 
 serviceAccount:
   create: true
@@ -87,7 +87,5 @@ ledgerosBridge:
   grpcPort: 9081
 
 paymentosBridge:
-  enabled: true
-  ip: "10.120.0.10"
-  httpPort: 8082
-  grpcPort: 9082
+  enabled: false
+  # Using MCS DNS: paymentos.paymentos.svc.clusterset.local
