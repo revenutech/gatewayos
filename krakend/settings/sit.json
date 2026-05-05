@@ -1,10 +1,11 @@
 {
   "keycloak": {
-    "jwks_url": "http://keycloak:8080/realms/ledgeros/protocol/openid-connect/certs",
-    "issuer": "http://auth-sit.internal:8080/realms/ledgeros",
+    "jwks_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://sit.corebanxapp.com.br/auth/realms/ledgeros",
     "audience": "account",
     "disable_jwk_security": true
   },
+  "keycloak_base_path": "/auth",
   "oauth2": {
     "client_id": "krakend-gateway",
     "client_secret": "${OAUTH2_CLIENT_SECRET}"
@@ -20,10 +21,10 @@
   "backends": {
     "ledgeros_http": "http://ledgeros:8081",
     "ledgeros_grpc": "ledgeros:9081",
-    "paymentos": "http://paymentos:8082",
+    "paymentos": "http://paymentos.paymentos.svc.clusterset.local:8082",
     "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
-    "onboardos": "http://onboardos:8092",
-    "keycloak": "http://keycloak:8080"
+    "onboardos": "http://onboardos.default.svc.clusterset.local:8092",
+    "keycloak": "http://keycloak.keycloak.svc.clusterset.local:8080"
   },
   "redis": {
     "host": "redis",
