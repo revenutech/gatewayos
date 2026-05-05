@@ -268,8 +268,8 @@
 },
 
 {
-  "_comment": "DICT — Single path param (consulta chave PIX: /dict/{chave})",
-  "endpoint": "/paymentos/jdpi/dict/{chave}",
+  "_comment": "DICT — Consulta chave PIX: /dict/consultar/{chave} (separate path to avoid Gin wildcard conflict)",
+  "endpoint": "/paymentos/jdpi/dict/consultar/{chave}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
