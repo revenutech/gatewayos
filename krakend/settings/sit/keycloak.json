@@ -1,6 +1,7 @@
 {
-  "jwks_url": "http://keycloak:8080/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "http://auth-sit.internal:8080/realms/ledgeros",
+  "jwks_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
+  "issuer": "https://sit.corebanxapp.com.br/auth/realms/ledgeros",
   "audience": "account",
-  "disable_jwk_security": true
+  "disable_jwk_security": true,
+  "keycloak_base_path": "/auth"
 }
