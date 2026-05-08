@@ -228,7 +228,7 @@
 {
   "endpoint": "/paymentos/jdpi/dict/reivindicacao",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -271,7 +271,7 @@
   "_comment": "DICT — Consulta chave PIX: /dict/consultar/{chave} (separate path to avoid Gin wildcard conflict)",
   "endpoint": "/paymentos/jdpi/dict/consultar/{chave}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -314,7 +314,7 @@
   "_comment": "DICT — 2-level paths (listar/chave, estatisticas/{cpfcnpj}, politicas/listar, etc.)",
   "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -439,7 +439,7 @@
   "_comment": "DICT — 3-level paths (reivindicacao/{id}/confirmar, estatisticas/chave/{chave})",
   "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}/{p3}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -1770,6 +1770,79 @@
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/jdpi/pix/callback",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+
+{
+  "_comment": "JDPI Webhook — Credito (chamados pelo JDPI, sem autenticação JWT)",
+  "endpoint": "/jdpi/webhook/credito/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/validar",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/jdpi/webhook/credito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/jdpi/webhook/credito/devolucao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/devolucao",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "endpoint": "/jdpi/webhook/credito/validar/async",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/validar/async",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "JDPI Webhook — Credito callback from BACEN",
+  "endpoint": "/paymentos/jdpi/webhook/credito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
