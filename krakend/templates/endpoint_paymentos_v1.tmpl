@@ -585,4 +585,16 @@
     "url_pattern": "/v1/audit/logs",
     "encoding": "no-op"
   }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CREDITO - POST ===",
+  "endpoint": "/paymentos/jdpi/webhook/credito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito",
+    "encoding": "no-op"
+  }]
 }
