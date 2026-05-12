@@ -50,4 +50,16 @@
     "url_pattern": "/health",
     "encoding": "no-op"
   }]
+},
+{
+  "_comment": "Test endpoint — MQ inject TED inbound for integration testing",
+  "endpoint": "/paymentos/test/mq-inject/ted-inbound",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos_http }}"],
+    "url_pattern": "/test/mq-inject/ted-inbound",
+    "encoding": "no-op"
+  }]
 }
