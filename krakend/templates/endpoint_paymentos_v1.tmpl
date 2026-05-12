@@ -83,6 +83,34 @@
   }]
 },
 {
+  "_comment": "=== PIX - DELETE (scheduled/{id}, recurring/{id}) ===",
+  "endpoint": "/paymentos/v1/pix/{path}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/pix/{path}",
+    "encoding": "no-op"
+  }]
+},
+{
   "_comment": "=== TED - POST ===",
   "endpoint": "/paymentos/v1/ted/{path}",
   "method": "POST",
@@ -595,6 +623,42 @@
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/jdpi/webhook/credito",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CREDITO/VALIDAR - POST ===",
+  "endpoint": "/paymentos/jdpi/webhook/credito/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CREDITO/DEVOLUCAO - POST ===",
+  "endpoint": "/paymentos/jdpi/webhook/credito/devolucao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/devolucao",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CREDITO/VALIDAR/ASYNC - POST ===",
+  "endpoint": "/paymentos/jdpi/webhook/credito/validar/async",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/credito/validar/async",
     "encoding": "no-op"
   }]
 }
