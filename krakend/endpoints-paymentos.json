@@ -934,6 +934,47 @@
     },
 
     {
+      "_comment": "=== JDPI PA (Pix Automatico - Agendamento) ===",
+      "_module": "jdpi/pa",
+      "_spec": "Anexo 4.4.x - Pix Automatico Agendamento"
+    },
+    {
+      "_comment": "4.4.1 - Criar agendamento Pix Automatico",
+      "endpoint": "/paymentos/jdpi/pa/agendamento",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/agendamento", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.4.5 - Listar agendamentos Pix Automatico",
+      "endpoint": "/paymentos/jdpi/pa/agendamento/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.4.2 - Consultar agendamento por endToEndId",
+      "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.4.3 - Cancelar agendamento Pix Automatico",
+      "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.4.4 - Consultar cancelamento de agendamento",
+      "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
       "_comment": "=== TEST ENDPOINTS ===",
       "_module": "test"
     },
