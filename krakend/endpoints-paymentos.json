@@ -540,22 +540,46 @@
       "_module": "ted"
     },
     {
+      "_comment": "Submit outbound TED",
+      "endpoint": "/paymentos/v1/ted",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/v1/ted", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "List TED transactions",
       "endpoint": "/paymentos/v1/ted",
       "method": "GET",
       "output_encoding": "no-op",
       "backend": [{ "url_pattern": "/v1/ted", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
     },
     {
+      "_comment": "Get TED by ID",
       "endpoint": "/paymentos/v1/ted/{id}",
       "method": "GET",
       "output_encoding": "no-op",
       "backend": [{ "url_pattern": "/v1/ted/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
     },
     {
+      "_comment": "Reverse TED",
       "endpoint": "/paymentos/v1/ted/{id}/reverse",
       "method": "POST",
       "output_encoding": "no-op",
       "backend": [{ "url_pattern": "/v1/ted/{id}/reverse", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "Approve TED for submission",
+      "endpoint": "/paymentos/v1/ted/{id}/approve",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/v1/ted/{id}/approve", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "Settle TED after STR confirmation",
+      "endpoint": "/paymentos/v1/ted/{id}/settle",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/v1/ted/{id}/settle", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
     },
     {
       "endpoint": "/paymentos/v1/ted/receive",
@@ -934,8 +958,77 @@
     },
 
     {
+      "_comment": "=== JDPI PA (Pix Automatico - Autorizacao) ===",
+      "_module": "jdpi/pa/autorizacao",
+      "_spec": "Anexo 4.3.x - Pix Automatico Autorizacao"
+    },
+    {
+      "_comment": "4.3.1 - Requisitar Autorizacao para Pagamento Recorrente",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.9 - Listar Autorizacoes",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.5 - Consultar Autorizacao por idRecorrencia",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.2 - Responder Autorizacao (pagador aprova/recusa)",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/responder",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/responder", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.3 - Confirmar Autorizacao (recebedor confirma)",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/confirmar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/confirmar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.6 - Atualizar Valor Maximo da Autorizacao",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/valor-maximo",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/valor-maximo", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.7 - Cancelar Autorizacao",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.8 - Consultar Status Cancelamento de Autorizacao",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "4.3.4 - Registrar Validacao de Autorizacao",
+      "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/validacao",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/validacao", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
       "_comment": "=== JDPI PA (Pix Automatico - Agendamento) ===",
-      "_module": "jdpi/pa",
+      "_module": "jdpi/pa/agendamento",
       "_spec": "Anexo 4.4.x - Pix Automatico Agendamento"
     },
     {
