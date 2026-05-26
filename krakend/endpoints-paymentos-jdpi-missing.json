@@ -1,0 +1,278 @@
+{
+  "$schema": "https://www.krakend.io/schema/v3.json",
+  "version": 3,
+  "_comment": "Paymentos JDPI endpoints - MISSING FROM MAIN CONFIG - To be merged into endpoints-paymentos.json",
+
+  "endpoints": [
+
+    {
+      "_comment": "=== HEALTHCHECK ===",
+      "_module": "healthcheck"
+    },
+    {
+      "endpoint": "/paymentos/healthcheck",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/healthcheck", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI CONTA (Consulta SIT) ===",
+      "_module": "jdpi/conta",
+      "_spec": "Consulta situacao da conta no SIT (Sistema de Transferencia de Reservas)"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/conta/consultarsitreq",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/conta/consultarsitreq", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/conta/consultarsitreq",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/conta/consultarsitreq", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI DEVOLUCAO (PIX Returns) ===",
+      "_module": "jdpi/devolucao",
+      "_spec": "Devolucoes e estornos PIX"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/devolucao/consultar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/devolucao/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/analisar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/devolucao/analisar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/devolucao/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/devolucao/incluir", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI DICT (Diretorio de Chaves PIX) ===",
+      "_module": "jdpi/dict",
+      "_spec": "Operacoes diretas no DICT (create, update, delete de chaves PIX)"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/dict/{chave}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/dict/{chave}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/dict/{chave}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/dict/{chave}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI MARCACAO FRAUDE (Fraud Markers) ===",
+      "_module": "jdpi/marcacao-fraude",
+      "_spec": "Marcacao de contas/chaves suspeitas de fraude"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/marcacao-fraude/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/{idMarcacaoFraude}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/marcacao-fraude/{idMarcacaoFraude}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/marcacao-fraude/incluir", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI PIX (Tipos Especificos de Transacao) ===",
+      "_module": "jdpi/pix",
+      "_spec": "Tipos especiais de PIX: agendado, automatico, saque, troco, parcelado, etc"
+    },
+    {
+      "_comment": "PIX Agendado (scheduled for future date)",
+      "endpoint": "/paymentos/jdpi/pix/agendado",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/agendado", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX Automatico (recurring with authorization)",
+      "endpoint": "/paymentos/jdpi/pix/automatico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/automatico", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX via chave (CPF, CNPJ, email, telefone, random)",
+      "endpoint": "/paymentos/jdpi/pix/chave",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/chave", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX Cobranca com Vencimento (payment request with due date)",
+      "endpoint": "/paymentos/jdpi/pix/cobv",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/cobv", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX In-Out (internal transfer between accounts)",
+      "endpoint": "/paymentos/jdpi/pix/in-out",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/in-out", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX Parcelado (installment payment)",
+      "endpoint": "/paymentos/jdpi/pix/parcelado",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/parcelado", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX via QR Code Dinamico (dynamic QR code)",
+      "endpoint": "/paymentos/jdpi/pix/qr-dinamico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/qr-dinamico", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX via QR Code Estatico (static QR code)",
+      "endpoint": "/paymentos/jdpi/pix/qr-estatico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/qr-estatico", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX Saque (ATM withdrawal via PIX)",
+      "endpoint": "/paymentos/jdpi/pix/saque",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/saque", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "PIX Troco (cashback/change at merchant)",
+      "endpoint": "/paymentos/jdpi/pix/troco",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/pix/troco", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI RECUPERACAO VALORES (Value Recovery - MED 2.0) ===",
+      "_module": "jdpi/recuperacao-valores",
+      "_spec": "Mecanismo Especial de Devolucao - Recuperacao de valores em casos de fraude"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/recuperacao-valores/consultar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/recuperacao-valores/incluir", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI RELATO INFRACAO (Infraction Reports) ===",
+      "_module": "jdpi/relato-infracao",
+      "_spec": "Relatos de infracoes e violacoes ao regulamento PIX"
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/consultar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/analisar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/analisar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/incluir", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/{idRelatoInfracao}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/relato-infracao/{idRelatoInfracao}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+
+    {
+      "_comment": "=== JDPI SPI (Sistema de Pagamentos Instantaneos - Utilities) ===",
+      "_module": "jdpi/spi",
+      "_spec": "Utilitarios SPI: RCO downloads, teste de conectividade"
+    },
+    {
+      "_comment": "Download de RCO (Relacao de Contas Operacionais) - arquivo mensal",
+      "endpoint": "/paymentos/jdpi/spi/rco/download/{tpRCO}/{mes}/{ano}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/spi/rco/download/{tpRCO}/{mes}/{ano}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    },
+    {
+      "_comment": "Teste de conectividade com o SPI/JDPI",
+      "endpoint": "/paymentos/jdpi/spi/teste-conectividade",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [{ "url_pattern": "/jdpi/spi/teste-conectividade", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+    }
+
+  ]
+}
