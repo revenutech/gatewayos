@@ -2,9 +2,7 @@
   "$schema": "https://www.krakend.io/schema/v3.json",
   "version": 3,
   "_comment": "Paymentos (BankLink) endpoints mapping for KrakenD - UAT/SQA/SIT",
-
   "endpoints": [
-
     {
       "_comment": "=== OAUTH ===",
       "_module": "oauth"
@@ -13,51 +11,114 @@
       "endpoint": "/paymentos/oauth/token",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/token", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/token",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/introspect",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/introspect", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/introspect",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/revoke",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/revoke", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/revoke",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/clients",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/clients", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/clients",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/clients/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/clients/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/clients/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/clients/{id}/rotate",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/clients/{id}/rotate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/clients/{id}/rotate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/clients/{id}/deactivate",
       "method": "PUT",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/clients/{id}/deactivate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/clients/{id}/deactivate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/oauth/clients/{id}/reactivate",
       "method": "PUT",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/oauth/clients/{id}/reactivate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/oauth/clients/{id}/reactivate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX ===",
       "_module": "pix"
@@ -66,75 +127,170 @@
       "endpoint": "/paymentos/v1/pix",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/{id}/reverse",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/{id}/reverse", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/{id}/reverse",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/aproximacao",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/aproximacao", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/aproximacao",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/confirm",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/confirm", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/confirm",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/rejection",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/rejection", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/rejection",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/screen",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/screen", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/screen",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/return/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/return/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/return/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/settlement/confirm",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/settlement/confirm", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/settlement/confirm",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/psti/status",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/psti/status", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/psti/status",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX KEYS ===",
       "_module": "pix/keys"
@@ -143,57 +299,128 @@
       "endpoint": "/paymentos/v1/pix/keys",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/{entry_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/{entry_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/{entry_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/check",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/check", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/check",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/lookup",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/lookup", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/lookup",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/resolve",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/resolve", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/resolve",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/validate",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/validate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/validate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/sync",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/sync", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/sync",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/reconciliation",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/reconciliation", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/reconciliation",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/keys/statistics",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/keys/statistics", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/keys/statistics",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX CLAIMS ===",
       "_module": "pix/claims"
@@ -202,39 +429,86 @@
       "endpoint": "/paymentos/v1/pix/claims",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/claims/{claim_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims/{claim_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims/{claim_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/claims/{claim_id}/acknowledge",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims/{claim_id}/acknowledge", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims/{claim_id}/acknowledge",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/claims/{claim_id}/cancel",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims/{claim_id}/cancel", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims/{claim_id}/cancel",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/claims/{claim_id}/complete",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims/{claim_id}/complete", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims/{claim_id}/complete",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/claims/{claim_id}/confirm",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/claims/{claim_id}/confirm", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/claims/{claim_id}/confirm",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX COB (Cobranca) ===",
       "_module": "pix/cob"
@@ -243,81 +517,184 @@
       "endpoint": "/paymentos/v1/pix/cob",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/cob", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/cob",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/cob/{txid}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/cob/{txid}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/cob/{txid}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/cob/{txid}/pay",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/cob/{txid}/pay", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/cob/{txid}/pay",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/cob/{txid}/qrcode",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/cob/{txid}/qrcode", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/cob/{txid}/qrcode",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/cob/expire",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/cob/expire", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/cob/expire",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/lotecob",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/lotecob", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/lotecob",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/lotecob/{batch_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/lotecob/{batch_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/lotecob/{batch_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/lotecob/{batch_id}/process",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/lotecob/{batch_id}/process", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/lotecob/{batch_id}/process",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/loc",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/loc", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/loc",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/loc/{loc_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/loc/{loc_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/loc/{loc_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/loc/{loc_id}/delink",
       "method": "PATCH",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/loc/{loc_id}/delink", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/loc/{loc_id}/delink",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/payload/cob/{txid}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/payload/cob/{txid}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/payload/cob/{txid}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/payload/cobv/{txid}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/payload/cobv/{txid}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/payload/cobv/{txid}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX MED (Mecanismo Especial de Devolucao) ===",
       "_module": "pix/med"
@@ -326,69 +703,156 @@
       "endpoint": "/paymentos/v1/pix/med/chain",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/chain", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/chain",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/chain/{chain_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/chain/{chain_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/chain/{chain_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/chain/{chain_id}/contestation",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/chain/{chain_id}/contestation", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/chain/{chain_id}/contestation",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/chain/{chain_id}/escalate",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/chain/{chain_id}/escalate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/chain/{chain_id}/escalate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/chain/{chain_id}/resolve",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/chain/{chain_id}/resolve", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/chain/{chain_id}/resolve",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries/{recovery_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries/{recovery_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}/block",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/block", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/block",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}/cancel",
       "method": "PATCH",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/cancel", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/cancel",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}/ni",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/ni", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/ni",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}/refund",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/refund", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/med/recoveries/{recovery_id}/refund",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX FRAUD ===",
       "_module": "pix/fraud"
@@ -397,39 +861,86 @@
       "endpoint": "/paymentos/v1/pix/fraud/infractions",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/infractions", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/infractions",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/fraud/infractions/{infraction_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/infractions/{infraction_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/infractions/{infraction_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/fraud/markers",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/markers", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/markers",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/fraud/markers/{marker_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/markers/{marker_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/markers/{marker_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/fraud/report",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/report", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/report",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/fraud/report/{report_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/fraud/report/{report_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/fraud/report/{report_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX PI (Conta PI) ===",
       "_module": "pix/pi"
@@ -438,45 +949,100 @@
       "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/balance",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/accounts/{id}/balance", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/accounts/{id}/balance",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/statement",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/accounts/{id}/statement", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/accounts/{id}/statement",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/deposit",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/accounts/{id}/deposit", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/accounts/{id}/deposit",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/topup",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/accounts/{id}/topup", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/accounts/{id}/topup",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/withdraw",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/accounts/{id}/withdraw", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/accounts/{id}/withdraw",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/operations",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/operations", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/operations",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/pi/operations/{request_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/pi/operations/{request_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/pi/operations/{request_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX SCHEDULED ===",
       "_module": "pix/scheduled"
@@ -485,27 +1051,58 @@
       "endpoint": "/paymentos/v1/pix/scheduled",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/scheduled", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/scheduled",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/scheduled/{schedule_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/scheduled/{schedule_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/scheduled/{schedule_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/scheduled/execute",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/scheduled/execute", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/scheduled/execute",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/scheduled/{schedule_id}",
       "method": "DELETE",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/scheduled/{schedule_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/scheduled/{schedule_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PIX RECURRING ===",
       "_module": "pix/recurring"
@@ -514,27 +1111,58 @@
       "endpoint": "/paymentos/v1/pix/recurring",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/recurring", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/recurring",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/recurring/{auth_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/recurring/{auth_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/recurring/{auth_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/recurring/execute",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/recurring/execute", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/recurring/execute",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/pix/recurring/{auth_id}",
       "method": "DELETE",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/pix/recurring/{auth_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/pix/recurring/{auth_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== TED ===",
       "_module": "ted"
@@ -544,56 +1172,119 @@
       "endpoint": "/paymentos/v1/ted",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "List TED transactions",
       "endpoint": "/paymentos/v1/ted",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "Get TED by ID",
       "endpoint": "/paymentos/v1/ted/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "Reverse TED",
       "endpoint": "/paymentos/v1/ted/{id}/reverse",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/{id}/reverse", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/{id}/reverse",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "Approve TED for submission",
       "endpoint": "/paymentos/v1/ted/{id}/approve",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/{id}/approve", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/{id}/approve",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "Settle TED after STR confirmation",
       "endpoint": "/paymentos/v1/ted/{id}/settle",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/{id}/settle", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/{id}/settle",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ted/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ted/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ted/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ted/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== BOLETO ===",
       "_module": "boleto"
@@ -602,81 +1293,184 @@
       "endpoint": "/paymentos/v1/boleto",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/{id}/convert-dynamic",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/{id}/convert-dynamic", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/{id}/convert-dynamic",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/barcode/{barcode}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/barcode/{barcode}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/barcode/{barcode}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/nosso-numero/{nosso_numero}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/nosso-numero/{nosso_numero}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/nosso-numero/{nosso_numero}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda/payer",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda/payer", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda/payer",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda/payer/{id}",
       "method": "DELETE",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda/payer/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda/payer/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda/register",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda/register", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda/register",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda/scan",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda/scan", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda/scan",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/boleto/dda/sync",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/boleto/dda/sync", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/boleto/dda/sync",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== PAYMENTS (Generic) ===",
       "_module": "payments"
@@ -685,69 +1479,156 @@
       "endpoint": "/paymentos/v1/payments",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/approve",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/approve", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/approve",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/cancel",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/cancel", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/cancel",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/reject",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/reject", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/reject",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/retry",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/retry", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/retry",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/route",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/route", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/route",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/settle",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/settle", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/settle",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/submit",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/submit", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/submit",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/{id}/validate",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/{id}/validate", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/{id}/validate",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/payments/router",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/payments/router", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/payments/router",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== LEDGER ===",
       "_module": "ledger"
@@ -756,9 +1637,16 @@
       "endpoint": "/paymentos/v1/ledger/balance/{account_id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ledger/balance/{account_id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ledger/balance/{account_id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== ROUTING ===",
       "_module": "routing"
@@ -767,15 +1655,30 @@
       "endpoint": "/paymentos/v1/routing/capabilities",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/routing/capabilities", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/routing/capabilities",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/routing/circuit-breaker",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/routing/circuit-breaker", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/routing/circuit-breaker",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== AUDIT ===",
       "_module": "audit"
@@ -784,9 +1687,16 @@
       "endpoint": "/paymentos/v1/audit/logs",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/audit/logs", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/audit/logs",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== ACH ===",
       "_module": "ach"
@@ -795,51 +1705,114 @@
       "endpoint": "/paymentos/v1/ach",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/{id}/complete",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/{id}/complete", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/{id}/complete",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/{id}/return",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/{id}/return", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/{id}/return",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/{id}/settle",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/{id}/settle", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/{id}/settle",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/batch",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/batch", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/batch",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/ach/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/ach/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/ach/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== CHEQUE ===",
       "_module": "cheque"
@@ -848,39 +1821,86 @@
       "endpoint": "/paymentos/v1/cheque",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/cheque/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/cheque/{id}/clear",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque/{id}/clear", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque/{id}/clear",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/cheque/{id}/settle",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque/{id}/settle", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque/{id}/settle",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/cheque/cmc7/{cmc7}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque/cmc7/{cmc7}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque/cmc7/{cmc7}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/cheque/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/cheque/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/cheque/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== FEDNOW ===",
       "_module": "fednow"
@@ -889,33 +1909,72 @@
       "endpoint": "/paymentos/v1/fednow",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/fednow", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/fednow",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/fednow/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/fednow/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/fednow/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/fednow/{id}/return",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/fednow/{id}/return", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/fednow/{id}/return",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/fednow/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/fednow/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/fednow/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/fednow/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/fednow/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/fednow/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== WIRE ===",
       "_module": "wire"
@@ -924,39 +1983,86 @@
       "endpoint": "/paymentos/v1/wire",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/wire/{id}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire/{id}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire/{id}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/wire/{id}/complete",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire/{id}/complete", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire/{id}/complete",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/wire/{id}/status",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire/{id}/status", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire/{id}/status",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/wire/receive",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire/receive", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire/receive",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "endpoint": "/paymentos/v1/wire/reconcile",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/v1/wire/reconcile", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/v1/wire/reconcile",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== JDPI PA (Pix Automatico - Autorizacao) ===",
       "_module": "jdpi/pa/autorizacao",
@@ -967,65 +2073,136 @@
       "endpoint": "/paymentos/jdpi/pa/autorizacao",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.9 - Listar Autorizacoes",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/listar",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.5 - Consultar Autorizacao por idRecorrencia",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.2 - Responder Autorizacao (pagador aprova/recusa)",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/responder",
       "method": "PUT",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/responder", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/responder",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.3 - Confirmar Autorizacao (recebedor confirma)",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/confirmar",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/confirmar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/confirmar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.6 - Atualizar Valor Maximo da Autorizacao",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/valor-maximo",
       "method": "PUT",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/valor-maximo", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/valor-maximo",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.7 - Cancelar Autorizacao",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/cancelar",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.8 - Consultar Status Cancelamento de Autorizacao",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.3.4 - Registrar Validacao de Autorizacao",
       "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/validacao",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/validacao", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/autorizacao/{idRecorrencia}/validacao",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== JDPI PA (Pix Automatico - Agendamento) ===",
       "_module": "jdpi/pa/agendamento",
@@ -1036,37 +2213,76 @@
       "endpoint": "/paymentos/jdpi/pa/agendamento",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/agendamento", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/agendamento",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.4.5 - Listar agendamentos Pix Automatico",
       "endpoint": "/paymentos/jdpi/pa/agendamento/listar",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/listar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/agendamento/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.4.2 - Consultar agendamento por endToEndId",
       "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/agendamento/{endToEndId}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.4.3 - Cancelar agendamento Pix Automatico",
       "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}/cancelar",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.4.4 - Consultar cancelamento de agendamento",
       "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== JDPI SPI (Pix Agendado - Sistema de Pagamentos Instantaneos) ===",
       "_module": "jdpi/spi/agendamento",
@@ -1077,23 +2293,46 @@
       "endpoint": "/paymentos/jdpi/spi/agendamento",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/spi/agendamento", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/agendamento",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.5.2 - Consultar agendamento SPI por idAgendamento",
       "endpoint": "/paymentos/jdpi/spi/agendamento/{idAgendamento}",
       "method": "GET",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/spi/agendamento/{idAgendamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/agendamento/{idAgendamento}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
     {
       "_comment": "4.5.3 - Cancelar agendamento SPI",
       "endpoint": "/paymentos/jdpi/spi/agendamento/{idAgendamento}",
       "method": "DELETE",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/jdpi/spi/agendamento/{idAgendamento}", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/agendamento/{idAgendamento}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     },
-
     {
       "_comment": "=== TEST ENDPOINTS ===",
       "_module": "test"
@@ -1102,7 +2341,503 @@
       "endpoint": "/paymentos/test/mq-inject/ted-inbound",
       "method": "POST",
       "output_encoding": "no-op",
-      "backend": [{ "url_pattern": "/test/mq-inject/ted-inbound", "host": ["http://paymentos:8082"], "encoding": "no-op" }]
+      "backend": [
+        {
+          "url_pattern": "/test/mq-inject/ted-inbound",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/healthcheck",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/healthcheck",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/conta/consultarsitreq",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/conta/consultarsitreq",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/conta/consultarsitreq",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/conta/consultarsitreq",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/devolucao/consultar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/devolucao/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/analisar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/devolucao/analisar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/devolucao/cancelar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/devolucao/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/devolucao/incluir",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/dict/{chave}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/dict/{chave}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/dict/{chave}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/dict/{chave}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/marcacao-fraude/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/{idMarcacaoFraude}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/marcacao-fraude/{idMarcacaoFraude}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/marcacao-fraude/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/marcacao-fraude/incluir",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Agendado (scheduled for future date)",
+      "endpoint": "/paymentos/jdpi/pix/agendado",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/agendado",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Automatico (recurring with authorization)",
+      "endpoint": "/paymentos/jdpi/pix/automatico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/automatico",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX via chave (CPF, CNPJ, email, telefone, random)",
+      "endpoint": "/paymentos/jdpi/pix/chave",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/chave",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Cobranca com Vencimento (payment request with due date)",
+      "endpoint": "/paymentos/jdpi/pix/cobv",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/cobv",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX In-Out (internal transfer between accounts)",
+      "endpoint": "/paymentos/jdpi/pix/in-out",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/in-out",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Parcelado (installment payment)",
+      "endpoint": "/paymentos/jdpi/pix/parcelado",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/parcelado",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX via QR Code Dinamico (dynamic QR code)",
+      "endpoint": "/paymentos/jdpi/pix/qr-dinamico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/qr-dinamico",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX via QR Code Estatico (static QR code)",
+      "endpoint": "/paymentos/jdpi/pix/qr-estatico",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/qr-estatico",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Saque (ATM withdrawal via PIX)",
+      "endpoint": "/paymentos/jdpi/pix/saque",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/saque",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "PIX Troco (cashback/change at merchant)",
+      "endpoint": "/paymentos/jdpi/pix/troco",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/pix/troco",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/recuperacao-valores/consultar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/recuperacao-valores/incluir",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/consultar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/consultar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/analisar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/analisar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/cancelar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/cancelar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/incluir",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "endpoint": "/paymentos/jdpi/relato-infracao/{idRelatoInfracao}",
+      "method": "PUT",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/relato-infracao/{idRelatoInfracao}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "Download de RCO (Relacao de Contas Operacionais) - arquivo mensal",
+      "endpoint": "/paymentos/jdpi/spi/rco/download/{tpRCO}/{mes}/{ano}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/rco/download/{tpRCO}/{mes}/{ano}",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "Teste de conectividade com o SPI/JDPI",
+      "endpoint": "/paymentos/jdpi/spi/teste-conectividade",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/teste-conectividade",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     }
   ]
 }
