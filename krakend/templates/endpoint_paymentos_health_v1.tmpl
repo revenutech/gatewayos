@@ -37,4 +37,14 @@
     "url_pattern": "/ready",
     "encoding": "no-op"
   }]
+},
+{
+  "endpoint": "/paymentos/healthcheck",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/healthcheck",
+    "encoding": "no-op"
+  }]
 }
