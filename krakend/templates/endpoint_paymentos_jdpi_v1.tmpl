@@ -395,7 +395,7 @@
 
 {
   "_comment": "DICT — 2-level paths (listar/chave, estatisticas/{cpfcnpj}, politicas/listar, etc.)",
-  "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -428,7 +428,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/{p2}",
+    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -436,7 +436,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -469,7 +469,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/{p2}",
+    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -477,7 +477,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -510,7 +510,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/{p2}",
+    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -520,7 +520,7 @@
 
 {
   "_comment": "DICT — 3-level paths (reivindicacao/{id}/confirmar, estatisticas/chave/{chave})",
-  "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -553,7 +553,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -561,7 +561,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -594,7 +594,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -853,7 +853,7 @@
 
 {
   "_comment": "SPI — 2-level paths (op/{id}, od/{id}, lancamento/{e2e}, conta-pi/extrato, etc.)",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -886,7 +886,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -894,7 +894,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia", "X-Tipo-Canal"],
   "output_encoding": "no-op",
@@ -927,7 +927,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -937,7 +937,7 @@
 
 {
   "_comment": "SPI — 3-level paths (saldo/conta-pi/*, conta-pi/extrato/*, gestao-psps/*)",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -970,7 +970,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -978,7 +978,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1011,7 +1011,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1019,7 +1019,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1052,7 +1052,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1104,7 +1104,7 @@
 
 {
   "_comment": "SPI — 4-level paths (rco/download/{type}/{month}/{year})",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}/{p4}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}/p4/{p4}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1137,7 +1137,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}/{p4}",
+    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}/p4/{p4}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1231,7 +1231,7 @@
 
 {
   "_comment": "QRCode — 2-level paths (decodificar/url, estatico/gerar, dinamico/gerar, jwk/{ispb})",
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
@@ -1264,7 +1264,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1272,7 +1272,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1305,7 +1305,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1313,7 +1313,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1346,7 +1346,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1356,7 +1356,7 @@
 
 {
   "_comment": "QRCode — 3-level paths (dinamico/cobv/{id}, dinamico/cobv/jws/{id})",
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1389,7 +1389,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1397,7 +1397,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1430,7 +1430,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1438,7 +1438,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1471,7 +1471,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1565,7 +1565,7 @@
 
 {
   "_comment": "Conta PI — 2-level paths (aporte/ccme, saque/rbcl, consultar-saldo/rbcl, etc.)",
-  "endpoint": "/paymentos/jdpi/conta/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/conta/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1598,7 +1598,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/{p1}/{p2}",
+    "url_pattern": "/jdpi/conta/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1606,7 +1606,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/conta/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/conta/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1639,7 +1639,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/{p1}/{p2}",
+    "url_pattern": "/jdpi/conta/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1856,7 +1856,7 @@
 
 {
   "_comment": "Devolução — 2-level paths",
-  "endpoint": "/paymentos/jdpi/devolucao/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/devolucao/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1889,7 +1889,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/devolucao/{p1}/{p2}",
+    "url_pattern": "/jdpi/devolucao/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1897,7 +1897,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/devolucao/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/devolucao/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1930,7 +1930,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/devolucao/{p1}/{p2}",
+    "url_pattern": "/jdpi/devolucao/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2188,7 +2188,7 @@
 
 {
   "_comment": "Relato de Infração — 2-level paths",
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -2221,7 +2221,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/{p2}",
+    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2229,7 +2229,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -2262,7 +2262,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/{p2}",
+    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2270,7 +2270,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -2303,7 +2303,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/{p2}",
+    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2438,7 +2438,7 @@
 
 {
   "_comment": "Marcação de Fraude — 2-level paths",
-  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -2471,7 +2471,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/marcacao-fraude/{p1}/{p2}",
+    "url_pattern": "/jdpi/marcacao-fraude/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2479,7 +2479,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -2512,7 +2512,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/marcacao-fraude/{p1}/{p2}",
+    "url_pattern": "/jdpi/marcacao-fraude/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -3225,7 +3225,7 @@
 
 {
   "_comment": "Recuperação de Valores — 2-level paths",
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -3258,7 +3258,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/{p2}",
+    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -3266,7 +3266,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/{p2}",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -3299,7 +3299,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/{p2}",
+    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -3309,7 +3309,7 @@
 
 {
   "_comment": "Recuperação de Valores — 3-level paths",
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -3342,7 +3342,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -3350,7 +3350,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/{p2}/{p3}",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -3383,7 +3383,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/{p2}/{p3}",
+    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
