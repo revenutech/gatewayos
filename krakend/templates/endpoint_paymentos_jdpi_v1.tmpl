@@ -392,10 +392,9 @@
     }
   }]
 },
-
 {
-  "_comment": "DICT — 2-level paths (listar/chave, estatisticas/{cpfcnpj}, politicas/listar, etc.)",
-  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
+  "_comment": "DICT — Get local key info",
+  "endpoint": "/paymentos/jdpi/dict/{chave}/local",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -428,7 +427,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/dict/{chave}/local",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -436,7 +435,8 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
+  "_comment": "DICT — Delete specific key",
+  "endpoint": "/paymentos/jdpi/dict/{chave}/excluir",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -464,12 +464,12 @@
       ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/dict/{chave}/excluir",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -477,50 +477,8 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}",
-  "method": "PUT",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-
-{
-  "_comment": "DICT — 3-level paths (reivindicacao/{id}/confirmar, estatisticas/chave/{chave})",
-  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
+  "_comment": "DICT — Get key statistics",
+  "endpoint": "/paymentos/jdpi/dict/estatisticas/chave/{chave}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -553,7 +511,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/dict/estatisticas/chave/{chave}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -561,7 +519,92 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
+  "_comment": "DICT — Get person statistics",
+  "endpoint": "/paymentos/jdpi/dict/estatisticas/{cpfcnpj}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/dict/estatisticas/{cpfcnpj}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "DICT — Get policy by name",
+  "endpoint": "/paymentos/jdpi/dict/politicas/{nomePolitica}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/dict/politicas/{nomePolitica}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "DICT — Confirm claim",
+  "endpoint": "/paymentos/jdpi/dict/reivindicacao/{idReivindicacao}/confirmar",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -589,18 +632,356 @@
       ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
     }
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/dict/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/dict/reivindicacao/{idReivindicacao}/confirmar",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
     }
   }]
 },
+{
+  "_comment": "DICT — Cancel claim",
+  "endpoint": "/paymentos/jdpi/dict/reivindicacao/{idReivindicacao}/cancelar",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/dict/reivindicacao/{idReivindicacao}/cancelar",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "DICT — Complete claim",
+  "endpoint": "/paymentos/jdpi/dict/reivindicacao/{idReivindicacao}/concluir",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/dict/reivindicacao/{idReivindicacao}/concluir",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "Fraud Flag — Cancel fraud flag",
+  "endpoint": "/paymentos/jdpi/marcacao-fraude/{idMarcacaoFraude}/cancelar",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/marcacao-fraude/{idMarcacaoFraude}/cancelar",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "Value Recovery — Cancel recovery",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}/cancelar",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}/cancelar",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "Value Recovery — Block recovery",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}/bloquear",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}/bloquear",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "Value Recovery — Refund recovery",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}/devolver",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}/devolver",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "Value Recovery — Add tracking graph",
+  "endpoint": "/paymentos/jdpi/recuperacao-valores/{idRecValores}/grafo/incluir",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/recuperacao-valores/{idRecValores}/grafo/incluir",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+},
+{
+  "_comment": "SPI — Get transaction account status",
+  "endpoint": "/paymentos/jdpi/spi/conta-transacional/{endToEndId}/situacao",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/conta-transacional/{endToEndId}/situacao",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+    }
+  }]
+}
+
+
 
 {
   "_comment": "SPI — Single-segment endpoints (op, od)",
@@ -853,7 +1234,7 @@
 
 {
   "_comment": "SPI — 2-level paths (op/{id}, od/{id}, lancamento/{e2e}, conta-pi/extrato, etc.)",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -886,7 +1267,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/spi/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -894,7 +1275,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia", "X-Tipo-Canal"],
   "output_encoding": "no-op",
@@ -927,7 +1308,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/spi/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -937,7 +1318,7 @@
 
 {
   "_comment": "SPI — 3-level paths (saldo/conta-pi/*, conta-pi/extrato/*, gestao-psps/*)",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -970,7 +1351,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -978,7 +1359,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1011,7 +1392,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1019,7 +1400,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1052,7 +1433,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/spi/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1102,48 +1483,6 @@
   }]
 },
 
-{
-  "_comment": "SPI — 4-level paths (rco/download/{type}/{month}/{year})",
-  "endpoint": "/paymentos/jdpi/spi/{p1}/p2/{p2}/p3/{p3}/p4/{p4}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/spi/{p1}/p2/{p2}/p3/{p3}/p4/{p4}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
 
 {
   "_comment": "QRCode — Single-segment endpoints",
@@ -1231,7 +1570,7 @@
 
 {
   "_comment": "QRCode — 2-level paths (decodificar/url, estatico/gerar, dinamico/gerar, jwk/{ispb})",
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
@@ -1264,7 +1603,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1272,7 +1611,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1305,7 +1644,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1313,7 +1652,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1346,7 +1685,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1356,7 +1695,7 @@
 
 {
   "_comment": "QRCode — 3-level paths (dinamico/cobv/{id}, dinamico/cobv/jws/{id})",
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1389,7 +1728,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1397,7 +1736,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1430,7 +1769,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1438,7 +1777,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+  "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1471,7 +1810,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/qrcode/{p1}/p2/{p2}/p3/{p3}",
+    "url_pattern": "/jdpi/qrcode/{p1}/{p2}/{p3}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1565,7 +1904,7 @@
 
 {
   "_comment": "Conta PI — 2-level paths (aporte/ccme, saque/rbcl, consultar-saldo/rbcl, etc.)",
-  "endpoint": "/paymentos/jdpi/conta/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/conta/{p1}/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1598,7 +1937,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/conta/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1606,7 +1945,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/conta/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/conta/{p1}/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1639,7 +1978,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/conta/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1856,7 +2195,7 @@
 
 {
   "_comment": "Devolução — 2-level paths",
-  "endpoint": "/paymentos/jdpi/devolucao/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/devolucao/{p1}/{p2}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -1889,7 +2228,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/devolucao/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/devolucao/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -1897,7 +2236,7 @@
   }]
 },
 {
-  "endpoint": "/paymentos/jdpi/devolucao/{p1}/p2/{p2}",
+  "endpoint": "/paymentos/jdpi/devolucao/{p1}/{p2}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
   "output_encoding": "no-op",
@@ -1930,7 +2269,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/devolucao/{p1}/p2/{p2}",
+    "url_pattern": "/jdpi/devolucao/{p1}/{p2}",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_paymentos }}
@@ -2186,130 +2525,6 @@
   }]
 },
 
-{
-  "_comment": "Relato de Infração — 2-level paths",
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-{
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-{
-  "endpoint": "/paymentos/jdpi/relato-infracao/{p1}/p2/{p2}",
-  "method": "PUT",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/relato-infracao/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
 
 {
   "_comment": "Marcação de Fraude — Specific 2-level paths",
@@ -2436,89 +2651,6 @@
   }]
 },
 
-{
-  "_comment": "Marcação de Fraude — 2-level paths",
-  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/p2/{p2}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/marcacao-fraude/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-{
-  "endpoint": "/paymentos/jdpi/marcacao-fraude/{p1}/p2/{p2}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/marcacao-fraude/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
 
 {
   "_comment": "PA (PIX Automático) — 2-level paths",
@@ -3223,173 +3355,7 @@
   }]
 },
 
-{
-  "_comment": "Recuperação de Valores — 2-level paths",
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-{
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
 
-{
-  "_comment": "Recuperação de Valores — 3-level paths",
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
-{
-  "endpoint": "/paymentos/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
-  "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization", "Chave-Idempotencia"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
-      "allow_open_libs": false
-    },
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "failed_jwk_key_cooldown": "10s",
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"],
-        ["jti", "x-jwt-jti"],
-        ["subscription_tier", "x-subscription-tier"]
-      ],
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-operator", "ledger-admin"]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/recuperacao-valores/{p1}/p2/{p2}/p3/{p3}",
-    "encoding": "no-op",
-    "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_paymentos }}
-    }
-  }]
-},
 
 {
   "_comment": "PIX — Special Transaction Types (2-level paths)",
