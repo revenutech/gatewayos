@@ -1,42 +1,42 @@
 {
   "_comment": "=== OAUTH TOKEN - No Auth Required ===",
-  "endpoint": "/paymentos/oauth/token",
+  "endpoint": "/paymentos/v1/oauth/token",
   "method": "POST",
   "input_headers": ["Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/token",
+    "url_pattern": "/v1/oauth/token",
     "encoding": "no-op"
   }]
 },
 {
   "_comment": "=== OAUTH INTROSPECT ===",
-  "endpoint": "/paymentos/oauth/introspect",
+  "endpoint": "/paymentos/v1/oauth/introspect",
   "method": "POST",
   "input_headers": ["Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/introspect",
+    "url_pattern": "/v1/oauth/introspect",
     "encoding": "no-op"
   }]
 },
 {
   "_comment": "=== OAUTH REVOKE ===",
-  "endpoint": "/paymentos/oauth/revoke",
+  "endpoint": "/paymentos/v1/oauth/revoke",
   "method": "POST",
   "input_headers": ["Content-Type", "Authorization"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/revoke",
+    "url_pattern": "/v1/oauth/revoke",
     "encoding": "no-op"
   }]
 },
 {
   "_comment": "=== OAUTH CLIENTS - GET ===",
-  "endpoint": "/paymentos/oauth/clients",
+  "endpoint": "/paymentos/v1/oauth/clients",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
@@ -58,41 +58,13 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/clients",
+    "url_pattern": "/v1/oauth/clients",
     "encoding": "no-op"
   }]
 },
 {
-  "_comment": "=== OAUTH CLIENTS BY ID - GET ===",
-  "endpoint": "/paymentos/oauth/clients/{id}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
-  "output_encoding": "no-op",
-  "extra_config": {
-    "auth/validator": {
-      "alg": "RS256",
-      "jwk_url": "{{ .keycloak.jwks_url }}",
-      "issuer": "{{ .keycloak.issuer }}",
-      "audience": ["{{ .keycloak.audience }}"],
-      "cache": true,
-      "cache_duration": 3600,
-      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
-      "propagate_claims": [
-        ["sub", "x-user-id"],
-        ["tenant_id", "x-tenant-id"],
-        ["realm_access.roles", "x-roles"]
-      ]
-    }
-  },
-  "backend": [{
-    "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/clients/{id}",
-    "encoding": "no-op"
-  }]
-},
-{
-  "_comment": "=== OAUTH CLIENTS ROTATE - POST ===",
-  "endpoint": "/paymentos/oauth/clients/{id}/rotate",
+  "_comment": "=== OAUTH CLIENTS - POST (create) ===",
+  "endpoint": "/paymentos/v1/oauth/clients",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
@@ -114,13 +86,97 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/clients/{id}/rotate",
+    "url_pattern": "/v1/oauth/clients",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== OAUTH CLIENTS BY ID - GET ===",
+  "endpoint": "/paymentos/v1/oauth/clients/{id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/oauth/clients/{id}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== OAUTH CLIENTS BY ID - DELETE (revoke client) ===",
+  "endpoint": "/paymentos/v1/oauth/clients/{id}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/oauth/clients/{id}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== OAUTH CLIENTS ROTATE - POST ===",
+  "endpoint": "/paymentos/v1/oauth/clients/{id}/rotate",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/oauth/clients/{id}/rotate",
     "encoding": "no-op"
   }]
 },
 {
   "_comment": "=== OAUTH CLIENTS DEACTIVATE - PUT ===",
-  "endpoint": "/paymentos/oauth/clients/{id}/deactivate",
+  "endpoint": "/paymentos/v1/oauth/clients/{id}/deactivate",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
@@ -142,13 +198,13 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/clients/{id}/deactivate",
+    "url_pattern": "/v1/oauth/clients/{id}/deactivate",
     "encoding": "no-op"
   }]
 },
 {
   "_comment": "=== OAUTH CLIENTS REACTIVATE - PUT ===",
-  "endpoint": "/paymentos/oauth/clients/{id}/reactivate",
+  "endpoint": "/paymentos/v1/oauth/clients/{id}/reactivate",
   "method": "PUT",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
@@ -170,7 +226,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/oauth/clients/{id}/reactivate",
+    "url_pattern": "/v1/oauth/clients/{id}/reactivate",
     "encoding": "no-op"
   }]
 }
