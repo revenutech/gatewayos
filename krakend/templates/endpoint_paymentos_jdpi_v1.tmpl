@@ -21,6 +21,7 @@
 {
   "endpoint": "/paymentos/jdpi/certificates/download",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -228,6 +229,7 @@
 {
   "endpoint": "/paymentos/jdpi/dict/reivindicacao",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -271,6 +273,7 @@
   "_comment": "DICT — Consulta chave PIX: /dict/consultar/{chave} (separate path to avoid Gin wildcard conflict)",
   "endpoint": "/paymentos/jdpi/dict/consultar/{chave}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -397,6 +400,7 @@
   "_comment": "DICT — Direct key operations: GET/PUT /dict/{chave}",
   "endpoint": "/paymentos/jdpi/dict/{chave}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -480,6 +484,7 @@
   "_comment": "DICT — Get local key info",
   "endpoint": "/paymentos/jdpi/dict/{chave}/local",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -564,6 +569,7 @@
   "_comment": "DICT — Get key statistics",
   "endpoint": "/paymentos/jdpi/dict/estatisticas/chave/{chave}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -606,6 +612,7 @@
   "_comment": "DICT — Get person statistics",
   "endpoint": "/paymentos/jdpi/dict/estatisticas/{cpfcnpj}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -648,6 +655,7 @@
   "_comment": "DICT — Get policy by name",
   "endpoint": "/paymentos/jdpi/dict/politicas/{nomePolitica}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1026,6 +1034,7 @@
   "_comment": "SPI — Get transaction account status",
   "endpoint": "/paymentos/jdpi/spi/conta-transacional/{endToEndId}/situacao",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1233,6 +1242,7 @@
   "_comment": "SPI — Specific 2-level paths (agendamento/{id})",
   "endpoint": "/paymentos/jdpi/spi/agendamento/{idAgendamento}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1317,6 +1327,7 @@
   "_comment": "SPI — 2-level paths (op/{id}, od/{id}, lancamento/{e2e}, conta-pi/extrato, etc.)",
   "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1401,6 +1412,7 @@
   "_comment": "SPI — 3-level paths (saldo/conta-pi/*, conta-pi/extrato/*, gestao-psps/*)",
   "endpoint": "/paymentos/jdpi/spi/{p1}/{p2}/{p3}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1525,6 +1537,7 @@
   "_comment": "SPI — Specific 4-level path: rco/download/{tpRCO}/{mes}/{ano}",
   "endpoint": "/paymentos/jdpi/spi/rco/download/{tpRCO}/{mes}/{ano}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1610,6 +1623,7 @@
 {
   "endpoint": "/paymentos/jdpi/qrcode/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1653,6 +1667,7 @@
   "_comment": "QRCode — 2-level paths (decodificar/url, estatico/gerar, dinamico/gerar, jwk/{ispb})",
   "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "If-None-Match"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1778,6 +1793,7 @@
   "_comment": "QRCode — 3-level paths (dinamico/cobv/{id}, dinamico/cobv/jws/{id})",
   "endpoint": "/paymentos/jdpi/qrcode/{p1}/{p2}/{p3}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1903,6 +1919,7 @@
   "_comment": "Conta PI — Specific 2-level paths",
   "endpoint": "/paymentos/jdpi/conta/consultarsitreq",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1987,6 +2004,7 @@
   "_comment": "Conta PI — 2-level paths (aporte/ccme, saque/rbcl, consultar-saldo/rbcl, etc.)",
   "endpoint": "/paymentos/jdpi/conta/{p1}/{p2}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2071,6 +2089,7 @@
   "_comment": "Devolução — Specific 2-level paths",
   "endpoint": "/paymentos/jdpi/devolucao/consultar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2112,6 +2131,7 @@
 {
   "endpoint": "/paymentos/jdpi/devolucao/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2278,6 +2298,7 @@
   "_comment": "Devolução — 2-level paths",
   "endpoint": "/paymentos/jdpi/devolucao/{p1}/{p2}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2362,6 +2383,7 @@
   "_comment": "Relato de Infração — Specific 2-level paths",
   "endpoint": "/paymentos/jdpi/relato-infracao/consultar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2403,6 +2425,7 @@
 {
   "endpoint": "/paymentos/jdpi/relato-infracao/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2611,6 +2634,7 @@
   "_comment": "Marcação de Fraude — Specific 2-level paths",
   "endpoint": "/paymentos/jdpi/marcacao-fraude/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2652,6 +2676,7 @@
 {
   "endpoint": "/paymentos/jdpi/marcacao-fraude/{idMarcacaoFraude}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2737,6 +2762,7 @@
   "_comment": "PA (PIX Automático) — 2-level paths",
   "endpoint": "/paymentos/jdpi/pa/agendamento/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2819,6 +2845,7 @@
 {
   "endpoint": "/paymentos/jdpi/pa/autorizacao/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2902,6 +2929,7 @@
   "_comment": "PA (PIX Automático) — 3-level paths",
   "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2984,6 +3012,7 @@
 {
   "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3231,6 +3260,7 @@
   "_comment": "PA (PIX Automático) — 4-level paths",
   "endpoint": "/paymentos/jdpi/pa/agendamento/{endToEndId}/cancelar/{idCancelamento}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3272,6 +3302,7 @@
 {
   "endpoint": "/paymentos/jdpi/pa/autorizacao/{idRecorrencia}/cancelar/{idCancelamento}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3315,6 +3346,7 @@
   "_comment": "Recuperação de Valores — Specific 2-level paths",
   "endpoint": "/paymentos/jdpi/recuperacao-valores/consultar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
