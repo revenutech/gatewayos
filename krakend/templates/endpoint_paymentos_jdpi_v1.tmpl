@@ -274,7 +274,7 @@
   "endpoint": "/paymentos/jdpi/dict/consultar/{chave}",
   "method": "GET",
   "input_query_strings": ["*"],
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-RequestingParticipant", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -401,7 +401,7 @@
   "endpoint": "/paymentos/jdpi/dict/{chave}",
   "method": "GET",
   "input_query_strings": ["*"],
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization", "PI-PayerId", "PI-RequestingParticipant", "PI-EndToEndId"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
