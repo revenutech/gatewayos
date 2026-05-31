@@ -2891,6 +2891,146 @@
   }]
 },
 {
+  "_comment": "TED Agendado — POST /v1/ted/scheduled (create)",
+  "endpoint": "/paymentos/v1/ted/scheduled",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/scheduled",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "TED Agendado — GET /v1/ted/scheduled (list)",
+  "endpoint": "/paymentos/v1/ted/scheduled",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/scheduled",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "TED Agendado — POST /v1/ted/scheduled/execute",
+  "endpoint": "/paymentos/v1/ted/scheduled/execute",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/scheduled/execute",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "TED Agendado — GET /v1/ted/scheduled/{schedule_id}",
+  "endpoint": "/paymentos/v1/ted/scheduled/{schedule_id}",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/scheduled/{schedule_id}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "TED Agendado — DELETE /v1/ted/scheduled/{schedule_id} (cancel)",
+  "endpoint": "/paymentos/v1/ted/scheduled/{schedule_id}",
+  "method": "DELETE",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"]
+      ]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/v1/ted/scheduled/{schedule_id}",
+    "encoding": "no-op"
+  }]
+},
+{
   "_comment": "WIRE lifecycle — GET /v1/wire",
   "endpoint": "/paymentos/v1/wire",
   "method": "GET",
