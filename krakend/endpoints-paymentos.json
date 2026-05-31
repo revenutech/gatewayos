@@ -2464,6 +2464,36 @@
       ]
     },
     {
+      "_comment": "DICT - List PIX keys (specific route must come before parameterized {chave})",
+      "endpoint": "/paymentos/jdpi/dict/listar/chave",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/dict/listar/chave",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
+      "_comment": "DICT - Create key claim/dispute (reivindicação)",
+      "endpoint": "/paymentos/jdpi/dict/reivindicacao/incluir",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/dict/reivindicacao/incluir",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
+    },
+    {
       "endpoint": "/paymentos/jdpi/dict/{chave}",
       "method": "GET",
       "output_encoding": "no-op",
