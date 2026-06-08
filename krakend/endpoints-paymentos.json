@@ -2868,6 +2868,21 @@
           "encoding": "no-op"
         }
       ]
+    },
+    {
+      "_comment": "Gestão de PSPs - Listar PSPs cadastrados no SPI",
+      "endpoint": "/paymentos/jdpi/spi/gestao-psps/listar",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jdpi/spi/gestao-psps/listar",
+          "host": [
+            "http://paymentos:8082"
+          ],
+          "encoding": "no-op"
+        }
+      ]
     }
   ]
 }
