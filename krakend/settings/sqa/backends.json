@@ -5,7 +5,7 @@
   "atmos": "http://atmos:8088",
   "identos": "http://identos:8091",
   "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
-  "onboardos": "http://onboardos.default.svc.clusterset.local:8092",
+  "onboardos": "http://onboardos.onboardos.svc.clusterset.local:8092",
   "accountos": "http://accountos:8093",
   "financeos": "http://financeos:8095",
 "keycloak": "http://keycloak.keycloak.svc.clusterset.local:8080"
