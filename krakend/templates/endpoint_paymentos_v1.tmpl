@@ -618,7 +618,7 @@
   "_comment": "=== JDPI WEBHOOK CREDITO - POST ===",
   "endpoint": "/paymentos/jdpi/webhook/credito",
   "method": "POST",
-  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
@@ -630,7 +630,7 @@
   "_comment": "=== JDPI WEBHOOK CREDITO/VALIDAR - POST ===",
   "endpoint": "/paymentos/jdpi/webhook/credito/validar",
   "method": "POST",
-  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
@@ -659,6 +659,162 @@
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
     "url_pattern": "/jdpi/webhook/credito/validar/async",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AUTORIZACAO/VALIDAR - POST (anexo 5.2.1) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/autorizacao/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/autorizacao/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AUTORIZACAO/CANCELAR/VALIDAR - POST (anexo 5.2.2) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/autorizacao/cancelar/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/autorizacao/cancelar/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AUTORIZACAO/REGISTRAR/PAGADOR - POST (anexo 5.2.3) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/autorizacao/registrar/pagador",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/autorizacao/registrar/pagador",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AUTORIZACAO/REGISTRAR/RECEBEDOR - POST (anexo 5.2.4) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/autorizacao/registrar/recebedor",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/autorizacao/registrar/recebedor",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AUTORIZACAO/CANCELAR/REGISTRAR - POST (anexo 5.2.5) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/autorizacao/cancelar/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/autorizacao/cancelar/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/VALIDAR - POST (anexo 5.3.1) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/agendamento/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/CANCELAR/VALIDAR - POST (anexo 5.3.2) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/cancelar/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/agendamento/cancelar/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/REGISTRAR - POST (anexo 5.3.3) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/agendamento/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/CANCELAR/REGISTRAR - POST (anexo 5.3.4) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/cancelar/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/agendamento/cancelar/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/RECEBEDOR - GET (anexo 5.3.5) ===",
+  "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/recebedor/{ispb}/{cnpj}",
+  "method": "GET",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/pa/agendamento/recebedor/{ispb}/{cnpj}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA SPI/PA/BLOQUEAR - POST (anexo 5.4.1) ===",
+  "endpoint": "/paymentos/jdpi/webhook/spi/pa/bloquear",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/spi/pa/bloquear",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA SPI/PA/DEBITO - POST (anexo 5.4.2) ===",
+  "endpoint": "/paymentos/jdpi/webhook/spi/pa/debito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/spi/pa/debito",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK PA SPI/PA/DEBITO/{endToEndId} - DELETE (anexo 5.4.3) ===",
+  "endpoint": "/paymentos/jdpi/webhook/spi/pa/debito/{endToEndId}",
+  "method": "DELETE",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/spi/pa/debito/{endToEndId}",
     "encoding": "no-op"
   }]
 }

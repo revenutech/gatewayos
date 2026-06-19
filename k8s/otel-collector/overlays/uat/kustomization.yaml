@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: otel-collector
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: revenu-gateway-uat
+  - target:
+      kind: ServiceAccount
+      name: otel-collector
+    patch: |
+      - op: add
+        path: /metadata/annotations/iam.gke.io~1gcp-service-account
+        value: otel-collector-uat@revenu-gateway-uat.iam.gserviceaccount.com
