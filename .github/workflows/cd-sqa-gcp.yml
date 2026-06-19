@@ -55,6 +55,11 @@ jobs:
           location: ${{ env.GKE_LOCATION }}
           project_id: ${{ env.GCP_PROJECT }}
 
+      # Telemetry sink for KrakenD OTLP (metrics/traces/logs -> Cloud Monitoring).
+      # KrakenD pushes to otel-collector.monitoring.svc.cluster.local:4317.
+      - name: Deploy OTel Collector
+        run: kubectl apply -k k8s/otel-collector/overlays/${{ env.ENV_NAME }}
+
       - name: Deploy with Helm
         run: |
           helm upgrade --install gateway k8s/helm/gateway \
