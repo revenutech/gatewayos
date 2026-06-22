@@ -904,4 +904,136 @@
     "url_pattern": "/jdpi/webhook/spi/pa/debito/{endToEndId}",
     "encoding": "no-op"
   }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - APORTE RBCL - POST (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/aporte/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/aporte/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - APORTE CCME - POST (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/aporte/ccme",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/aporte/ccme",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - SAQUE RBCL - POST (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/saque/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/saque/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - SAQUE CCME - POST (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/saque/ccme",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/saque/ccme",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - CONSULTAR SIT REQ - GET (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/consultarsitreq",
+  "method": "GET",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/consultarsitreq",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - CONSULTAR SALDO RBCL - POST (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/consultar-saldo/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/consultar-saldo/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK CONTA PI - LISTAR APORTE/RETIRADA - GET (sist_gspb) ===",
+  "endpoint": "/paymentos/jdpi/webhook/conta/api/v1/listar/aporte-retirada",
+  "method": "GET",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/conta/api/v1/listar/aporte-retirada",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK ALERTA - POST (sist_gca) ===",
+  "endpoint": "/paymentos/jdpi/webhook/alerta",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/alerta",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK RECORRENCIA/NOTIFICACAO - POST (ADR-028) ===",
+  "endpoint": "/paymentos/jdpi/webhook/recorrencia/notificacao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/recorrencia/notificacao",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK RECORRENCIA/DECISAO - POST (ADR-028) ===",
+  "endpoint": "/paymentos/jdpi/webhook/recorrencia/decisao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/recorrencia/decisao",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI WEBHOOK LOTE-COB/CONCLUSAO - POST (ADR-029) ===",
+  "endpoint": "/paymentos/jdpi/webhook/lote-cob/conclusao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/webhook/lote-cob/conclusao",
+    "encoding": "no-op"
+  }]
 }
