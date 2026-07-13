@@ -1,0 +1,22 @@
+{
+  "_comment": "QR Dinâmico Pix — payload público (BASA 'Serviço de QR Code Dinâmico'). Domínio qrcode[-h].basa.com.br encaminha /pix/* pra cá. SEM auth: o PSP pagador externo lê o QR e busca o payload sem token nosso. Resposta é o JWS assinado pela JD (application/jose), passthrough no-op.",
+  "endpoint": "/pix/cobv/{token}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/pix/cobv/{token}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "QR Dinâmico Pix — cob imediato (backend responde 501 por ora; cobv é o fluxo suportado).",
+  "endpoint": "/pix/cob/{token}",
+  "method": "GET",
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/pix/cob/{token}",
+    "encoding": "no-op"
+  }]
+}
