@@ -27,9 +27,10 @@
   }]
 },
 {
-  "_comment": "=== PIX - GET ===",
+  "_comment": "=== PIX - GET === input_query_strings: sem isso o KrakenD DESCARTA a query string e as listagens /v1/pix/* (scheduled, recurring, ...) ignoram limit/offset/status EM SILÊNCIO — devolvem a 1a página inteira como se não houvesse filtro. Comprovado na UAT 2026-07-15: ?status=INEXISTENTE devolvia os mesmos 20 itens que sem filtro (MDB-977). Os catch-all GET dos outros trilhos têm o mesmo defeito e seguem sem correção por ora.",
   "endpoint": "/paymentos/v1/pix/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
