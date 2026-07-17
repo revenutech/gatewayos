@@ -732,6 +732,309 @@
   }]
 },
 {
+  "_comment": "=== JDPI CANONICAL CREDITO VALIDAR 9.3.1 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v2/credito/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v2/credito/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CREDITO 9.3.2 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v2/credito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v2/credito",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CREDITO DEVOLUCAO 9.3.3 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v2/credito/devolucao",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v2/credito/devolucao",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CREDITO VALIDAR ASYNC 9.3.4 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v2/credito/validar/async",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v2/credito/validar/async",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA APORTE RBCL 9.4.1 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/aporte/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/aporte/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA APORTE CCME 9.4.2 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/aporte/ccme",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/aporte/ccme",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA SAQUE RBCL 9.4.3 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/saque/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/saque/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA SAQUE CCME 9.4.5 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/saque/ccme",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/saque/ccme",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA CONSULTAR-SALDO 9.4.9 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/consultar-saldo/rbcl",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/consultar-saldo/rbcl",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA CONSULTARSITREQ 9.4.8 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/consultarsitreq",
+  "method": "GET",
+  "input_query_strings": ["*"],
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/consultarsitreq",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL CONTA LISTAR APORTE-RETIRADA 9.4.10 ===",
+  "endpoint": "/paymentos/jdpi/conta/api/v1/listar/aporte-retirada",
+  "method": "GET",
+  "input_query_strings": ["*"],
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/conta/api/v1/listar/aporte-retirada",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL ALERTA ENVIAR 9.5.1 ===",
+  "endpoint": "/paymentos/jdpi/alerta/api/v1/enviar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/alerta/api/v1/enviar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AUTORIZACAO VALIDAR 5.2.1 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/autorizacao/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/autorizacao/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AUTORIZACAO CANCELAR VALIDAR 5.2.2 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/autorizacao/cancelar/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/autorizacao/cancelar/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AUTORIZACAO REGISTRAR PAGADOR 5.2.3 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/autorizacao/registrar/pagador",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/autorizacao/registrar/pagador",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AUTORIZACAO REGISTRAR RECEBEDOR 5.2.4 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/autorizacao/registrar/recebedor",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/autorizacao/registrar/recebedor",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AUTORIZACAO CANCELAR REGISTRAR 5.2.5 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/autorizacao/cancelar/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/autorizacao/cancelar/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AGENDAMENTO VALIDAR 5.3.1 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/agendamento/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/agendamento/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AGENDAMENTO CANCELAR VALIDAR 5.3.2 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/agendamento/cancelar/validar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/agendamento/cancelar/validar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AGENDAMENTO REGISTRAR 5.3.3 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/agendamento/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/agendamento/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AGENDAMENTO CANCELAR REGISTRAR 5.3.4 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/agendamento/cancelar/registrar",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/agendamento/cancelar/registrar",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA AGENDAMENTO RECEBEDOR 5.3.5 ===",
+  "endpoint": "/paymentos/jdpi/pa/api/v1/agendamento/recebedor/{ispb}/{cnpj}",
+  "method": "GET",
+  "input_query_strings": ["*"],
+  "input_headers": ["Content-Type", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/pa/api/v1/agendamento/recebedor/{ispb}/{cnpj}",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA SPI BLOQUEAR 5.4.1 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v1/pa/bloquear",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v1/pa/bloquear",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA SPI DEBITO 5.4.2 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v2/pa/debito",
+  "method": "POST",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v2/pa/debito",
+    "encoding": "no-op"
+  }]
+},
+{
+  "_comment": "=== JDPI CANONICAL PA SPI DEBITO ESTORNO 5.4.3 ===",
+  "endpoint": "/paymentos/jdpi/spi/api/v1/pa/debito/{endToEndId}",
+  "method": "DELETE",
+  "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.paymentos }}"],
+    "url_pattern": "/jdpi/spi/api/v1/pa/debito/{endToEndId}",
+    "encoding": "no-op"
+  }]
+},
+{
   "_comment": "=== JDPI WEBHOOK CREDITO - POST ===",
   "endpoint": "/paymentos/jdpi/webhook/credito",
   "method": "POST",
