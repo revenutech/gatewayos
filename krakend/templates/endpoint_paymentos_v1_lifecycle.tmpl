@@ -2023,8 +2023,8 @@
   }]
 },
 {
-  "_comment": "POST /v1/pix/scheduled/execute",
-  "endpoint": "/paymentos/v1/pix/scheduled/execute",
+  "_comment": "POST /v1/pix/scheduled/{schedule_id}/execute",
+  "endpoint": "/paymentos/v1/pix/scheduled/{schedule_id}/execute",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
@@ -2046,7 +2046,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/v1/pix/scheduled/execute",
+    "url_pattern": "/v1/pix/scheduled/{schedule_id}/execute",
     "encoding": "no-op"
   }]
 },

@@ -1076,12 +1076,12 @@
       ]
     },
     {
-      "endpoint": "/paymentos/v1/pix/scheduled/execute",
+      "endpoint": "/paymentos/v1/pix/scheduled/{schedule_id}/execute",
       "method": "POST",
       "output_encoding": "no-op",
       "backend": [
         {
-          "url_pattern": "/v1/pix/scheduled/execute",
+          "url_pattern": "/v1/pix/scheduled/{schedule_id}/execute",
           "host": [
             "http://paymentos:8082"
           ],
