@@ -2947,8 +2947,8 @@
   }]
 },
 {
-  "_comment": "TED Agendado — POST /v1/ted/scheduled/execute",
-  "endpoint": "/paymentos/v1/ted/scheduled/execute",
+  "_comment": "TED Agendado — POST /v1/ted/scheduled/{schedule_id}/execute",
+  "endpoint": "/paymentos/v1/ted/scheduled/{schedule_id}/execute",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "no-op",
@@ -2970,7 +2970,7 @@
   },
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/v1/ted/scheduled/execute",
+    "url_pattern": "/v1/ted/scheduled/{schedule_id}/execute",
     "encoding": "no-op"
   }]
 },
