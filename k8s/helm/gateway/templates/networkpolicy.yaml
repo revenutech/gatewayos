@@ -68,7 +68,7 @@ spec:
     - to:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: identos
+              app.kubernetes.io/name: identityos
       ports:
         - { protocol: TCP, port: 8091 }
     - to:

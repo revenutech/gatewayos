@@ -15,7 +15,7 @@ local ALLOWED_HOSTS = {
     "ledgeros",
     "paymentos",
     "atmos",
-    "identos",
+    "identityos",
     "onboardos",
     "accountos",
     "financeos",
