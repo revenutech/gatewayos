@@ -3715,7 +3715,7 @@
 }
 
     ,{
-  "endpoint": "/identos/v1/auth/{path}",
+  "endpoint": "/identityos/v1/auth/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -3745,7 +3745,7 @@
 
   },
   "backend": [{
-    "host": ["http://identos:8091"],
+    "host": ["http://identityos:8091"],
     "url_pattern": "/v1/auth/{path}",
     "encoding": "no-op",
     "extra_config": {
@@ -3753,14 +3753,14 @@
   "interval": 30,
   "timeout": 5,
   "max_errors": 2,
-  "name": "cb-identos",
+  "name": "cb-identityos",
   "log_status_change": true
 }
     }
   }]
 },
 {
-  "endpoint": "/identos/v1/users/{path}",
+  "endpoint": "/identityos/v1/users/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -3795,7 +3795,7 @@
     }
   },
   "backend": [{
-    "host": ["http://identos:8091"],
+    "host": ["http://identityos:8091"],
     "url_pattern": "/v1/users/{path}",
     "encoding": "no-op",
     "extra_config": {
@@ -3803,7 +3803,7 @@
   "interval": 30,
   "timeout": 5,
   "max_errors": 2,
-  "name": "cb-identos",
+  "name": "cb-identityos",
   "log_status_change": true
 }
     }
@@ -9515,10 +9515,10 @@
       "group": "atmos"
     },
     {
-      "host": ["http://identos:8091"],
+      "host": ["http://identityos:8091"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "identos"
+      "group": "identityos"
     },
     {
       "host": ["http://accountos:8093"],

@@ -20,8 +20,8 @@
       "port": 8088,
       "protocol": "http"
     },
-    "identos": {
-      "host": "identos",
+    "identityos": {
+      "host": "identityos",
       "port": 8091,
       "protocol": "http"
     },
