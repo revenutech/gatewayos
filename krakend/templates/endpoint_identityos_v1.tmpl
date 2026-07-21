@@ -1,5 +1,5 @@
 {
-  "endpoint": "/identos/v1/auth/{path}",
+  "endpoint": "/identityos/v1/auth/{path}",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -7,16 +7,16 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ .backends.identos }}"],
+    "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/auth/{path}",
     "encoding": "no-op",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_identos }}
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
     }
   }]
 },
 {
-  "endpoint": "/identos/v1/users/{path}",
+  "endpoint": "/identityos/v1/users/{path}",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -29,11 +29,11 @@
     }
   },
   "backend": [{
-    "host": ["{{ .backends.identos }}"],
+    "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/users/{path}",
     "encoding": "no-op",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_identos }}
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
     }
   }]
 }
