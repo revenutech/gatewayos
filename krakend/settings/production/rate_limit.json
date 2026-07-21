@@ -1,0 +1,4 @@
+{
+  "global_max": 10000,
+  "tenant_max": 1000
+}

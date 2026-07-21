@@ -1,0 +1,4 @@
+{
+  "host": "redis.ledgeros-production.svc.cluster.local",
+  "port": "6379"
+}
