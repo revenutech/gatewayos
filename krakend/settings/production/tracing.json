@@ -1,0 +1,5 @@
+{
+  "otel_host": "otel-collector.monitoring.svc.cluster.local",
+  "otel_port": 4317,
+  "sample_rate": 0.1
+}

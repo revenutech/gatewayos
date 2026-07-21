@@ -1,0 +1,6 @@
+{
+  "jwks_url": "https://auth.allenty.io/realms/ledgeros/protocol/openid-connect/certs",
+  "issuer": "https://auth.allenty.io/realms/ledgeros",
+  "audience": "revenu-platform",
+  "disable_jwk_security": false
+}
