@@ -25,7 +25,8 @@ docker run --rm \
 | Path | What |
 |------|------|
 | `krakend/krakend.tmpl` | Main KrakenD template (Flexible Configuration) |
-| `krakend/settings/{dev,staging,prod}.json` | Per-environment settings (backends, CORS, rate limits, circuit breakers) |
+| `krakend/settings/{develop,sandbox,production}/` | Per-environment settings, one JSON per root key (loaded via `FC_SETTINGS`) |
+| `krakend/settings/{develop,sandbox,production}.json` | Same settings, flat form (used by `tools/compile-config.sh`) |
 | `krakend/settings/service_routes.json` | Service map (host:port per module) |
 | `krakend/endpoints/*.json` | Route definitions per module (ledger, paymentos, identos, atmos, admin, health) |
 | `krakend/partials/*.tmpl` | Reusable config fragments (JWT, rate limiter, circuit breaker, CORS, telemetry, security headers, bloom filter) |
@@ -106,9 +107,12 @@ cd deployment/infra/gcp/environments/dev && terraform apply
 helm upgrade --install gateway k8s/helm/gateway -f k8s/helm/gateway/values-gcp-dev.yaml
 
 # CD pipelines (auto)
-# develop → cd-dev-gcp.yml → GKE dev
-# staging → cd-staging-gcp.yml → GKE staging (+ Cosign sign)
-# v*.*.* tag → cd-production-gcp.yml → GKE prod (approval + SBOM + Trivy)
+# develop branch → cd-dev-gcp.yml        → GKE develop    (KRAKEND_ENV=develop)
+# staging branch → cd-staging-gcp.yml    → GKE sandbox    (KRAKEND_ENV=sandbox, + Cosign sign)
+# v*.*.* tag     → cd-production-gcp.yml → GKE production (KRAKEND_ENV=production, approval + SBOM + Trivy)
+#
+# Three environments only. Tags for production are cut from `main`.
+# uat/sit/sqa belong to the separate BASA project, not to revenu-platform.
 ```
 
 | Path | What |
@@ -116,11 +120,11 @@ helm upgrade --install gateway k8s/helm/gateway -f k8s/helm/gateway/values-gcp-d
 | `deployment/infra/gcp/` | Terraform modules (VPC, GKE, AR, KMS, DNS, Monitoring) |
 | `deployment/infra/gcp/environments/` | Per-env configs (dev/staging/prod) |
 | `k8s/helm/gateway/` | Helm chart (14 templates + 3 GCP values) |
-| `.github/workflows/cd-*-gcp.yml` | CD pipelines (dev/staging/prod) |
+| `.github/workflows/cd-*-gcp.yml` | CD pipelines (develop/sandbox/production) |
 
 ## Adding a New Module
 
-1. Add backend address to `krakend/settings/{dev,staging,prod}.json` under `backends`
+1. Add backend address to `krakend/settings/{develop,sandbox,production}/backends.json` (and the flat `.json` equivalents)
 2. Add circuit breaker config under `cb_{module}`
 3. Create `krakend/endpoints/{module}_v1.json` with route definitions
 4. Include in `krakend/krakend.tmpl` endpoints array

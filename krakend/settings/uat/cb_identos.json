@@ -1,6 +1,0 @@
-{
-  "cb_name": "cb-identos",
-  "cb_max_errors": 2,
-  "cb_interval": 30,
-  "cb_timeout": 5
-}

@@ -8,9 +8,11 @@ RUN apk update && apk upgrade --no-cache zlib libcrypto3 libssl3 musl musl-utils
 
 COPY krakend/ /etc/krakend/
 
-# SQA environment settings - each root key has its own JSON file
+# Environment settings — each root key has its own JSON file.
+# Override at build time: --build-arg KRAKEND_ENV=develop|sandbox|production
+ARG KRAKEND_ENV=production
 ENV FC_ENABLE=1 \
-    FC_SETTINGS=/etc/krakend/settings/sqa \
+    FC_SETTINGS=/etc/krakend/settings/${KRAKEND_ENV} \
     FC_PARTIALS=/etc/krakend/partials \
     FC_TEMPLATES=/etc/krakend/templates \
     KRAKEND_PORT=8080 \

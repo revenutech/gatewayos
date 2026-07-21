@@ -1,0 +1,110 @@
+{
+  "keycloak": {
+    "jwks_url": "https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://auth.revenu.com.br/realms/ledgeros",
+    "audience": "revenu-platform"
+  },
+  "oauth2": {
+    "client_id": "krakend-gateway",
+    "client_secret": "${OAUTH2_CLIENT_SECRET}"
+  },
+  "api_keys": {
+    "registry": ""
+  },
+  "service": {
+    "port": 8080,
+    "log_level": "WARNING",
+    "return_error_msg": false,
+    "expose_docs": false
+  },
+  "backends": {
+    "ledgeros_http": "http://ledgeros.ledgeros-production.svc.cluster.local:8081",
+    "ledgeros_grpc": "ledgeros.ledgeros-production.svc.cluster.local:9081",
+    "paymentos": "http://paymentos.ledgeros-production.svc.cluster.local:8082",
+    "atmos": "http://atmos.ledgeros-production.svc.cluster.local:8088",
+    "identityos": "http://identityos.ledgeros-production.svc.cluster.local:8091",
+    "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
+    "onboardos": "http://onboardos.ledgeros-production.svc.cluster.local:8092",
+    "accountos": "http://accountos.ledgeros-production.svc.cluster.local:8093",
+    "financeos": "http://financeos.ledgeros-production.svc.cluster.local:8095"
+  },
+  "redis": {
+    "host": "redis.ledgeros-production.svc.cluster.local",
+    "port": "6379"
+  },
+  "rate_limit": {
+    "global_max": 10000,
+    "tenant_max": 1000
+  },
+  "cors": {
+    "allow_origins": ["https://sit.corebanxapp.com.br"],
+    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "max_age": "12h"
+  },
+  "cb_posting": {
+    "cb_name": "cb-ledgeros-posting",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_paymentos": {
+    "cb_name": "cb-paymentos",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 15
+  },
+  "cb_atmos": {
+    "cb_name": "cb-atmos",
+    "cb_max_errors": 10,
+    "cb_interval": 120,
+    "cb_timeout": 30
+  },
+  "cb_grpc_posting": {
+    "cb_name": "cb-ledgeros-grpc",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_onboardos": {
+    "cb_name": "cb-onboardos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_accountos": {
+    "cb_name": "cb-accountos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 10
+  },
+  "cb_financeos": {
+    "cb_name": "cb-financeos",
+    "cb_max_errors": 5,
+    "cb_interval": 60,
+    "cb_timeout": 15
+  },
+  "cb_identityos": {
+    "cb_name": "cb-identityos",
+    "cb_max_errors": 2,
+    "cb_interval": 30,
+    "cb_timeout": 5
+  },
+  "postings_write": {
+    "rate_limit": {
+      "global_max": 1000,
+      "tenant_max": 100
+    }
+  },
+  "balances_read": {
+    "rate_limit": {
+      "global_max": 5000,
+      "tenant_max": 500
+    }
+  },
+  "tracing": {
+    "otel_host": "otel-collector.monitoring.svc.cluster.local",
+    "otel_port": 4317,
+    "sample_rate": 0.1
+  }
+}

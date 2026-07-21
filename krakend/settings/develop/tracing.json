@@ -1,0 +1,5 @@
+{
+  "otel_host": "otel-collector",
+  "otel_port": 4317,
+  "sample_rate": 1.0
+}

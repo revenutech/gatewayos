@@ -1,0 +1,3 @@
+{
+  "registry": "dev-test-key-001:dev-key-1:tenant-dev:ledger-viewer,ledger-operator:default:true|dev-test-key-002:dev-key-2:tenant-dev:ledger-admin:premium:true"
+}
