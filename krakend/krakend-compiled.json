@@ -41,7 +41,7 @@
   "listen_address": ":8090"
 },
     "security/cors": {
-  "allow_origins": ["https://sqa.corebanxapp.com.br","http://localhost:3000","http://localhost:8081"],
+  "allow_origins": ["https://develop.app.revenu.tech","http://localhost:3000","http://localhost:8081"],
   "allow_methods": ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
   "allow_headers": ["Authorization","Content-Type","X-Correlation-ID"],
   "expose_headers": ["X-Request-ID", "X-Correlation-ID"],
@@ -107,7 +107,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -160,7 +160,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -213,7 +213,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -266,7 +266,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -313,7 +313,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -356,7 +356,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -384,7 +384,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -412,7 +412,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -440,7 +440,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -468,7 +468,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -496,7 +496,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -524,7 +524,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -552,7 +552,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -580,7 +580,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -608,7 +608,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -636,7 +636,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -664,7 +664,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -692,7 +692,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -720,7 +720,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -748,7 +748,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -776,7 +776,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -804,7 +804,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -832,7 +832,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -860,7 +860,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -888,7 +888,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -916,7 +916,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -981,7 +981,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1009,7 +1009,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1037,7 +1037,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1065,7 +1065,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1093,7 +1093,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1129,7 +1129,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -1174,7 +1174,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1223,7 +1223,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1270,7 +1270,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1317,7 +1317,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1364,7 +1364,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1411,7 +1411,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1460,7 +1460,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1509,7 +1509,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1556,7 +1556,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1603,7 +1603,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1652,7 +1652,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1699,7 +1699,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1748,7 +1748,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1795,7 +1795,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1844,7 +1844,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1891,7 +1891,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1940,7 +1940,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -1987,7 +1987,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2034,7 +2034,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2083,7 +2083,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2132,7 +2132,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2179,7 +2179,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2228,7 +2228,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2275,7 +2275,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2322,7 +2322,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2371,7 +2371,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2418,7 +2418,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2465,7 +2465,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2514,7 +2514,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2561,7 +2561,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2610,7 +2610,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2657,7 +2657,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2706,7 +2706,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2753,7 +2753,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2800,7 +2800,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2849,7 +2849,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2896,7 +2896,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2945,7 +2945,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -2992,7 +2992,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3041,7 +3041,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3088,7 +3088,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3137,7 +3137,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3183,7 +3183,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3224,7 +3224,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3265,7 +3265,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3306,7 +3306,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3347,7 +3347,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3391,7 +3391,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3432,7 +3432,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3476,7 +3476,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3517,7 +3517,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3558,7 +3558,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3599,7 +3599,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3640,7 +3640,7 @@
     "auth/validator": {
       "alg": "RS256",
       "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-      "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+      "issuer": "http://keycloak:8080/auth/realms/ledgeros",
       "audience": ["account"],
       "cache": true,
       "cache_duration": 3600,
@@ -3728,7 +3728,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -3773,7 +3773,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -3823,7 +3823,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -3873,7 +3873,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -3923,7 +3923,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -3973,7 +3973,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4026,7 +4026,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4082,7 +4082,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4138,7 +4138,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4194,7 +4194,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4244,7 +4244,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4298,7 +4298,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4355,7 +4355,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4412,7 +4412,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4485,7 +4485,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4535,7 +4535,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4585,7 +4585,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4635,7 +4635,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4687,7 +4687,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4737,7 +4737,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4789,7 +4789,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4839,7 +4839,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4891,7 +4891,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4941,7 +4941,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -4993,7 +4993,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5043,7 +5043,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5095,7 +5095,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5145,7 +5145,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5197,7 +5197,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5247,7 +5247,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5299,7 +5299,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5349,7 +5349,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5401,7 +5401,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5451,7 +5451,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5503,7 +5503,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5553,7 +5553,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5605,7 +5605,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5655,7 +5655,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5707,7 +5707,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5757,7 +5757,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5809,7 +5809,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5859,7 +5859,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5911,7 +5911,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -5961,7 +5961,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6013,7 +6013,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6063,7 +6063,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6115,7 +6115,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6165,7 +6165,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6217,7 +6217,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6267,7 +6267,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6319,7 +6319,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6369,7 +6369,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6421,7 +6421,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6471,7 +6471,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6523,7 +6523,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6573,7 +6573,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6625,7 +6625,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6675,7 +6675,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6727,7 +6727,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6797,7 +6797,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6847,7 +6847,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6899,7 +6899,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6949,7 +6949,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -6999,7 +6999,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7049,7 +7049,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7103,7 +7103,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7153,7 +7153,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7203,7 +7203,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7253,7 +7253,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7303,7 +7303,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7353,7 +7353,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7403,7 +7403,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7453,7 +7453,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7503,7 +7503,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7553,7 +7553,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7603,7 +7603,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7653,7 +7653,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7703,7 +7703,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7753,7 +7753,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7803,7 +7803,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7853,7 +7853,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7903,7 +7903,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -7953,7 +7953,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8003,7 +8003,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8053,7 +8053,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8103,7 +8103,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8153,7 +8153,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8203,7 +8203,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8253,7 +8253,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8303,7 +8303,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8353,7 +8353,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8403,7 +8403,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8453,7 +8453,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8503,7 +8503,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8553,7 +8553,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8603,7 +8603,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8653,7 +8653,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8703,7 +8703,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8753,7 +8753,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8803,7 +8803,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8853,7 +8853,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8903,7 +8903,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -8953,7 +8953,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9003,7 +9003,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9053,7 +9053,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9107,7 +9107,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9157,7 +9157,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9207,7 +9207,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9261,7 +9261,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9311,7 +9311,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9367,7 +9367,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,
@@ -9474,7 +9474,7 @@
 "auth/validator": {
   "alg": "RS256",
   "jwk_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://sqa.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "http://keycloak:8080/auth/realms/ledgeros",
   "audience": ["account"],
   "cache": true,
   "cache_duration": 3600,

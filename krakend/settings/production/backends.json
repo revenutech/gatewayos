@@ -7,5 +7,6 @@
   "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
   "onboardos": "http://onboardos.ledgeros-production.svc.cluster.local:8092",
   "accountos": "http://accountos.ledgeros-production.svc.cluster.local:8093",
-  "financeos": "http://financeos.ledgeros-production.svc.cluster.local:8095"
+  "financeos": "http://financeos.ledgeros-production.svc.cluster.local:8095",
+  "keycloak": "http://keycloak.keycloak.svc.cluster.local:8080"
 }
