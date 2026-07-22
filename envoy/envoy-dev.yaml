@@ -67,10 +67,10 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
                       proto_descriptor: /etc/envoy/proto/ledgeros.pb
                       services:
-                        - revenu.ledgeros.v1.PostingService
-                        - revenu.ledgeros.v1.BalanceService
-                        - revenu.ledgeros.v1.SettlementService
-                        - revenu.ledgeros.v1.ReconciliationService
+                        - ledgeros.v1.PostingService
+                        - ledgeros.v1.BalanceService
+                        - ledgeros.v1.SettlementService
+                        - ledgeros.v1.ReconciliationService
                       print_options:
                         add_whitespace: false
                         always_print_primitive_fields: true

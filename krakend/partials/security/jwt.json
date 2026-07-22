@@ -16,6 +16,7 @@
     ["sub", "x-user-id"],
     ["tenant_id", "x-tenant-id"],
     ["realm_access.roles", "x-user-roles"],
+    ["scope", "x-user-scopes"],
     ["email", "x-user-email"]
   ],
   "roles_key": "realm_access.roles",

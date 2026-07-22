@@ -1,10 +1,46 @@
 {
+  "_comment": "AccountOS — endpoint de colecao (POST cria, GET lista). Faltava: so existia /accounts/{path}, entao POST /v1/accounts caia em 404 no gateway.",
+
+  "endpoint": "/accountos/v1/accounts",
+  "method": "POST",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-User-Scopes", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.accountos }}"],
+    "url_pattern": "/v1/accounts",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_accountos }}
+    }
+  }]
+},
+{
+  "endpoint": "/accountos/v1/accounts",
+  "method": "GET",
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-User-Scopes", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.accountos }}"],
+    "url_pattern": "/v1/accounts",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_accountos }}
+    }
+  }]
+},
+{
   "_comment": "AccountOS — Account management module (:8093)",
   "_enterprise_equivalent": "endpoints/wildcard — KrakenD Enterprise wildcard routes",
 
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-User-Scopes", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }},
@@ -26,7 +62,7 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-User-Scopes", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }},
@@ -48,7 +84,7 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "PUT",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-User-Scopes", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }},

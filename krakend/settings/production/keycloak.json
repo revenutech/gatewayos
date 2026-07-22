@@ -1,5 +1,7 @@
 {
-  "jwks_url": "https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://auth.revenu.com.br/realms/ledgeros",
-  "audience": "revenu-platform"
+  "jwks_url": "https://auth.revenu.tech/auth/realms/ledgeros/protocol/openid-connect/certs",
+  "issuer": "https://auth.revenu.tech/auth/realms/ledgeros",
+  "audience": "revenu-platform",
+  "disable_jwk_security": false,
+  "keycloak_base_path": "/auth"
 }
