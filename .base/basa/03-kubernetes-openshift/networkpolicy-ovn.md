@@ -148,8 +148,8 @@ networkPolicy:
     - namespace: paymentos-{env}
       app: paymentos
       port: 8082
-    - namespace: identos-{env}
-      app: identos
+    - namespace: identityos-{env}
+      app: identityos
       port: 8091
     - namespace: atmos-{env}
       app: atmos

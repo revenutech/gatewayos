@@ -48,7 +48,7 @@ Per-backend sensitivity is tuned based on service criticality:
 
 | Sensitivity | Backends | Config | Use Case |
 |------------|----------|--------|----------|
-| Very strict | Identos | 2 errors/30s/5s | Auth must fail fast |
+| Very strict | IdentityOS | 2 errors/30s/5s | Auth must fail fast |
 | Strict | Paymentos | 3 errors/60s/15s | Payments are critical |
 | Standard | LedgerOS, OnboardOS, AccountOS | 5 errors/60s/10s | General services |
 | Lenient | AtmOS | 10 errors/120s/30s | Hardware-dependent, intermittent |

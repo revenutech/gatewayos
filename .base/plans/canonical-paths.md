@@ -61,7 +61,7 @@ por dois ou mais módulos (`/v1/payments` por três, `/v1/settlements` por três
 
 | Path | Módulo | Backend (DNS de cluster) |
 |---|---|---|
-| `/identityos/v1/*` | IdentityOS — IAM | `identos:8091` |
+| `/identityos/v1/*` | IdentityOS — IAM | `identityos:8091` |
 | `/onboardos/v1/*` | OnboardOS — KYC/KYB, RIO | `onboardos:8092` |
 | `/accountos/v1/*` | AccountOS — ciclo de vida de conta | `accountos:8093` |
 | `/ledgeros/v1/*` | LedgerOS — razão contábil | `ledgeros:8081` |

@@ -34,7 +34,7 @@ This document defines the boundaries and applicability of the Information Securi
 | Issue | Relevance |
 |-------|-----------|
 | KrakenD 2.7 Community Edition | API Gateway technology stack |
-| Microservices architecture | 7 backend modules (LedgerOS, Paymentos, AtmOS, Identos, OnboardOS, AccountOS, FinanceOS) |
+| Microservices architecture | 7 backend modules (LedgerOS, Paymentos, AtmOS, IdentityOS, OnboardOS, AccountOS, FinanceOS) |
 | Kubernetes deployment | Container orchestration on cloud infrastructure |
 | Keycloak integration | Centralized identity and access management |
 | Team competency | DevSecOps practices, Go/K8s expertise |
@@ -78,7 +78,7 @@ The ISMS for the API Gateway covers:
 
 **Network Boundaries:**
 - Ingress: External clients → Nginx Ingress → KrakenD (:8080)
-- Egress: KrakenD → Backend services (LedgerOS :8081/:9081, Paymentos :8082, AtmOS :8088, Identos :8091, OnboardOS :8092, AccountOS :8093, FinanceOS :8095)
+- Egress: KrakenD → Backend services (LedgerOS :8081/:9081, Paymentos :8082, AtmOS :8088, IdentityOS :8091, OnboardOS :8092, AccountOS :8093, FinanceOS :8095)
 - Egress: KrakenD → Keycloak (JWKS validation)
 - Egress: KrakenD → Redis (:6379)
 - Egress: KrakenD → OTel Collector (:4317)
@@ -89,7 +89,7 @@ The ISMS for the API Gateway covers:
 | Component | Reason | Covered By |
 |-----------|--------|------------|
 | Backend service internals | Separate ISMS per service | LedgerOS ISMS, Paymentos ISMS, etc. |
-| Keycloak administration | Separate identity platform ISMS | Identos ISMS |
+| Keycloak administration | Separate identity platform ISMS | IdentityOS ISMS |
 | Cloud provider physical infrastructure | CSP responsibility (shared model) | ISO 27017/27018 via provider |
 | End-user devices/browsers | Client-side security | Not applicable |
 | DNS infrastructure | External service | Cloud provider SLA |

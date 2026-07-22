@@ -40,7 +40,7 @@ Legend: **R** = Read (GET), **W** = Write (POST), **U** = Update (PUT), **D** = 
 | POST /v1/ted/{path} | — | W | W |
 | POST /v1/boleto/{path} | — | W | W |
 
-### Identos
+### IdentityOS
 
 | Endpoint | viewer | operator | admin |
 |----------|--------|----------|-------|

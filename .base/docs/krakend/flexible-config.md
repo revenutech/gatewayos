@@ -38,7 +38,7 @@ krakend/
     ledger_grpc_v1.json           # LedgerOS gRPC routes
     ledger_dynamic_v1.json        # LedgerOS JWT-scoped routes
     paymentos_v1.json             # Payment routes
-    identos_v1.json               # Identity routes
+    identityos_v1.json               # Identity routes
     atmos_v1.json                 # ATM routes
     admin_v1.json                 # Admin routes
     onboardos_v1.json             # Onboarding routes (21 prefixes)
