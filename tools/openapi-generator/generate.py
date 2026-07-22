@@ -216,7 +216,7 @@ def generate_spec(endpoints_dir: str) -> dict:
             {'name': 'Ledger', 'description': 'LedgerOS — Postings, Balances, Settlements, Reconciliation'},
             {'name': 'Payments', 'description': 'Paymentos — PIX, TED, Boleto'},
             {'name': 'Automation', 'description': 'AtmOS — Automation workflows'},
-            {'name': 'Identity', 'description': 'Identos — Authentication and user management'},
+            {'name': 'Identity', 'description': 'IdentityOS — Authentication and user management'},
             {'name': 'Admin', 'description': 'Administrative operations (ledger-admin only)'},
             {'name': 'Onboarding', 'description': 'OnboardOS — Customer onboarding'},
             {'name': 'Accounts', 'description': 'AccountOS — Account management'},

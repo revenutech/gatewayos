@@ -42,4 +42,4 @@ The API Gateway does **not store PII**. All personal data is in transit only:
 - Access logs contain user IDs — subject to 90-day retention
 - No credit card, CPF, or other sensitive data stored
 
-For LGPD data subject requests (access, deletion, portability), contact the backend service that owns the data (LedgerOS, Identos).
+For LGPD data subject requests (access, deletion, portability), contact the backend service that owns the data (LedgerOS, IdentityOS).

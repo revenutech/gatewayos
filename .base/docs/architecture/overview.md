@@ -18,7 +18,7 @@ The Gateway is the single entry point for all external traffic into the Revenu P
                             |
          +------------------+------------------+
          |          |          |          |     |
-     LedgerOS  Paymentos   AtmOS   Identos  ...
+     LedgerOS  Paymentos   AtmOS   IdentityOS  ...
       :8081      :8082     :8088    :8091
 ```
 

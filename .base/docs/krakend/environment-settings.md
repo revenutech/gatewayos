@@ -41,7 +41,7 @@ Dev test keys: `dev-test-key-001` (viewer+operator) and `dev-test-key-002` (admi
 | ledgeros_grpc | ledgeros:9081 | ledgeros.ledgeros-staging.svc.cluster.local:9081 | ledgeros.ledgeros-production.svc.cluster.local:9081 |
 | paymentos | paymentos:8082 | paymentos.ledgeros-staging.svc:8082 | paymentos.ledgeros-production.svc:8082 |
 | atmos | atmos:8088 | atmos.ledgeros-staging.svc:8088 | atmos.ledgeros-production.svc:8088 |
-| identos | identos:8091 | identos.ledgeros-staging.svc:8091 | identos.ledgeros-production.svc:8091 |
+| identityos | identityos:8091 | identityos.ledgeros-staging.svc:8091 | identityos.ledgeros-production.svc:8091 |
 | onboardos | onboardos:8092 | onboardos.ledgeros-staging.svc:8092 | onboardos.ledgeros-production.svc:8092 |
 | accountos | accountos:8093 | accountos.ledgeros-staging.svc:8093 | accountos.ledgeros-production.svc:8093 |
 | financeos | financeos:8095 | financeos.ledgeros-staging.svc:8095 | financeos.ledgeros-production.svc:8095 |

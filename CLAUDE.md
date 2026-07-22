@@ -28,7 +28,7 @@ docker run --rm \
 | `krakend/settings/{develop,sandbox,production}/` | Per-environment settings, one JSON per root key (loaded via `FC_SETTINGS`) |
 | `krakend/settings/{develop,sandbox,production}.json` | Same settings, flat form (used by `tools/compile-config.sh`) |
 | `krakend/settings/service_routes.json` | Service map (host:port per module) |
-| `krakend/endpoints/*.json` | Route definitions per module (ledger, paymentos, identos, atmos, admin, health) |
+| `krakend/endpoints/*.json` | Route definitions per module (ledger, paymentos, identityos, atmos, admin, health) |
 | `krakend/partials/*.tmpl` | Reusable config fragments (JWT, rate limiter, circuit breaker, CORS, telemetry, security headers, bloom filter) |
 | `krakend/templates/protected_endpoint.tmpl` | Generic protected endpoint template |
 | `k8s/manifests/` | K8s manifests (deployment, service, ingress, HPA, PDB, configmap, serviceaccount, servicemonitor, prometheusrule) |
@@ -44,7 +44,7 @@ docker run --rm \
 | LedgerOS | `http://ledgeros:8081` | `ledgeros.ledgeros-production.svc.cluster.local` | :8081/:9081 |
 | Paymentos | `http://paymentos:8082` | `paymentos.ledgeros-production.svc.cluster.local` | :8082 |
 | AtmOS | `http://atmos:8088` | `atmos.ledgeros-production.svc.cluster.local` | :8088 |
-| Identos | `http://identos:8091` | `identos.ledgeros-production.svc.cluster.local` | :8091 |
+| IdentityOS | `http://identityos:8091` | `identityos.ledgeros-production.svc.cluster.local` | :8091 |
 
 ## Security
 

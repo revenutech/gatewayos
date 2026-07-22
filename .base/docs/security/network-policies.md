@@ -32,7 +32,7 @@ Controls what the gateway can connect to.
 | LedgerOS | app: ledgeros | 8081/TCP, 9081/TCP | HTTP + gRPC |
 | Paymentos | app: paymentos | 8082/TCP | Payments |
 | AtmOS | app: atmos | 8088/TCP | ATM |
-| Identos | app: identos | 8091/TCP | Identity |
+| IdentityOS | app: identityos | 8091/TCP | Identity |
 | OnboardOS | app: onboardos | 8092/TCP | Onboarding |
 | AccountOS | app: accountos | 8093/TCP | Accounts |
 | FinanceOS | app: financeos | 8095/TCP | Finance |

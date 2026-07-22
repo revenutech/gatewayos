@@ -1,8 +1,8 @@
-# Identos Routes
+# IdentityOS Routes
 
-Backend: `identos:8091`
+Backend: `identityos:8091`
 
-Identos handles identity management and authentication services.
+IdentityOS handles identity management and authentication services.
 
 ## Endpoints
 
@@ -11,7 +11,7 @@ Identos handles identity management and authentication services.
 Authentication operations (login, token refresh, password reset, etc.).
 
 - **Roles:** JWT required, **no role restriction** — any authenticated user can access
-- **Circuit breaker:** cb-identos (2 errors / 30s / 5s timeout)
+- **Circuit breaker:** cb-identityos (2 errors / 30s / 5s timeout)
 - **Encoding:** no-op
 
 ### GET /v1/users/{path}
@@ -19,12 +19,12 @@ Authentication operations (login, token refresh, password reset, etc.).
 User management and directory operations.
 
 - **Roles:** ledger-admin **only**
-- **Circuit breaker:** cb-identos
+- **Circuit breaker:** cb-identityos
 - **Encoding:** no-op
 
 ## Circuit Breaker Rationale
 
-Identos has the **strictest** CB configuration:
+IdentityOS has the **strictest** CB configuration:
 - **2 max errors** — auth failures must fail fast (credential stuffing protection)
 - **30s interval** — short evaluation window
 - **5s timeout** — quick recovery attempts

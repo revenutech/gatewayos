@@ -38,7 +38,7 @@ Aggregated health check across 5 backends.
 | ledgeros:8081 | /health | `ledgeros` |
 | paymentos:8082 | /health | `paymentos` |
 | atmos:8088 | /health | `atmos` |
-| identos:8091 | /health | `identos` |
+| identityos:8091 | /health | `identityos` |
 | accountos:8093 | /health | `accountos` |
 
 - **Endpoint timeout:** 3s
@@ -51,7 +51,7 @@ Response structure:
   "ledgeros": { "status": "ok" },
   "paymentos": { "status": "ok" },
   "atmos": { "status": "ok" },
-  "identos": { "status": "ok" },
+  "identityos": { "status": "ok" },
   "accountos": { "status": "ok" }
 }
 ```

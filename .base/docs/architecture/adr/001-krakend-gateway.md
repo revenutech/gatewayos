@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The Revenu Platform is a multi-module financial platform (LedgerOS, Paymentos, AtmOS, Identos, OnboardOS, AccountOS, FinanceOS) that needs a unified API gateway for:
+The Revenu Platform is a multi-module financial platform (LedgerOS, Paymentos, AtmOS, IdentityOS, OnboardOS, AccountOS, FinanceOS) that needs a unified API gateway for:
 
 - Single entry point for all external traffic
 - JWT validation and RBAC enforcement

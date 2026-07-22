@@ -47,12 +47,12 @@ Master reference of all gateway endpoints.
 | `/v1/ted/{path}` | POST | operator, admin | cb-paymentos | no-op |
 | `/v1/boleto/{path}` | POST | operator, admin | cb-paymentos | no-op |
 
-## Identos (`identos:8091`)
+## IdentityOS (`identityos:8091`)
 
 | Path | Method | Roles | CB | Encoding |
 |------|--------|-------|-----|---------|
-| `/v1/auth/{path}` | POST | JWT only (no role) | cb-identos | no-op |
-| `/v1/users/{path}` | GET | admin | cb-identos | no-op |
+| `/v1/auth/{path}` | POST | JWT only (no role) | cb-identityos | no-op |
+| `/v1/users/{path}` | GET | admin | cb-identityos | no-op |
 
 ## AtmOS (`atmos:8088`)
 
@@ -118,7 +118,7 @@ Master reference of all gateway endpoints.
 | Path | Method | Backends | Concurrent | Timeout | Roles |
 |------|--------|----------|-----------|---------|-------|
 | `/v1/dashboard/overview` | GET | ledgeros, paymentos, atmos, accountos | 4 | 5s | viewer, operator, admin |
-| `/v1/dashboard/health` | GET | ledgeros, paymentos, atmos, identos, accountos | 5 | 3s | admin |
+| `/v1/dashboard/health` | GET | ledgeros, paymentos, atmos, identityos, accountos | 5 | 3s | admin |
 
 ## Test Endpoints
 
@@ -135,7 +135,7 @@ Master reference of all gateway endpoints.
 | LedgerOS gRPC | 5 | envoy:8085 | JWT + RBAC + rate limit |
 | LedgerOS Dynamic | 3 | ledgeros:8081 | JWT + RBAC (claim-based routing) |
 | Paymentos | 4 | paymentos:8082 | JWT + RBAC |
-| Identos | 2 | identos:8091 | JWT (+ admin-only for /users) |
+| IdentityOS | 2 | identityos:8091 | JWT (+ admin-only for /users) |
 | AtmOS | 2 | atmos:8088 | JWT + RBAC |
 | Admin | 2 | ledgeros:8081 | JWT + admin-only |
 | OnboardOS | ~84 | onboardos:8092 | JWT + RBAC |
