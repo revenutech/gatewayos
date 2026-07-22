@@ -8,7 +8,7 @@
 | LedgerOS | 9081 | gRPC | cb-ledgeros-grpc | Same as above, via gRPC (through Envoy transcoder) |
 | Paymentos | 8082 | HTTP | cb-paymentos | Payment processing — PIX, TED, Boleto |
 | AtmOS | 8088 | HTTP | cb-atmos | ATM/Cash management |
-| Identos | 8091 | HTTP | cb-identos | Identity & authentication services |
+| IdentityOS | 8091 | HTTP | cb-identityos | Identity & authentication services |
 | OnboardOS | 8092 | HTTP | cb-onboardos | Customer onboarding (KYC, AML, due diligence) |
 | AccountOS | 8093 | HTTP | cb-accountos | Account management |
 | FinanceOS | 8095 | HTTP | cb-financeos | Financial operations |
@@ -30,7 +30,7 @@ Services are resolved by Docker Compose DNS using container names:
 
 ```
 ledgeros:8081          paymentos:8082
-atmos:8088             identos:8091
+atmos:8088             identityos:8091
 onboardos:8092         accountos:8093
 financeos:8095         envoy-grpc-transcoder:8085
 redis:6379
@@ -64,7 +64,7 @@ All values are consistent across dev/staging/prod environments:
 | LedgerOS gRPC | cb-ledgeros-grpc | 5 | 60 | 10 | Standard |
 | Paymentos | cb-paymentos | 3 | 60 | 15 | Strict — payment operations are critical |
 | AtmOS | cb-atmos | 10 | 120 | 30 | Lenient — tolerates more errors, longer recovery |
-| Identos | cb-identos | 2 | 30 | 5 | Very strict — auth must fail fast |
+| IdentityOS | cb-identityos | 2 | 30 | 5 | Very strict — auth must fail fast |
 | OnboardOS | cb-onboardos | 5 | 60 | 10 | Standard |
 | AccountOS | cb-accountos | 5 | 60 | 10 | Standard |
 | FinanceOS | cb-financeos | 5 | 60 | 15 | Standard with longer recovery |

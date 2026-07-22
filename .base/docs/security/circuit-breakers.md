@@ -45,14 +45,14 @@ Values are identical across dev/staging/prod:
 | LedgerOS gRPC | cb-ledgeros-grpc | 5 | 60 | 10 | Standard — mirrors HTTP |
 | Paymentos | cb-paymentos | **3** | 60 | **15** | Strict — payment operations are critical, fail fast |
 | AtmOS | cb-atmos | **10** | **120** | **30** | Lenient — tolerates intermittent ATM failures |
-| Identos | cb-identos | **2** | **30** | **5** | Very strict — auth must fail fast |
+| IdentityOS | cb-identityos | **2** | **30** | **5** | Very strict — auth must fail fast |
 | OnboardOS | cb-onboardos | 5 | 60 | 10 | Standard |
 | AccountOS | cb-accountos | 5 | 60 | 10 | Standard |
 | FinanceOS | cb-financeos | 5 | 60 | **15** | Standard with longer recovery |
 
 ## Design Rationale
 
-**Identos (strictest: 2/30/5):** Auth failures should be detected immediately. A broken auth service affects all authenticated operations. Fast open + fast recovery.
+**IdentityOS (strictest: 2/30/5):** Auth failures should be detected immediately. A broken auth service affects all authenticated operations. Fast open + fast recovery.
 
 **Paymentos (strict: 3/60/15):** Payment operations involve real money. Better to fail fast than process duplicates. Longer recovery allows PSP transient issues to resolve.
 

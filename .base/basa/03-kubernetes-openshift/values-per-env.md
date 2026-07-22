@@ -121,8 +121,8 @@ networkPolicy:
     - namespace: paymentos-sqa
       app: paymentos
       port: 8082
-    - namespace: identos-sqa
-      app: identos
+    - namespace: identityos-sqa
+      app: identityos
       port: 8091
     - namespace: atmos-sqa
       app: atmos
@@ -184,8 +184,8 @@ networkPolicy:
     - namespace: paymentos-uat
       app: paymentos
       port: 8082
-    - namespace: identos-uat
-      app: identos
+    - namespace: identityos-uat
+      app: identityos
       port: 8091
     - namespace: atmos-uat
       app: atmos
@@ -245,8 +245,8 @@ networkPolicy:
     - namespace: paymentos-pro
       app: paymentos
       port: 8082
-    - namespace: identos-pro
-      app: identos
+    - namespace: identityos-pro
+      app: identityos
       port: 8091
     - namespace: atmos-pro
       app: atmos
