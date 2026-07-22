@@ -40,7 +40,7 @@ BASA, que é projeto separado.
 `auth.*` é **host dedicado do gateway**, que proxia o KeycloakOS.
 
 Domínios em descarte: `revenu.com.br`, `authorityos.com`, `allenty.io`,
-`revenu.io`, `corebanxapp.com.br`.
+`revenu.io`, `revenu.tech`.
 
 Âncoras imutáveis (compiladas no binário do app iOS, versões em campo):
 `api.revenu.tech`, `card|loan|insurance|onboarding.revenu.tech` e as variantes
