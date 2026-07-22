@@ -40,7 +40,8 @@ services:
       - "8085:8085"
       - "9901:9901"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:9901/ready"]
+      # A imagem do Envoy nao traz wget nem curl; bash com /dev/tcp e o que ha.
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9901'"]
       interval: 10s
       timeout: 3s
       retries: 3
