@@ -42,7 +42,7 @@ Adicionada variável `keycloak_base_path` nos arquivos de configuração de cada
 ```json
 {
   "jwks_url": "http://keycloak.keycloak.svc.clusterset.local:8080/auth/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://{env}.corebanxapp.com.br/auth/realms/ledgeros",
+  "issuer": "https://{env}.auth.revenu.tech/auth/realms/ledgeros",
   "audience": "account",
   "disable_jwk_security": true,
   "keycloak_base_path": "/auth"
@@ -136,7 +136,7 @@ kubectl --context gke_revenu-gateway-sqa_southamerica-east1-a_gateway-sqa \
 
 ```bash
 # Obter token via endpoint externo
-curl -X POST "https://uat.corebanxapp.com.br/auth/realms/ledgeros/protocol/openid-connect/token" \
+curl -X POST "https://sandbox.auth.revenu.tech/auth/realms/ledgeros/protocol/openid-connect/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=client_credentials" \
   -d "client_id=paymentos" \

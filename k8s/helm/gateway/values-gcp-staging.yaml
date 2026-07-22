@@ -1,7 +1,7 @@
 # =============================================================================
 # Gateway — GCP Staging Environment (UAT)
 # GKE zonal (sae1-a), 2 replicas, GCE Ingress, ManagedCert
-# Domain: uat.corebanxapp.com.br
+# Domain: sandbox.api.revenu.tech
 # =============================================================================
 
 replicaCount: 2
@@ -25,7 +25,7 @@ ingress:
   annotations:
     networking.gke.io/managed-certificates: gateway-cert
   hosts:
-    - host: uat.corebanxapp.com.br
+    - host: sandbox.api.revenu.tech
       paths:
         - path: /
           pathType: Prefix
@@ -36,7 +36,7 @@ backendConfig:
 managedCertificate:
   enabled: true
   domains:
-    - uat.corebanxapp.com.br
+    - sandbox.api.revenu.tech
 
 autoscaling:
   enabled: false
