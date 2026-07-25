@@ -116,8 +116,23 @@ content = re.sub(r'\{\{[\s]*marshal\s+\.([a-zA-Z0-9_.]+)[\s]*\}\}', replace_mars
 content = re.sub(r'\{\{[\s]*\.([a-zA-Z0-9_.]+)[\s]*\}\}', replace_var, content)
 
 # Phase 3: Handle {{ if .key }}...{{ else }}...{{ end }}
-content = re.sub(r'\{\{[\s]*if\s+\.[a-zA-Z0-9_.]+[\s]*\}\}(.*?)\{\{[\s]*else[\s]*\}\}(.*?)\{\{[\s]*end[\s]*\}\}',
-    lambda m: m.group(1), content, flags=re.DOTALL)
+# A condicao e AVALIADA contra as settings. Antes esta fase devolvia sempre o
+# ramo verdadeiro, o que tornava toda condicional decorativa — expose_docs:false
+# em producao nao removia nada.
+def _truthy(path):
+    value = get_nested(settings, path.split("."))
+    return value not in (None, False, 0, "", "false", "False", [], {})
+
+def _if_else(m):
+    return m.group(2) if _truthy(m.group(1)) else m.group(3)
+
+def _if_only(m):
+    return m.group(2) if _truthy(m.group(1)) else ""
+
+content = re.sub(r'\{\{\s*if\s+\.([a-zA-Z0-9_.]+)\s*\}\}(.*?)\{\{\s*else\s*\}\}(.*?)\{\{\s*end\s*\}\}',
+    _if_else, content, flags=re.DOTALL)
+content = re.sub(r'\{\{\s*if\s+\.([a-zA-Z0-9_.]+)\s*\}\}(.*?)\{\{\s*end\s*\}\}',
+    _if_only, content, flags=re.DOTALL)
 
 # Phase 4: Remove remaining Go template directives
 content = re.sub(r'\{\{[^}]*\}\}', '', content)

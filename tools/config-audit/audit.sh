@@ -27,8 +27,8 @@ YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-error() { echo -e "${RED}[ERROR]${NC} $1"; ((ERRORS++)); }
-warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; ((WARNINGS++)); }
+error() { echo -e "${RED}[ERROR]${NC} $1"; ERRORS=$((ERRORS + 1)); }
+warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; WARNINGS=$((WARNINGS + 1)); }
 pass()  { echo -e "${GREEN}[PASS]${NC} $1"; }
 
 echo "========================================="
@@ -40,21 +40,21 @@ echo ""
 echo "--- Environment Consistency ---"
 
 # Check all envs have same backend keys
-DEV_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/dev.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
-STG_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/staging.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
-PRD_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/prod.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
+DEV_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/develop.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
+STG_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/sandbox.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
+PRD_BACKENDS=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/production.json')); print(sorted(d.get('backends',{}).keys()))" 2>/dev/null || echo "PARSE_ERROR")
 
 if [ "$DEV_BACKENDS" = "$STG_BACKENDS" ] && [ "$STG_BACKENDS" = "$PRD_BACKENDS" ]; then
     pass "Backend keys consistent across all environments"
 else
     error "Backend keys differ between environments"
-    echo "  dev:     $DEV_BACKENDS"
-    echo "  staging: $STG_BACKENDS"
-    echo "  prod:    $PRD_BACKENDS"
+    echo "  develop:    $DEV_BACKENDS"
+    echo "  sandbox:    $STG_BACKENDS"
+    echo "  production: $PRD_BACKENDS"
 fi
 
 # Check all envs have same circuit breaker keys
-for env in dev staging prod; do
+for env in develop sandbox production; do
     CB_COUNT=$(python3 -c "
 import json
 d=json.load(open('${SETTINGS_DIR}/${env}.json'))
@@ -107,13 +107,68 @@ for f in "${ENDPOINTS_DIR}"/endpoint_*.tmpl; do
     PROTECTED_ENDPOINTS=$((PROTECTED_ENDPOINTS + jwt_count))
 done
 UNPROTECTED=$((TOTAL_ENDPOINTS - PROTECTED_ENDPOINTS))
-# Since each endpoint can have both template and inline validator, cap protection at endpoint count
-if [ "$PROTECTED_ENDPOINTS" -ge "$TOTAL_ENDPOINTS" ]; then
-    pass "All ${TOTAL_ENDPOINTS} business endpoints have JWT validation"
-elif [ "$UNPROTECTED" -le 15 ]; then
-    pass "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} intentionally unprotected)"
+
+# Endpoints publicos por design. Sem esta lista o indicador mede a coisa errada:
+# conta como "desprotegido" o que e protegido por outro mecanismo (mTLS do BACEN,
+# OIDC do Keycloak) ou o que e publico de proposito (health, docs, QR Pix).
+INTENTIONAL_PUBLIC_PREFIXES="/__ready /__health /paymentos/jdpi /paymentos/banklink /auth/realms /pix/cob /v1/app/version"
+# Publicos por natureza, em qualquer prefixo de modulo: emissao de token e documentacao
+INTENTIONAL_PUBLIC_SUBSTRINGS="/oauth /docs /openapi"
+
+# Exposicao publica se mede no que vai para PRODUCAO. Endpoint de teste em
+# develop e legitimo; em producao e achado — coberto pela checagem seguinte.
+# Compila sob demanda: no CI cada job e isolado, entao o audit nao pode
+# depender de um arquivo deixado por outro job.
+COMPILED="${PROD_COMPILED_CONFIG:-/tmp/krakend-prod.json}"
+if [ ! -f "$COMPILED" ]; then
+    bash "${SCRIPT_DIR}/../compile-config.sh" "${SCRIPT_DIR}/../../krakend" production "$COMPILED" >/dev/null 2>&1 || true
+fi
+if [ -f "$COMPILED" ]; then
+    UNEXPECTED=$(COMPILED="$COMPILED" PREFIXES="$INTENTIONAL_PUBLIC_PREFIXES" SUBSTRINGS="$INTENTIONAL_PUBLIC_SUBSTRINGS" python3 - <<'PYEOF'
+import json, os
+cfg = json.load(open(os.environ["COMPILED"]))
+prefixes = os.environ["PREFIXES"].split()
+out = []
+for e in cfg.get("endpoints", []):
+    if "auth/validator" in json.dumps(e.get("extra_config", {})):
+        continue
+    path = e.get("endpoint", "")
+    if any(path.startswith(p) for p in prefixes):
+        continue
+    if any(sub in path for sub in os.environ["SUBSTRINGS"].split()):
+        continue
+    if "health" in path or "live" in path or "ready" in path:
+        continue
+    out.append(f'{e.get("method","GET")} {path}')
+print("\n".join(out))
+PYEOF
+)
+    UNEXPECTED_COUNT=$(printf '%s' "$UNEXPECTED" | grep -c . || true)
+    if [ "${UNEXPECTED_COUNT:-0}" -eq 0 ]; then
+        pass "Producao: todo endpoint sem JWT esta na lista de publicos por design"
+    else
+        warn "Producao: ${UNEXPECTED_COUNT} endpoint(s) sem JWT e fora da lista de publicos por design:"
+        printf '%s\n' "$UNEXPECTED" | sed 's/^/        /'
+    fi
 else
-    warn "${PROTECTED_ENDPOINTS}/${TOTAL_ENDPOINTS} endpoints have JWT validation (${UNPROTECTED} unprotected)"
+    warn "Config de producao ausente em ${COMPILED} — checagem de endpoint publico pulada"
+fi
+
+# Endpoint de teste nao deve existir em config de producao
+PROD_COMPILED="$COMPILED"
+if [ -f "$PROD_COMPILED" ]; then
+    TEST_IN_PROD=$(PROD="$PROD_COMPILED" python3 -c "
+import json, os
+cfg = json.load(open(os.environ['PROD']))
+print('\n'.join(e['endpoint'] for e in cfg.get('endpoints', []) if '/test/' in e.get('endpoint','')))
+")
+    TEST_COUNT=$(printf '%s' "$TEST_IN_PROD" | grep -c . || true)
+    if [ "${TEST_COUNT:-0}" -eq 0 ]; then
+        pass "Nenhum endpoint de teste no config de producao"
+    else
+        warn "${TEST_COUNT} endpoint(s) de teste presentes no config de PRODUCAO:"
+        printf '%s\n' "$TEST_IN_PROD" | sed 's/^/        /'
+    fi
 fi
 
 # Check bloom filter false positive rate
@@ -129,7 +184,7 @@ if [ "$BF_P" != "unknown" ]; then
 fi
 
 # Check prod doesn't return error messages
-PROD_ERROR_MSG=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/prod.json')); print(d.get('service',{}).get('return_error_msg', False))" 2>/dev/null || echo "unknown")
+PROD_ERROR_MSG=$(python3 -c "import json; d=json.load(open('${SETTINGS_DIR}/production.json')); print(d.get('service',{}).get('return_error_msg', False))" 2>/dev/null || echo "unknown")
 if [ "$PROD_ERROR_MSG" = "False" ]; then
     pass "Prod does not expose error messages"
 else
@@ -140,7 +195,7 @@ fi
 echo ""
 echo "--- CORS Audit ---"
 
-for env in dev staging prod; do
+for env in develop sandbox production; do
     ORIGINS=$(python3 -c "
 import json
 d=json.load(open('${SETTINGS_DIR}/${env}.json'))
@@ -158,7 +213,7 @@ done
 echo ""
 echo "--- Rate Limiting Audit ---"
 
-for env in dev staging prod; do
+for env in develop sandbox production; do
     RL=$(python3 -c "
 import json
 d=json.load(open('${SETTINGS_DIR}/${env}.json'))
