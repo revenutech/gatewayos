@@ -16,7 +16,8 @@ jobs:
       - name: Check KrakenD config
         run: |
           pip install -q jinja2 2>/dev/null || true
-          bash tools/compile-config.sh krakend dev /tmp/krakend-compiled.json
+          bash tools/compile-config.sh krakend develop /tmp/krakend-compiled.json
+          bash tools/compile-config.sh krakend production /tmp/krakend-prod.json
           echo "Compiled config is valid JSON"
           python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('JSON OK')"
 

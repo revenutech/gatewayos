@@ -16,7 +16,8 @@
     "port": 8080,
     "log_level": "DEBUG",
     "return_error_msg": true,
-    "expose_docs": true
+    "expose_docs": true,
+    "expose_test_endpoints": true
   },
   "backends": {
     "ledgeros_http": "http://ledgeros:8081",
@@ -38,9 +39,24 @@
     "tenant_max": 500
   },
   "cors": {
-    "allow_origins": ["https://sqa.corebanxapp.com.br", "http://localhost:3000", "http://localhost:8081"],
-    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "allow_origins": [
+      "https://sqa.corebanxapp.com.br",
+      "http://localhost:3000",
+      "http://localhost:8081"
+    ],
+    "allow_methods": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH",
+      "OPTIONS"
+    ],
+    "allow_headers": [
+      "Authorization",
+      "Content-Type",
+      "X-Correlation-ID"
+    ],
     "max_age": "12h"
   },
   "cb_posting": {

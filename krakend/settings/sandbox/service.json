@@ -2,5 +2,6 @@
   "port": 8080,
   "log_level": "INFO",
   "return_error_msg": false,
-  "expose_docs": true
+  "expose_docs": true,
+  "expose_test_endpoints": false
 }
