@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate KrakenD config
         run: |
-          bash tools/compile-config.sh krakend staging /tmp/krakend-compiled.json
+          bash tools/compile-config.sh krakend sandbox /tmp/krakend-compiled.json
           python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('Config compiles to valid JSON')"
       - name: Config audit
         run: bash tools/config-audit/audit.sh --strict

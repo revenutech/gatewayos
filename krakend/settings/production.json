@@ -2,7 +2,8 @@
   "keycloak": {
     "jwks_url": "https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
     "issuer": "https://auth.revenu.com.br/realms/ledgeros",
-    "audience": "revenu-platform"
+    "audience": "revenu-platform",
+    "disable_jwk_security": false
   },
   "oauth2": {
     "client_id": "krakend-gateway",
@@ -15,7 +16,8 @@
     "port": 8080,
     "log_level": "WARNING",
     "return_error_msg": false,
-    "expose_docs": false
+    "expose_docs": false,
+    "expose_test_endpoints": false
   },
   "backends": {
     "ledgeros_http": "http://ledgeros.ledgeros-production.svc.cluster.local:8081",
@@ -37,9 +39,22 @@
     "tenant_max": 1000
   },
   "cors": {
-    "allow_origins": ["https://sit.corebanxapp.com.br"],
-    "allow_methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    "allow_headers": ["Authorization", "Content-Type", "X-Correlation-ID"],
+    "allow_origins": [
+      "https://sit.corebanxapp.com.br"
+    ],
+    "allow_methods": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH",
+      "OPTIONS"
+    ],
+    "allow_headers": [
+      "Authorization",
+      "Content-Type",
+      "X-Correlation-ID"
+    ],
     "max_age": "12h"
   },
   "cb_posting": {
