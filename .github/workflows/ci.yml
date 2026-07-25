@@ -78,7 +78,7 @@ jobs:
       - name: Build image for scanning
         run: docker build -t revenu-gateway:scan .
       - name: "A.5.21: Trivy vulnerability scan"
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: revenu-gateway:scan
           format: table
@@ -87,7 +87,7 @@ jobs:
           ignore-unfixed: true
           trivyignores: .trivyignore
       - name: "A.5.21: Generate SBOM"
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: revenu-gateway:scan
           format: cyclonedx

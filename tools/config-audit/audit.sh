@@ -117,7 +117,12 @@ INTENTIONAL_PUBLIC_SUBSTRINGS="/oauth /docs /openapi"
 
 # Exposicao publica se mede no que vai para PRODUCAO. Endpoint de teste em
 # develop e legitimo; em producao e achado — coberto pela checagem seguinte.
+# Compila sob demanda: no CI cada job e isolado, entao o audit nao pode
+# depender de um arquivo deixado por outro job.
 COMPILED="${PROD_COMPILED_CONFIG:-/tmp/krakend-prod.json}"
+if [ ! -f "$COMPILED" ]; then
+    bash "${SCRIPT_DIR}/../compile-config.sh" "${SCRIPT_DIR}/../../krakend" production "$COMPILED" >/dev/null 2>&1 || true
+fi
 if [ -f "$COMPILED" ]; then
     UNEXPECTED=$(COMPILED="$COMPILED" PREFIXES="$INTENTIONAL_PUBLIC_PREFIXES" SUBSTRINGS="$INTENTIONAL_PUBLIC_SUBSTRINGS" python3 - <<'PYEOF'
 import json, os
@@ -150,7 +155,7 @@ else
 fi
 
 # Endpoint de teste nao deve existir em config de producao
-PROD_COMPILED="${PROD_COMPILED_CONFIG:-/tmp/krakend-prod.json}"
+PROD_COMPILED="$COMPILED"
 if [ -f "$PROD_COMPILED" ]; then
     TEST_IN_PROD=$(PROD="$PROD_COMPILED" python3 -c "
 import json, os

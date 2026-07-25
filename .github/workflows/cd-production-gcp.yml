@@ -76,7 +76,7 @@ jobs:
 
       # Security scan
       - name: Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
           format: table
@@ -91,7 +91,7 @@ jobs:
 
       # SBOM
       - name: Generate SBOM
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
           format: cyclonedx
