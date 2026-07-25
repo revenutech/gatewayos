@@ -1,0 +1,23 @@
+{
+  "_comment": "Gate de versao do app mobile. PUBLICO de proposito: o app consulta antes do login, entao exigir token faria o bloqueio falhar justamente com usuario deslogado em versao banida. Resposta 100% estatica via proxy.static com strategy always — o host abaixo NAO existe e nao precisa existir: o KrakenD responde sem chamar ninguem, entao o endpoint nao depende da disponibilidade de nenhum servico. Valores em settings/<env>/app_version.json. minimumSupportedVersion bloqueia o app; latestVersion apenas sugere. Runbook e contrato: app-revenu-ios/docs/contrato-app-version.md",
+  "endpoint": "/v1/app/version",
+  "method": "GET",
+  "output_encoding": "json",
+  "input_query_strings": ["platform", "version"],
+  "extra_config": {
+    "proxy": {
+      "static": {
+        "strategy": "always",
+        "data": {
+          "minimumSupportedVersion": "{{ .app_version.ios_minimum }}",
+          "latestVersion": "{{ .app_version.ios_latest }}",
+          "storeUrl": "{{ .app_version.ios_store_url }}"
+        }
+      }
+    }
+  },
+  "backend": [{
+    "host": ["http://app-version-static.invalid"],
+    "url_pattern": "/"
+  }]
+}
