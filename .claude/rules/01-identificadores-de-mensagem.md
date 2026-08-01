@@ -14,6 +14,34 @@ bloqueio judicial para qualquer sistema da Revenu.
 Reaproveitar um identificador para outra coisa não é escolha de nome: é fazer o
 contrato mentir.
 
+## A premissa, e o que a torna verificável
+
+A regra acima é sobre o identificador. A premissa que ela serve é maior, e está
+no `README.md` do catálogo:
+
+> **Um fato de negócio tem UMA definição, independentemente de quantos módulos o
+> emitem.** (`RN_MSG_004`)
+
+O emissor não entra no identificador — vive no BAH, campo `Fr`. É isso que
+permite uma definição servir a vários módulos em vez de gerar uma por emissor.
+
+**Três camadas sustentam a premissa, e elas não têm a mesma força:**
+
+| camada | quem garante | força |
+|---|---|---|
+| unicidade do **identificador** | um diretório por identificador | inviolável |
+| duas definições com o mesmo **nome** | `RN_MSG_004`, igualdade de string normalizada | heurística — não pega duplicação semântica, e isso é julgamento do SEG |
+| o nome do **evento** | campo `eventos:` + `msgrepo events` | desde 2026-08-01 |
+
+A terceira não existia, e é a que liga o catálogo ao código. `definition.yaml`
+declarava `emissores` e `consumidores` — nomes de MÓDULO — e nada sobre o nome do
+evento; a correspondência vivia só no mapa Go de cada módulo, e todo comando do
+`msgrepo` recebia `--module`. **Nenhum cruzava dois módulos, então nenhum podia
+comparar.**
+
+Ao registrar mensagem, declare `--events` com o nome canônico do fato no código.
+Sem ele o catálogo sabe que a mensagem existe e não sabe que fato ela representa.
+
 ## As duas metades da regra
 
 ### 1. Domínio ISO 20022 nativo — `AAAA.NNN.NNN.NN`
@@ -68,6 +96,19 @@ da ISO e não validava contra ele.
 O defeito era **latente**: nada importava o pacote, então nenhum XML saía. Viraria
 incidente no dia em que alguém ligasse o builder a um adaptador.
 
+**LedgerOS × AccountOS (MS-057 §13).** `account.opening_requested` é canônico no
+`accountos`, onde carrega `acmt.007.001.05`, e canônico no `ledgeros`, onde não
+carrega identificador nenhum e sai em `ledgeros.account`. A absorção do MS-048
+trouxe as mesmas 52 constantes de evento com zero referências a `iso20022`.
+
+**Os dois gates ficaram verdes**, porque cada um olhava um módulo: o `RN_MSG_016`
+confere que o identificador aparece no código do `accountos`, e aparece. Um
+consumidor que assine `revenu.acmt.007` não recebe nada do binário do LedgerOS.
+
+Junto com ele, o espelho: o `wss-gateway` mapeia 24 eventos canônicos em
+`event_mapper.go` e o catálogo não o declara como consumidor. Havia gate para
+consumidor declarado que não consome (`RN_MSG_019`) e nenhum para o contrário.
+
 **AuthorityOS (MS-058 §19).** Transferência de reservas modelada em três lugares,
 duas delas com entidades Go distintas dentro do mesmo módulo, e sem UETR. A
 pergunta "esta transferência já aconteceu?" tinha duas respostas possíveis.
@@ -83,7 +124,17 @@ go run . validate --repo ../../.base/aasc/iso20022
 
 # O código não emite evento fora do catálogo
 go run . drift --module <módulo> --src <caminho> --repo ../../.base/aasc/iso20022
+
+# O MESMO evento em dois módulos — a única varredura cruzada do CLI.
+# Todo comando acima recebe `--module` e olha um só; este lê o modules.yaml
+# e cruza os 16 repositórios.
+go run . events --repo ../../.base/aasc/iso20022
 ```
+
+`events` reporta quatro coisas: **E1** o mesmo evento em dois identificadores ·
+**E2** evento no código de módulo que não é emissor nem consumidor · **E3**
+emissor declarado cujo código não contém a string · **E4** definição com emissor
+e `eventos: []`.
 
 O `MustID` do `revenu-common` derruba o processo no init se o identificador não
 estiver no catálogo. É deliberado: processo que sobe emitindo mensagem fora do
@@ -98,3 +149,5 @@ catálogo é pior que processo que não sobe.
 | Inventar área de 4 letras dentro do espaço da ISO | Área própria declarada em `business-areas.yaml` |
 | Constante de tópico com o texto do tipo de evento | Tópico derivado do identificador |
 | Reusar número de mensagem retirada | Alocar o próximo; retirado não volta |
+| Registrar sem `--events` | Declarar o fato que a mensagem representa — sem isso o catálogo não tem como cruzar com o código |
+| Copiar constantes de evento de outro módulo | Consumir a definição; duas cópias do mesmo fato divergem sem nada acusar |
