@@ -61,11 +61,11 @@ variable "repository_name" {
   type = string
 }
 variable "immutable_tags" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "keep_count" {
-  type = number
+  type    = number
   default = 10
 }
 variable "ci_sa_email" {
@@ -75,7 +75,7 @@ variable "gke_sa_email" {
   type = string
 }
 variable "labels" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 

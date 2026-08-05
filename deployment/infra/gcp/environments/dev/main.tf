@@ -30,33 +30,33 @@ terraform {
 
 # --- VPC ---
 module "vpc" {
-  source      = "../../modules/vpc"
-  project_id  = var.project_id
-  region      = local.region
-  vpc_name    = "gateway-dev-vpc"
-  subnet_cidr = "10.20.0.0/20"
-  pods_cidr   = "10.21.0.0/16"
+  source        = "../../modules/vpc"
+  project_id    = var.project_id
+  region        = local.region
+  vpc_name      = "gateway-dev-vpc"
+  subnet_cidr   = "10.20.0.0/20"
+  pods_cidr     = "10.21.0.0/16"
   services_cidr = "10.22.0.0/20"
 }
 
 # --- GKE ---
 module "gke" {
-  source        = "../../modules/gke"
-  project_id    = var.project_id
-  region        = local.region
-  zone          = "southamerica-east1-a"
-  environment   = local.environment
-  cluster_name  = "gateway-dev-cluster"
-  regional      = false  # zonal for cost savings
-  network_id    = module.vpc.network_id
-  subnet_id     = module.vpc.subnet_id
-  node_count    = 1
-  min_nodes     = 1
-  max_nodes     = 2
-  machine_type  = "e2-medium"
+  source          = "../../modules/gke"
+  project_id      = var.project_id
+  region          = local.region
+  zone            = "southamerica-east1-a"
+  environment     = local.environment
+  cluster_name    = "gateway-dev-cluster"
+  regional        = false # zonal for cost savings
+  network_id      = module.vpc.network_id
+  subnet_id       = module.vpc.subnet_id
+  node_count      = 1
+  min_nodes       = 1
+  max_nodes       = 2
+  machine_type    = "e2-medium"
   release_channel = "REGULAR"
-  binary_auth   = false
-  labels        = local.labels
+  binary_auth     = false
+  labels          = local.labels
 
   master_authorized_cidrs = [
     { cidr = "0.0.0.0/0", name = "all-dev" }

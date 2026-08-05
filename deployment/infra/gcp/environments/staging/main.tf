@@ -30,32 +30,32 @@ terraform {
 
 # --- VPC ---
 module "vpc" {
-  source      = "../../modules/vpc"
-  project_id  = var.project_id
-  region      = local.region
-  vpc_name    = "gateway-staging-vpc"
-  subnet_cidr = "10.20.16.0/20"
-  pods_cidr   = "10.23.0.0/16"
+  source        = "../../modules/vpc"
+  project_id    = var.project_id
+  region        = local.region
+  vpc_name      = "gateway-staging-vpc"
+  subnet_cidr   = "10.20.16.0/20"
+  pods_cidr     = "10.23.0.0/16"
   services_cidr = "10.24.0.0/20"
 }
 
 # --- GKE ---
 module "gke" {
-  source        = "../../modules/gke"
-  project_id    = var.project_id
-  region        = local.region
-  environment   = local.environment
-  cluster_name  = "gateway-staging-cluster"
-  regional      = true  # HA for staging
-  network_id    = module.vpc.network_id
-  subnet_id     = module.vpc.subnet_id
-  node_count    = 2
-  min_nodes     = 2
-  max_nodes     = 4
-  machine_type  = "e2-standard-2"
+  source          = "../../modules/gke"
+  project_id      = var.project_id
+  region          = local.region
+  environment     = local.environment
+  cluster_name    = "gateway-staging-cluster"
+  regional        = true # HA for staging
+  network_id      = module.vpc.network_id
+  subnet_id       = module.vpc.subnet_id
+  node_count      = 2
+  min_nodes       = 2
+  max_nodes       = 4
+  machine_type    = "e2-standard-2"
   release_channel = "REGULAR"
-  binary_auth   = false
-  labels        = local.labels
+  binary_auth     = false
+  labels          = local.labels
 
   master_authorized_cidrs = [
     { cidr = "0.0.0.0/0", name = "github-actions" }
