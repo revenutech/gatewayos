@@ -156,9 +156,9 @@ variable "labels" {
   description = "Common labels for all resources"
   type        = map(string)
   default = {
-    "app"         = "gateway"
-    "managed-by"  = "terraform"
-    "platform"    = "revenu"
-    "iso27001"    = "true"
+    "app"        = "gateway"
+    "managed-by" = "terraform"
+    "platform"   = "revenu"
+    "iso27001"   = "true"
   }
 }

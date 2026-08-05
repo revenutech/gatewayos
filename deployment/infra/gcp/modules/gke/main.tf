@@ -174,7 +174,7 @@ variable "region" {
   type = string
 }
 variable "zone" {
-  type = string
+  type    = string
   default = "southamerica-east1-a"
 }
 variable "environment" {
@@ -184,7 +184,7 @@ variable "cluster_name" {
   type = string
 }
 variable "regional" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "network_id" {
@@ -194,27 +194,27 @@ variable "subnet_id" {
   type = string
 }
 variable "node_count" {
-  type = number
+  type    = number
   default = 1
 }
 variable "min_nodes" {
-  type = number
+  type    = number
   default = 1
 }
 variable "max_nodes" {
-  type = number
+  type    = number
   default = 3
 }
 variable "machine_type" {
-  type = string
+  type    = string
   default = "e2-medium"
 }
 variable "release_channel" {
-  type = string
+  type    = string
   default = "REGULAR"
 }
 variable "binary_auth" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "labels" {
