@@ -11,7 +11,12 @@ services:
       - ./krakend:/etc/krakend
     environment:
       - FC_ENABLE=1
-      - FC_SETTINGS=/etc/krakend/settings
+      # ⚠️ O diretório é POR AMBIENTE, não a raiz de settings/. O krakend.tmpl e os
+      # templates referenciam chave PLANA (`{{ .keycloak.issuer }}`), e o KrakenD nomeia
+      # cada chave pelo nome do arquivo em FC_SETTINGS — sem recursão. Apontando para a
+      # raiz, as chaves viram `develop`/`sandbox`/`production` e o render produz
+      # `"port": <no value>`, que NÃO é JSON: o KrakenD recusa subir. Medido no 2.9.4.
+      - FC_SETTINGS=/etc/krakend/settings/${KRAKEND_ENV:-develop}
       - FC_PARTIALS=/etc/krakend/partials
       - FC_TEMPLATES=/etc/krakend/templates
       - FC_OUT=/etc/krakend/compiled-krakend.json

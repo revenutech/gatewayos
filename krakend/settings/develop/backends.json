@@ -4,6 +4,7 @@
   "paymentos": "http://paymentos:8082",
   "atmos": "http://atmos:8088",
   "identityos": "http://identityos:8091",
+  "keycloak": "http://keycloak-revenu:8080",
   "ledgeros_grpc_transcoder": "http://envoy-grpc-transcoder:8085",
   "onboardos": "http://onboardos:8092",
   "accountos": "http://accountos:8093",

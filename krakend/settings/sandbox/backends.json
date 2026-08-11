@@ -4,6 +4,7 @@
   "paymentos": "http://paymentos.ledgeros-staging.svc.cluster.local:8082",
   "atmos": "http://atmos.ledgeros-staging.svc.cluster.local:8088",
   "identityos": "http://identityos.ledgeros-staging.svc.cluster.local:8091",
+  "keycloak": "http://keycloak-service.keycloak.svc.cluster.local:8080",
   "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
   "onboardos": "http://onboardos.ledgeros-staging.svc.cluster.local:8092",
   "accountos": "http://accountos.ledgeros-staging.svc.cluster.local:8093",
