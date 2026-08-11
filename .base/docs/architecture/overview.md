@@ -26,7 +26,7 @@ The Gateway is the single entry point for all external traffic into the Revenu P
 - Web App (app.revenu.com.br / staging.revenu.com.br)
 - Admin Dashboard
 - API integrations (via API keys)
-- Keycloak IdP (auth.revenu.com.br)
+- Keycloak IdP (auth.revenu.tech)
 
 ## 2. Container View
 

@@ -1,6 +1,6 @@
 {
-  "jwks_url": "https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
-  "issuer": "https://auth.revenu.com.br/realms/ledgeros",
+  "jwks_url": "https://auth.revenu.tech/realms/ledgeros/protocol/openid-connect/certs",
+  "issuer": "https://auth.revenu.tech/realms/ledgeros",
   "audience": "revenu-platform",
   "disable_jwk_security": false
 }
