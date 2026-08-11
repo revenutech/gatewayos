@@ -58,9 +58,9 @@
 
 | Env | JWKS URL |
 |-----|----------|
-| Dev | `https://auth.allenty.io/realms/ledgeros/protocol/openid-connect/certs` |
-| Staging | `https://auth-staging.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs` |
-| Production | `https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs` |
+| Dev | `https://auth-develop.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` |
+| Staging | `https://auth-staging.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` |
+| Production | `https://auth.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` |
 
 **Issuer** follows the same domain pattern: `https://{domain}/realms/ledgeros`
 **Audience:** `revenu-platform` (all environments)
