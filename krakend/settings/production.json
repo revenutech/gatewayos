@@ -1,7 +1,7 @@
 {
   "keycloak": {
-    "jwks_url": "https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
-    "issuer": "https://auth.revenu.com.br/realms/ledgeros",
+    "jwks_url": "https://auth.revenu.tech/realms/ledgeros/protocol/openid-connect/certs",
+    "issuer": "https://auth.revenu.tech/realms/ledgeros",
     "audience": "revenu-platform",
     "disable_jwk_security": false
   },
@@ -25,6 +25,7 @@
     "paymentos": "http://paymentos.ledgeros-production.svc.cluster.local:8082",
     "atmos": "http://atmos.ledgeros-production.svc.cluster.local:8088",
     "identityos": "http://identityos.ledgeros-production.svc.cluster.local:8091",
+    "keycloak": "http://keycloak-service.keycloak.svc.cluster.local:8080",
     "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
     "onboardos": "http://onboardos.ledgeros-production.svc.cluster.local:8092",
     "accountos": "http://accountos.ledgeros-production.svc.cluster.local:8093",

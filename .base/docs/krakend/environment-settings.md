@@ -14,8 +14,8 @@ Comparison of `dev.json`, `staging.json`, and `prod.json` settings files.
 
 | Setting | Dev | Staging | Production |
 |---------|-----|---------|------------|
-| JWKS URL | auth.allenty.io | auth-staging.revenu.com.br | auth.revenu.com.br |
-| Issuer | auth.allenty.io/realms/ledgeros | auth-staging.revenu.com.br/realms/ledgeros | auth.revenu.com.br/realms/ledgeros |
+| JWKS URL | auth-develop.revenu.tech | auth-staging.revenu.tech | auth.revenu.tech |
+| Issuer | auth-develop.revenu.tech/realms/ledgeros | auth-staging.revenu.tech/realms/ledgeros | auth.revenu.tech/realms/ledgeros |
 | Audience | revenu-platform | revenu-platform | revenu-platform |
 
 ## OAuth2

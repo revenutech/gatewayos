@@ -14,9 +14,9 @@
 
 | Environment | JWKS URL | Issuer |
 |-------------|----------|--------|
-| Dev | `https://auth.allenty.io/realms/ledgeros/protocol/openid-connect/certs` | `https://auth.allenty.io/realms/ledgeros` |
-| Staging | `https://auth-staging.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs` | `https://auth-staging.revenu.com.br/realms/ledgeros` |
-| Production | `https://auth.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs` | `https://auth.revenu.com.br/realms/ledgeros` |
+| Dev | `https://auth-develop.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` | `https://auth-develop.revenu.tech/realms/ledgeros` |
+| Staging | `https://auth-staging.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` | `https://auth-staging.revenu.tech/realms/ledgeros` |
+| Production | `https://auth.revenu.tech/realms/ledgeros/protocol/openid-connect/certs` | `https://auth.revenu.tech/realms/ledgeros` |
 
 ## Claims Propagation
 
