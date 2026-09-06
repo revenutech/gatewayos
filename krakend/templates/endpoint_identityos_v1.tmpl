@@ -36,15 +36,84 @@
   `/v1/identityos/*` e alias LEGADO com `sunset=2026-10-19`, anunciado pelo
   proprio servico no boot; nao se constroi rota nova sobre ele.
 */}}
+{{/*
+  ⚠️ PUBLICA, e sem ela o Authorization Code nao comeca. O identityos a
+  registra FORA do grupo protegido, com o motivo escrito: "the browser hits
+  it with no session by definition, and the only effect is a 302 to
+  Keycloak. No identity to verify."
+
+  Sem bloco proprio ela caia em `/identityos/v1/iam/{resource}/{id}` GET,
+  que valida JWT — exigindo sessao de quem vem justamente busca-la.
+*/}}
 {
-  "endpoint": "/identityos/v1/iam/auth/{path}",
+  "endpoint": "/identityos/v1/iam/auth/authorize",
+  "method": "GET",
+  "input_headers": ["X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/authorize",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/auth/change-password",
   "method": "POST",
+  "_comment": "PROTEGIDA — o identityos a registra em `authProtected`",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
   },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/change-password",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/*
+  🔴 O GATEWAY EXIGIA UM TOKEN PARA CONSEGUIR UM TOKEN.
+
+  Este bloco carregava `jwt_validator.tmpl`, e ele cobre `{path}` — ou seja,
+  `login`, `register`, `refresh`, `reset-password`, `verify-email`,
+  `code-exchange`. Toda porta de ENTRADA da plataforma estava atras do
+  proprio token que ela existe para emitir. Medido em 2026-09-06:
+
+    POST /identityos/v1/iam/auth/login           sem token 401   com token 400
+    POST /identityos/v1/iam/auth/register        sem token 401   com token 400
+    POST /identityos/v1/iam/auth/reset-password  sem token 401   com token 400
+    POST /identityos/v1/iam/auth/otp/request     sem token 401   com token 400
+
+  O `400` e o identityos respondendo a um corpo vazio: com token a rota
+  chega. O `401` e o KrakenD, antes do backend.
+
+  E e por aqui que passa o `ensureIdentity`. Com a porta fechada, nenhum
+  usuario da malha vira identidade no identityos, e toda rota `/me/*`
+  responde 404 (RI-346).
+
+  ⚠️ QUEM DECIDE O QUE E PUBLICO E O IDENTITYOS, nao este arquivo. Ele
+  declara em `modules/shared/routes/routes.go`: o grupo `auth` roda SEM
+  middleware (login, register, verify-email, refresh, logout,
+  reset-password, reset-password/confirm, revoke, otp/request, otp/verify,
+  code-exchange) e o grupo `authProtected` roda COM (change-password,
+  otp/{id}/status). Este bloco espelha aquela declaracao — e por isso o
+  `change-password` ganhou bloco PROPRIO logo acima, senao ele cairia neste
+  `{path}` e ficaria aberto.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/auth/{path}",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/iam/auth/{path}",
@@ -340,14 +409,12 @@
   }]
 },
 {
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
   "endpoint": "/identityos/v1/iam/auth/otp/request",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
-  "extra_config": {
-    {{ template "jwt_validator.tmpl" . }}
-  },
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/iam/auth/otp/request",
@@ -358,14 +425,12 @@
   }]
 },
 {
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
   "endpoint": "/identityos/v1/iam/auth/otp/verify",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
-  "extra_config": {
-    {{ template "jwt_validator.tmpl" . }}
-  },
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/iam/auth/otp/verify",
@@ -376,14 +441,12 @@
   }]
 },
 {
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
   "endpoint": "/identityos/v1/iam/auth/reset-password/confirm",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
-  "extra_config": {
-    {{ template "jwt_validator.tmpl" . }}
-  },
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/iam/auth/reset-password/confirm",
