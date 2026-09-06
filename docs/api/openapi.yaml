@@ -477,6 +477,86 @@ paths:
           description: Rate limit exceeded
         '503':
           description: Service unavailable — circuit breaker open
+  /identityos/health:
+    get:
+      tags:
+      - IdentityOS
+      summary: GET /identityos/health
+      operationId: get_identityos_health
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+  /accountos/health:
+    get:
+      tags:
+      - AccountOS
+      summary: GET /accountos/health
+      operationId: get_accountos_health
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+  /ledgeros/health:
+    get:
+      tags:
+      - LedgerOS
+      summary: GET /ledgeros/health
+      operationId: get_ledgeros_health
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+  /wssgateway/health:
+    get:
+      tags:
+      - General
+      summary: GET /wssgateway/health
+      operationId: get_wssgateway_health
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
   /identityos/v1/iam/auth/{path}:
     post:
       tags:
