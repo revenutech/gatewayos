@@ -1497,6 +1497,70 @@
         }
       }
     },
+    "/identityos/v1/iam/webhooks/deliveries/{id}/requeue": {
+      "post": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "POST /identityos/v1/iam/webhooks/deliveries/{id}/requeue",
+        "operationId": "post_identityos_v1_iam_webhooks_deliveries_id_requeue",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
     "/identityos/v1/iam/auth/otp/request": {
       "post": {
         "tags": [
