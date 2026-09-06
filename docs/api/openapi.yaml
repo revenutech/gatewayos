@@ -504,6 +504,12 @@ paths:
         schema:
           type: string
         description: Resource path
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -569,6 +575,12 @@ paths:
         schema:
           type: string
         description: Resource resource
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -646,6 +658,12 @@ paths:
         schema:
           type: string
         description: Resource id
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -684,6 +702,12 @@ paths:
         schema:
           type: string
         description: Resource id
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
   /identityos/v1/iam/{resource}/{id}/{action}:
     post:
       tags:
@@ -723,6 +747,12 @@ paths:
         schema:
           type: string
         description: Resource action
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -793,6 +823,13 @@ paths:
           description: Rate limit exceeded
         '503':
           description: Service unavailable — circuit breaker open
+      parameters:
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -819,6 +856,13 @@ paths:
           description: Rate limit exceeded
         '503':
           description: Service unavailable — circuit breaker open
+      parameters:
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -845,6 +889,13 @@ paths:
           description: Rate limit exceeded
         '503':
           description: Service unavailable — circuit breaker open
+      parameters:
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -878,6 +929,12 @@ paths:
         schema:
           type: string
         description: Resource id
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -911,6 +968,12 @@ paths:
         schema:
           type: string
         description: Resource id
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -950,6 +1013,12 @@ paths:
         schema:
           type: string
         description: Resource sid
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
   /identityos/v1/iam/tenants/{id}/members/invites:
     post:
       tags:
@@ -977,6 +1046,12 @@ paths:
         schema:
           type: string
         description: Resource id
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1016,6 +1091,12 @@ paths:
         schema:
           type: string
         description: Resource slug
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1055,6 +1136,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1093,6 +1180,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1131,6 +1224,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1169,6 +1268,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
   /identityos/v1/iam/tenants/{id}/members/{identity}/role:
     put:
       tags:
@@ -1202,6 +1307,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
@@ -1241,6 +1352,12 @@ paths:
         schema:
           type: string
         description: Resource identity
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Query parameters (passthrough)
       requestBody:
         required: true
         content:
