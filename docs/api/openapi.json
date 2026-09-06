@@ -834,13 +834,13 @@
         }
       }
     },
-    "/identityos/v1/users/{path}": {
+    "/identityos/v1/{resource}": {
       "get": {
         "tags": [
           "IdentityOS"
         ],
-        "summary": "GET /identityos/v1/users/{path}",
-        "operationId": "get_identityos_v1_users_path",
+        "summary": "GET /identityos/v1/{resource}",
+        "operationId": "get_identityos_v1_resource",
         "security": [
           {
             "BearerAuth": []
@@ -868,16 +868,397 @@
         },
         "parameters": [
           {
-            "name": "path",
+            "name": "resource",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             },
-            "description": "Resource path"
+            "description": "Resource resource"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "POST /identityos/v1/{resource}",
+        "operationId": "post_identityos_v1_resource",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
           }
         ],
-        "description": "Required roles: ledger-admin"
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/identityos/v1/{resource}/{id}": {
+      "get": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "GET /identityos/v1/{resource}/{id}",
+        "operationId": "get_identityos_v1_resource_id",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "PATCH /identityos/v1/{resource}/{id}",
+        "operationId": "patch_identityos_v1_resource_id",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "DELETE /identityos/v1/{resource}/{id}",
+        "operationId": "delete_identityos_v1_resource_id",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          }
+        ]
+      }
+    },
+    "/identityos/v1/{resource}/{id}/{action}": {
+      "post": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "POST /identityos/v1/{resource}/{id}/{action}",
+        "operationId": "post_identityos_v1_resource_id_action",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource action"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "GET /identityos/v1/{resource}/{id}/{action}",
+        "operationId": "get_identityos_v1_resource_id_action",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource resource"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource id"
+          },
+          {
+            "name": "action",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource action"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ]
       }
     },
     "/auth/realms/ledgeros/.well-known/openid-configuration": {
@@ -15082,7 +15463,7 @@
             "description": "Service unavailable \u2014 circuit breaker open"
           }
         },
-        "description": "Required roles: ledger-viewer, ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-viewer, ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/temenos/order/payment-orders": {
@@ -15127,7 +15508,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/temenos/order/paymentOrders": {
@@ -15172,7 +15553,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/temenos/accounts/debit-arrangement": {
@@ -15217,7 +15598,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/temenos/accounts/credit-arrangement": {
@@ -15262,7 +15643,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/regulatory/ccs/transact-snapshot": {
@@ -15307,7 +15688,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/regulatory/ccs/merge": {
@@ -15352,7 +15733,7 @@
             }
           }
         },
-        "description": "Required roles: ledger-operator, ledger-admin, temenos-client"
+        "description": "Required roles: ledger-operator, ledger-admin"
       }
     },
     "/paymentos/v1/pix/{path}": {
