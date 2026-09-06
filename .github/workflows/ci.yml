@@ -13,13 +13,75 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check KrakenD config
+      # 🔴 ESTE GATE APROVAVA CONFIG QUE O KRAKEND RECUSA.
+      #
+      # Ele compilava e fazia `json.load(...)`: verificava que a saida era JSON
+      # VALIDO, nunca que o KrakenD a aceita. E `"host": ["<no value>"]` — que e
+      # o que um template rende quando falta uma chave nas settings — e JSON
+      # perfeitamente valido. Os TRES perfis estavam quebrados
+      # (`host <no value> not valid: invalid host`) e o CI passava verde.
+      #
+      # Alem disso, `sandbox` nunca era compilado: so `develop` e `production`.
+      #
+      # `krakend check` e o unico gate que vale, porque e o mesmo binario que
+      # roda em producao. Rodamos nos TRES perfis, e em ambas as formas de
+      # settings (diretorio para o runtime, flat para o compile-config.sh).
+      - name: Check KrakenD config (krakend check, os 3 perfis)
         run: |
+          set -euo pipefail
+          KRAKEND_IMAGE=krakend:2.9.4
+          falhas=0
+          for env in develop sandbox production; do
+            echo "::group::krakend check — $env"
+            if docker run --rm \
+                 -v "$PWD/krakend:/etc/krakend:ro" \
+                 -e FC_ENABLE=1 \
+                 -e FC_SETTINGS="/etc/krakend/settings/$env" \
+                 -e FC_PARTIALS=/etc/krakend/partials \
+                 -e FC_TEMPLATES=/etc/krakend/templates \
+                 -e FC_OUT=/tmp/compiled.json \
+                 "$KRAKEND_IMAGE" check -c /etc/krakend/krakend.tmpl; then
+              echo "✅ $env"
+            else
+              echo "🔴 $env NAO compila"
+              falhas=$((falhas+1))
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$falhas" -gt 0 ]; then
+            echo "🔴 $falhas perfil(is) reprovado(s) em krakend check"
+            exit 1
+          fi
+
+      # A forma flat (`settings/<env>.json`) e a que o `compile-config.sh` usa.
+      # Ela e uma SEGUNDA fonte para as mesmas chaves, e as duas divergem sem
+      # que nada avise — por isso o gate seguinte compara.
+      - name: Compile config (forma flat) e comparar com a forma diretorio
+        run: |
+          set -euo pipefail
           pip install -q jinja2 2>/dev/null || true
-          bash tools/compile-config.sh krakend develop /tmp/krakend-compiled.json
-          bash tools/compile-config.sh krakend production /tmp/krakend-prod.json
-          echo "Compiled config is valid JSON"
-          python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('JSON OK')"
+          for env in develop sandbox production; do
+            bash tools/compile-config.sh krakend "$env" "/tmp/flat-$env.json"
+            python3 -c "import json; json.load(open('/tmp/flat-$env.json'))"
+            python3 - "$env" <<'EOF'
+          import json, sys
+          env = sys.argv[1]
+          flat = json.load(open(f'krakend/settings/{env}.json'))
+          import os
+          dir_keys = {}
+          for f in os.listdir(f'krakend/settings/{env}'):
+              if f.endswith('.json'):
+                  dir_keys[f[:-5]] = json.load(open(f'krakend/settings/{env}/{f}'))
+          faltando = [k for k in dir_keys if k not in flat]
+          sobrando = [k for k in flat if k not in dir_keys]
+          if faltando or sobrando:
+              print(f'🔴 {env}: divergencia entre as duas formas de settings')
+              if faltando: print('   so no diretorio:', faltando)
+              if sobrando: print('   so no flat     :', sobrando)
+              sys.exit(1)
+          print(f'✅ {env}: as duas formas declaram as mesmas chaves')
+          EOF
+          done
 
       - name: Lint JSON configs
         run: |

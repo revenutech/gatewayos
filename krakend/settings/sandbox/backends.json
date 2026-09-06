@@ -7,5 +7,6 @@
   "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
   "onboardos": "http://onboardos.ledgeros-staging.svc.cluster.local:8092",
   "accountos": "http://accountos.ledgeros-staging.svc.cluster.local:8093",
-  "financeos": "http://financeos.ledgeros-staging.svc.cluster.local:8095"
+  "financeos": "http://financeos.ledgeros-staging.svc.cluster.local:8095",
+  "keycloak": "https://auth-staging.revenu.com.br"
 }

@@ -2,5 +2,6 @@
   "jwks_url": "https://auth-staging.revenu.com.br/realms/ledgeros/protocol/openid-connect/certs",
   "issuer": "https://auth-staging.revenu.com.br/realms/ledgeros",
   "audience": "revenu-platform",
-  "disable_jwk_security": false
+  "disable_jwk_security": false,
+  "keycloak_base_path": ""
 }
