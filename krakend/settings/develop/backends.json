@@ -7,5 +7,6 @@
   "ledgeros_grpc_transcoder": "http://envoy-grpc-transcoder:8085",
   "onboardos": "http://onboardos:8092",
   "accountos": "http://accountos:8093",
-  "financeos": "http://financeos:8095"
+  "financeos": "http://financeos:8095",
+  "keycloak": "https://auth.allenty.io"
 }
