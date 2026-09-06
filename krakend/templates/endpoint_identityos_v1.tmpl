@@ -16,12 +16,28 @@
   identidade por header em vez de token e o "estado A" que a D1 do ADR-006
   REJEITOU explicitamente.
 
+  🔴 O CAMINHO PUBLICO PASSOU A ESPELHAR O DO BACKEND em 2026-09-06.
+
+  Era `/identityos/v1/{resource}` -> `/v1/iam/{resource}`: o gateway APAGAVA o
+  segmento `iam`. Isso impedia o sandbox de falar com o gateway sem reescrever
+  as 77 chamadas dele, porque o cliente do front so CONCATENA base + caminho, e
+  nenhuma base transforma `/v1/iam/roles` em `/identityos/v1/roles`.
+
+  Agora e `/identityos/v1/iam/{resource}` -> `/v1/iam/{resource}`: o prefixo de
+  MODULO continua (a convencao do gateway, com /paymentos, /ledgeros, /onboardos)
+  e o resto do caminho e o mesmo que o modulo serve. Com
+  `IDENTITYOS_BASE_URL=<gateway>/identityos` o front funciona sem tocar em uma
+  chamada.
+
+  Nenhum consumidor externo dependia do caminho antigo — conferido em todos os
+  repositorios.
+
   O prefixo real do modulo e `/v1/iam/*` — 19 grupos de rota. O
   `/v1/identityos/*` e alias LEGADO com `sunset=2026-10-19`, anunciado pelo
   proprio servico no boot; nao se constroi rota nova sobre ele.
 */}}
 {
-  "endpoint": "/identityos/v1/auth/{path}",
+  "endpoint": "/identityos/v1/iam/auth/{path}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -41,7 +57,7 @@
      policies, mfa, verificacoes, api-keys, documents, consents, invites,
      clients, tenants, audit, compliance — um segmento. */}}
 {
-  "endpoint": "/identityos/v1/{resource}",
+  "endpoint": "/identityos/v1/iam/{resource}",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "input_query_strings": ["*"],
@@ -59,7 +75,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/{resource}",
+  "endpoint": "/identityos/v1/iam/{resource}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -77,7 +93,7 @@
 },
 {{/* Recurso individual. */}}
 {
-  "endpoint": "/identityos/v1/{resource}/{id}",
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "input_query_strings": ["*"],
@@ -95,7 +111,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/{resource}/{id}",
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
   "method": "PATCH",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -112,7 +128,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/{resource}/{id}",
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -131,7 +147,7 @@
 {{/* Acao sobre recurso: /identities/{id}/suspend, /sessions/{id}/step-up,
      /documents/{id}/transition, /me/notifications/{id}/read. */}}
 {
-  "endpoint": "/identityos/v1/{resource}/{id}/{action}",
+  "endpoint": "/identityos/v1/iam/{resource}/{id}/{action}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -148,7 +164,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/{resource}/{id}/{action}",
+  "endpoint": "/identityos/v1/iam/{resource}/{id}/{action}",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "input_query_strings": ["*"],
@@ -193,7 +209,7 @@
   o dump do log nao listava a rota. Varredura de log erra; efeito nao.
 */}}
 {
-  "endpoint": "/identityos/v1/auth/otp/request",
+  "endpoint": "/identityos/v1/iam/auth/otp/request",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -210,7 +226,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/auth/otp/verify",
+  "endpoint": "/identityos/v1/iam/auth/otp/verify",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -227,7 +243,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/auth/reset-password/confirm",
+  "endpoint": "/identityos/v1/iam/auth/reset-password/confirm",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -244,7 +260,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/identities/{id}/mfa/enroll",
+  "endpoint": "/identityos/v1/iam/identities/{id}/mfa/enroll",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -261,7 +277,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/identities/{id}/mfa/revoke",
+  "endpoint": "/identityos/v1/iam/identities/{id}/mfa/revoke",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -278,7 +294,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/identities/{id}/sessions/{sid}",
+  "endpoint": "/identityos/v1/iam/identities/{id}/sessions/{sid}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -295,7 +311,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/invites",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/invites",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -312,7 +328,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/products/{slug}",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/products/{slug}",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -329,7 +345,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -346,7 +362,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -363,7 +379,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "PATCH",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -380,7 +396,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "no-op",
@@ -397,7 +413,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}/role",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/role",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",
@@ -414,7 +430,7 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/tenants/{id}/members/{identity}/invite/resend",
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/invite/resend",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "no-op",

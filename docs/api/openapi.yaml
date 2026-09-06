@@ -477,12 +477,12 @@ paths:
           description: Rate limit exceeded
         '503':
           description: Service unavailable — circuit breaker open
-  /identityos/v1/auth/{path}:
+  /identityos/v1/iam/auth/{path}:
     post:
       tags:
       - IdentityOS
-      summary: POST /identityos/v1/auth/{path}
-      operationId: post_identityos_v1_auth_path
+      summary: POST /identityos/v1/iam/auth/{path}
+      operationId: post_identityos_v1_iam_auth_path
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -510,12 +510,12 @@ paths:
           application/json:
             schema:
               type: object
-  /identityos/v1/{resource}:
+  /identityos/v1/iam/{resource}:
     get:
       tags:
       - IdentityOS
-      summary: GET /identityos/v1/{resource}
-      operationId: get_identityos_v1_resource
+      summary: GET /identityos/v1/iam/{resource}
+      operationId: get_identityos_v1_iam_resource
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -546,8 +546,8 @@ paths:
     post:
       tags:
       - IdentityOS
-      summary: POST /identityos/v1/{resource}
-      operationId: post_identityos_v1_resource
+      summary: POST /identityos/v1/iam/{resource}
+      operationId: post_identityos_v1_iam_resource
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -575,12 +575,12 @@ paths:
           application/json:
             schema:
               type: object
-  /identityos/v1/{resource}/{id}:
+  /identityos/v1/iam/{resource}/{id}:
     get:
       tags:
       - IdentityOS
-      summary: GET /identityos/v1/{resource}/{id}
-      operationId: get_identityos_v1_resource_id
+      summary: GET /identityos/v1/iam/{resource}/{id}
+      operationId: get_identityos_v1_iam_resource_id
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -617,8 +617,8 @@ paths:
     patch:
       tags:
       - IdentityOS
-      summary: PATCH /identityos/v1/{resource}/{id}
-      operationId: patch_identityos_v1_resource_id
+      summary: PATCH /identityos/v1/iam/{resource}/{id}
+      operationId: patch_identityos_v1_iam_resource_id
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -655,8 +655,8 @@ paths:
     delete:
       tags:
       - IdentityOS
-      summary: DELETE /identityos/v1/{resource}/{id}
-      operationId: delete_identityos_v1_resource_id
+      summary: DELETE /identityos/v1/iam/{resource}/{id}
+      operationId: delete_identityos_v1_iam_resource_id
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -684,12 +684,12 @@ paths:
         schema:
           type: string
         description: Resource id
-  /identityos/v1/{resource}/{id}/{action}:
+  /identityos/v1/iam/{resource}/{id}/{action}:
     post:
       tags:
       - IdentityOS
-      summary: POST /identityos/v1/{resource}/{id}/{action}
-      operationId: post_identityos_v1_resource_id_action
+      summary: POST /identityos/v1/iam/{resource}/{id}/{action}
+      operationId: post_identityos_v1_iam_resource_id_action
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -732,8 +732,8 @@ paths:
     get:
       tags:
       - IdentityOS
-      summary: GET /identityos/v1/{resource}/{id}/{action}
-      operationId: get_identityos_v1_resource_id_action
+      summary: GET /identityos/v1/iam/{resource}/{id}/{action}
+      operationId: get_identityos_v1_iam_resource_id_action
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -773,6 +773,480 @@ paths:
         schema:
           type: string
         description: Query parameters (passthrough)
+  /identityos/v1/iam/auth/otp/request:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/auth/otp/request
+      operationId: post_identityos_v1_iam_auth_otp_request
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/auth/otp/verify:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/auth/otp/verify
+      operationId: post_identityos_v1_iam_auth_otp_verify
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/auth/reset-password/confirm:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/auth/reset-password/confirm
+      operationId: post_identityos_v1_iam_auth_reset-password_confirm
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/identities/{id}/mfa/enroll:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/identities/{id}/mfa/enroll
+      operationId: post_identityos_v1_iam_identities_id_mfa_enroll
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/identities/{id}/mfa/revoke:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/identities/{id}/mfa/revoke
+      operationId: post_identityos_v1_iam_identities_id_mfa_revoke
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/identities/{id}/sessions/{sid}:
+    delete:
+      tags:
+      - IdentityOS
+      summary: DELETE /identityos/v1/iam/identities/{id}/sessions/{sid}
+      operationId: delete_identityos_v1_iam_identities_id_sessions_sid
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: sid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource sid
+  /identityos/v1/iam/tenants/{id}/members/invites:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/tenants/{id}/members/invites
+      operationId: post_identityos_v1_iam_tenants_id_members_invites
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/tenants/{id}/products/{slug}:
+    put:
+      tags:
+      - IdentityOS
+      summary: PUT /identityos/v1/iam/tenants/{id}/products/{slug}
+      operationId: put_identityos_v1_iam_tenants_id_products_slug
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource slug
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/tenants/{id}/members/{identity}:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/tenants/{id}/members/{identity}
+      operationId: post_identityos_v1_iam_tenants_id_members_identity
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      tags:
+      - IdentityOS
+      summary: PUT /identityos/v1/iam/tenants/{id}/members/{identity}
+      operationId: put_identityos_v1_iam_tenants_id_members_identity
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    patch:
+      tags:
+      - IdentityOS
+      summary: PATCH /identityos/v1/iam/tenants/{id}/members/{identity}
+      operationId: patch_identityos_v1_iam_tenants_id_members_identity
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      tags:
+      - IdentityOS
+      summary: DELETE /identityos/v1/iam/tenants/{id}/members/{identity}
+      operationId: delete_identityos_v1_iam_tenants_id_members_identity
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+  /identityos/v1/iam/tenants/{id}/members/{identity}/role:
+    put:
+      tags:
+      - IdentityOS
+      summary: PUT /identityos/v1/iam/tenants/{id}/members/{identity}/role
+      operationId: put_identityos_v1_iam_tenants_id_members_identity_role
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+  /identityos/v1/iam/tenants/{id}/members/{identity}/invite/resend:
+    post:
+      tags:
+      - IdentityOS
+      summary: POST /identityos/v1/iam/tenants/{id}/members/{identity}/invite/resend
+      operationId: post_identityos_v1_iam_tenants_id_members_identity_invite_resend
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '401':
+          description: Unauthorized — invalid or missing token
+        '403':
+          description: Forbidden — insufficient roles
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable — circuit breaker open
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource id
+      - name: identity
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Resource identity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
   /auth/realms/ledgeros/.well-known/openid-configuration:
     get:
       tags:
