@@ -163,6 +163,28 @@
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
+  {{/*
+    ⚠️ AQUI NAO HA LIMITADOR, e a ausencia e DECLARADA — nao esquecimento.
+    Tentei por um, em 2026-09-06, e tirei depois de medir:
+
+      client_max_rate: 20/min .... `401` na primeira e `429` na SEGUNDA
+                                   tentativa. Usuario que erra a senha duas
+                                   vezes seguidas leva 429. Apertado demais
+                                   para uma tela de login.
+      client_max_rate: 0 ......... so o teto global (`max_rate`). A 10 req/s
+                                   de teto e ~10 req/s de sonda, recarga do
+                                   balde e balde-por-cliente ficam
+                                   INDISTINGUIVEIS: nao consegui provar que
+                                   o teto segurava.
+
+    E a `strategy: "ip"` do KrakenD tambem le `X-Forwarded-For`, que o cliente
+    escolhe — o mesmo furo do limitador do identityos (RI-377). Um limitador
+    por IP nesta fronteira nao protege contra quem forja o cabecalho.
+
+    Nao deixei um controle que eu nao consigo medir. O furo esta registrado no
+    plano; fecha-lo pede o gateway REESCREVER o `X-Forwarded-For` em vez de
+    repassa-lo, e isso e decisao de quem opera a fronteira.
+  */}}
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
     "url_pattern": "/v1/iam/auth/{path}",
