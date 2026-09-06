@@ -17,7 +17,35 @@
       "format": "logstash"
     },
     "router": {
-      "return_error_msg": {{ .service.return_error_msg }}
+      "return_error_msg": {{ .service.return_error_msg }},
+      {{/*
+        🔴 O GATEWAY DERRUBAVA A CONEXAO EM VEZ DE RESPONDER 404.
+
+        Medido em 2026-09-06: `POST /identityos/v1/iam/policies/evaluate` —
+        caminho nao declarado — nao dava 404. Dava **resposta vazia**, e o
+        cliente via `fetch failed`. O log tinha o motivo:
+
+            http: panic serving ...: invalid node type
+            gin.(*node).findCaseInsensitivePathRec  tree.go:862
+            gin.redirectFixedPath                   gin.go:691
+
+        `redirectFixedPath` so e alcancado quando NENHUMA rota casou: o gin
+        tenta achar o caminho ignorando maiusculas antes de desistir, e a
+        arvore de rotas deste gateway o faz entrar num no que ele nao sabe
+        tratar (gin 1.9.1). O `net/http` recupera o panico por requisicao —
+        o processo sobrevive —, mas a conexao morre sem resposta.
+
+        **Erro de rota virava falha de rede.** E a diferenca importa: um 404
+        manda conferir a rota; `fetch failed` manda conferir container, DNS e
+        porta. A investigacao comeca no lugar errado, e o log do gateway e o
+        unico lugar onde a causa aparece.
+
+        Desligar a correcao de caminho tira o gin daquele ramo. O que se perde
+        e o redirecionamento de `/Identityos/...` para `/identityos/...`, que
+        um gateway de API nao deve fazer de qualquer forma: caminho e
+        sensivel a caixa, e adivinhar o que o cliente quis dizer esconde erro.
+      */}}
+      "disable_redirect_fixed_path": true
     }
   },
   "endpoints": [

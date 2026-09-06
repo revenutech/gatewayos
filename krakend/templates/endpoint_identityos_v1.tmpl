@@ -200,19 +200,59 @@
   LISTA DE PERMISSOES, entao cada rota e declarada, com metodo, e paga o preco de
   repetir o validador.
 
-  ⚠️ DUAS das rotas que o sandbox chama NAO foram declaradas de proposito:
+  ⚠️ QUATRO das rotas que o sandbox chama NAO foram declaradas de proposito:
 
       POST  /v1/iam/me/notification-channels/{id}/test   -> backend 404
+      PATCH /v1/iam/me/notification-channels/{id}        -> backend 404
       PATCH /v1/iam/me/notifications/{id}/read           -> backend 404
+      PATCH /v1/iam/me/notifications/read-all            -> backend 404
 
-  Elas nao existem no identityos (o front as chama e engole o 404). Declarar
-  seria recriar o RI-123 — rota exposta que nao e alcancavel —, que e o defeito
-  que esta serie consertou neste mesmo arquivo. Quando o backend as servir, elas
-  entram aqui.
+  Eram DUAS quando este comentario foi escrito. A conferencia por METODO+
+  CAMINHO (`tools/check-cobertura-identityos.py`) achou as outras duas — a
+  varredura anterior comparava so o caminho, e `PATCH` num caminho que so tem
+  `GET` declarado passava por coberto.
+
+  Nenhuma das quatro existe no identityos: `modules/shared/routes/routes.go`
+  registra apenas `GET`/`PATCH /me/notifications-prefs`. O front as chama e
+  engole o 404. Declarar seria recriar o RI-123 — rota exposta que nao e
+  alcancavel —, que e o defeito que esta serie consertou neste mesmo arquivo.
+  Quando o backend as servir, elas entram aqui.
 
   ⚠️ E o metodo importa: a sonda mostrou `403` (rota existe, permissao nega) onde
   o dump do log nao listava a rota. Varredura de log erra; efeito nao.
 */}}
+{{/*
+  🔴 `POST /policies/evaluate` — a rota que o mapa de cobertura perdeu.
+
+  Ela tem DOIS segmentos apos `/v1/iam/`, entao casava por FORMA com o padrao
+  `{resource}/{id}` — que declara `GET`, `PATCH` e `DELETE`, e nao `POST`. O
+  mapa comparava caminho e nao metodo, e por isso a deu por coberta.
+
+  O efeito nao era um 404: era o panico do gin descrito no `krakend.tmpl`,
+  com a conexao morrendo sem resposta. `POST` numa profundidade sem bloco
+  `POST` e exatamente a entrada daquele ramo.
+
+  E a rota EXISTE no backend — `routes.go:237`, `policiesGrp.POST("/evaluate")`.
+  Sem ela o botao "Simular" da tela de Politicas nao tem como responder.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/policies/evaluate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/policies/evaluate",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
 {
   "endpoint": "/identityos/v1/iam/auth/otp/request",
   "method": "POST",
