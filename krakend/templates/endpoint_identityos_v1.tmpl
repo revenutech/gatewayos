@@ -60,6 +60,55 @@
     }
   }]
 },
+{{/*
+  🔴 A SUPERFICIE ADMINISTRATIVA NAO EXISTIA NO GATEWAY, e o que existia era o
+  metodo errado. Medido em 2026-09-06:
+
+    POST /identityos/v1/iam/admin/tenants   405   <- o identityos SERVE esta
+    GET  /identityos/v1/iam/admin/tenants   401   <- o identityos NAO serve
+
+  O `POST` nao estava declarado; o `GET` caía no `/{resource}/{id}` com
+  `resource=admin`, `id=tenants`, e virava rota que PARECE real — valida JWT,
+  responde 401 sem token, e do outro lado nao ha handler nenhum (direto no
+  identityos: 404). É o RI-241 outra vez, agora fabricando uma rota inteira.
+
+  ⚠️ E o `check-rota-backend.py` nao acusa, por limitacao DECLARADA dele:
+  "parametro escolhe O QUE, nao QUAL" — `{resource}/{id}` é exatamente isso, e
+  o gate pula. O defeito morava dentro do ponto cego que o proprio gate anuncia.
+
+  ⚠️ SOBRE A SEGUNDA VIA (TI13.4.6). O `/admin/*` do identityos NAO usa o
+  `protectedMiddleware`: ele é guardado pelo `AdminGuard`, que aceita
+  `super_admin` por JWT **ou** chave `ak_live_…` com escopo. Aqui o
+  `jwt_validator` fica, e a consequencia é explicita: **a chave de API nao
+  atravessa esta fronteira** — ela nao é JWT, o validador recusa, e a via de
+  chave existe apenas contra o identityos direto.
+
+  Isso responde "em qual fronteira ela é aceita", que era a pergunta. NAO
+  responde "ela sobrevive?" (TI13.4.1) — essa é decisao, nao medicao.
+
+  O PAPEL nao é conferido aqui de proposito: o `AdminGuard` confere
+  `super_admin`, emite `ADMIN_ACCESS_GRANTED`/`DENIED` com `reason_code` e
+  incrementa o contador por superficie. O gateway nao audita nada disso;
+  duplicar a regra aqui só criaria um segundo lugar para ela divergir.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/admin/tenants",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/admin/tenants",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
 {
   "endpoint": "/identityos/v1/iam/auth/change-password",
   "method": "POST",
