@@ -273,6 +273,36 @@
   `{sent: true}` mesmo assim. Agora ela existe: so o canal de e-mail entrega,
   e os outros tres devolvem `501` dizendo por que nao.
 */}}
+{{/*
+  Diagnostico de OTP. QUATRO segmentos apos `/v1/iam/` —
+  `auth/otp/{id}/status` —, fundo demais para os padroes com parametro.
+
+  🔴 A consulta existia no identityos, com teste, e com ZERO chamadores. O
+  comentario dela trazia a pergunta que motivou escreve-la — "por que o codigo
+  deste usuario nao funciona?" — e a resposta so vinha lendo o banco a mao.
+
+  ⚠️ O `/v1/iam/identities/{id}/reset-tokens`, o irmao dela, tem TRES segmentos
+  e ja casa com `{resource}/{id}/{action}` no GET. So esta precisa de
+  declaracao propria.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/auth/otp/{id}/status",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/otp/{id}/status",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
 {
   "endpoint": "/identityos/v1/iam/me/notification-channels/{kind}/test",
   "method": "POST",
