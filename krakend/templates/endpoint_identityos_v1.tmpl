@@ -40,6 +40,7 @@
   "endpoint": "/identityos/v1/iam/auth/{path}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -78,6 +79,7 @@
   "endpoint": "/identityos/v1/iam/{resource}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -114,6 +116,7 @@
   "endpoint": "/identityos/v1/iam/{resource}/{id}",
   "method": "PATCH",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -131,6 +134,7 @@
   "endpoint": "/identityos/v1/iam/{resource}/{id}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -150,6 +154,7 @@
   "endpoint": "/identityos/v1/iam/{resource}/{id}/{action}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -212,6 +217,7 @@
   "endpoint": "/identityos/v1/iam/auth/otp/request",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -229,6 +235,7 @@
   "endpoint": "/identityos/v1/iam/auth/otp/verify",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -246,6 +253,7 @@
   "endpoint": "/identityos/v1/iam/auth/reset-password/confirm",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -263,6 +271,7 @@
   "endpoint": "/identityos/v1/iam/identities/{id}/mfa/enroll",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -280,6 +289,7 @@
   "endpoint": "/identityos/v1/iam/identities/{id}/mfa/revoke",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -297,6 +307,7 @@
   "endpoint": "/identityos/v1/iam/identities/{id}/sessions/{sid}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -314,6 +325,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/invites",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -331,6 +343,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/products/{slug}",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -348,6 +361,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -365,6 +379,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -382,6 +397,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "PATCH",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -399,6 +415,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
   "method": "DELETE",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -416,6 +433,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/role",
   "method": "PUT",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
@@ -433,6 +451,7 @@
   "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/invite/resend",
   "method": "POST",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}

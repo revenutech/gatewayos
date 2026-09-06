@@ -820,6 +820,15 @@
               "type": "string"
             },
             "description": "Resource path"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -927,6 +936,15 @@
               "type": "string"
             },
             "description": "Resource resource"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1052,6 +1070,15 @@
               "type": "string"
             },
             "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1114,6 +1141,15 @@
               "type": "string"
             },
             "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ]
       }
@@ -1177,6 +1213,15 @@
               "type": "string"
             },
             "description": "Resource action"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1293,6 +1338,17 @@
             "description": "Service unavailable \u2014 circuit breaker open"
           }
         },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1337,6 +1393,17 @@
             "description": "Service unavailable \u2014 circuit breaker open"
           }
         },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1381,6 +1448,17 @@
             "description": "Service unavailable \u2014 circuit breaker open"
           }
         },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1434,6 +1512,15 @@
               "type": "string"
             },
             "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1489,6 +1576,15 @@
               "type": "string"
             },
             "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1553,6 +1649,15 @@
               "type": "string"
             },
             "description": "Resource sid"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ]
       }
@@ -1598,6 +1703,15 @@
               "type": "string"
             },
             "description": "Resource id"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1662,6 +1776,15 @@
               "type": "string"
             },
             "description": "Resource slug"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1726,6 +1849,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1788,6 +1920,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1850,6 +1991,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -1912,6 +2062,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ]
       }
@@ -1966,6 +2125,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
@@ -2030,6 +2198,15 @@
               "type": "string"
             },
             "description": "Resource identity"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
           }
         ],
         "requestBody": {
