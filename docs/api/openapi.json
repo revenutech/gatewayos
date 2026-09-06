@@ -1306,6 +1306,61 @@
         ]
       }
     },
+    "/identityos/v1/iam/policies/evaluate": {
+      "post": {
+        "tags": [
+          "IdentityOS"
+        ],
+        "summary": "POST /identityos/v1/iam/policies/evaluate",
+        "operationId": "post_identityos_v1_iam_policies_evaluate",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
     "/identityos/v1/iam/auth/otp/request": {
       "post": {
         "tags": [
