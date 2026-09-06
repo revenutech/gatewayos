@@ -34,8 +34,10 @@ PREFIXO_FRONT = '/v1/iam/'
 
 # Chamadas do front que o identityos NAO serve. Declara-las exporia caminho
 # inalcancavel (RI-123). Conferido em modules/shared/routes/routes.go.
+#
+# Eram QUATRO ate 2026-09-06: o `POST .../notification-channels/{kind}/test`
+# saiu daqui quando o identityos passou a servi-lo (TI8.4.5).
 NAO_DECLARADAS = {
-    ('POST', '/v1/iam/me/notification-channels/{p}/test'): 'backend 404',
     ('PATCH', '/v1/iam/me/notification-channels/{p}'): 'backend 404',
     ('PATCH', '/v1/iam/me/notifications/{p}/read'): 'backend 404',
     ('PATCH', '/v1/iam/me/notifications/read-all'): 'backend 404',

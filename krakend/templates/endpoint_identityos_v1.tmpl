@@ -200,12 +200,14 @@
   LISTA DE PERMISSOES, entao cada rota e declarada, com metodo, e paga o preco de
   repetir o validador.
 
-  ⚠️ QUATRO das rotas que o sandbox chama NAO foram declaradas de proposito:
+  ⚠️ TRES das rotas que o sandbox chama NAO foram declaradas de proposito:
 
-      POST  /v1/iam/me/notification-channels/{id}/test   -> backend 404
       PATCH /v1/iam/me/notification-channels/{id}        -> backend 404
       PATCH /v1/iam/me/notifications/{id}/read           -> backend 404
       PATCH /v1/iam/me/notifications/read-all            -> backend 404
+
+  Eram QUATRO ate 2026-09-06: o `POST .../notification-channels/{kind}/test`
+  passou a existir no identityos (TI8.4.5) e esta declarado logo abaixo.
 
   Eram DUAS quando este comentario foi escrito. A conferencia por METODO+
   CAMINHO (`tools/check-cobertura-identityos.py`) achou as outras duas — a
@@ -262,6 +264,33 @@
   `/webhooks/deliveries/{id}`) tem tres segmentos e ja casam com
   `{resource}/{id}/{action}` no GET. So esta precisa de declaracao propria.
 */}}
+{{/*
+  Envio de teste por canal. QUATRO segmentos apos `/v1/iam/` —
+  `me/notification-channels/{kind}/test` —, fundo demais para os padroes com
+  parametro, que param em tres.
+
+  🔴 O front ja chamava esta rota antes de ela existir, e respondia
+  `{sent: true}` mesmo assim. Agora ela existe: so o canal de e-mail entrega,
+  e os outros tres devolvem `501` dizendo por que nao.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/me/notification-channels/{kind}/test",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/notification-channels/{kind}/test",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
 {
   "endpoint": "/identityos/v1/iam/webhooks/deliveries/{id}/requeue",
   "method": "POST",
