@@ -29,6 +29,95 @@
     }
   ],
   "paths": {
+    "/accountos/v1/accounts": {
+      "post": {
+        "tags": [
+          "AccountOS"
+        ],
+        "summary": "POST /accountos/v1/accounts",
+        "operationId": "post_accountos_v1_accounts",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "description": "Required roles: ledger-operator, ledger-admin"
+      },
+      "get": {
+        "tags": [
+          "AccountOS"
+        ],
+        "summary": "GET /accountos/v1/accounts",
+        "operationId": "get_accountos_v1_accounts",
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized \u2014 invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden \u2014 insufficient roles"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "503": {
+            "description": "Service unavailable \u2014 circuit breaker open"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query parameters (passthrough)"
+          }
+        ],
+        "description": "Required roles: ledger-viewer, ledger-operator, ledger-admin"
+      }
+    },
     "/accountos/v1/accounts/{path}": {
       "post": {
         "tags": [
