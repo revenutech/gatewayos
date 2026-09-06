@@ -253,6 +253,33 @@
     }
   }]
 },
+{{/*
+  Reenfileirar uma entrega morta. QUATRO segmentos apos `/v1/iam/` —
+  `webhooks/deliveries/{id}/requeue` —, fundo demais para qualquer um dos
+  padroes com parametro, que param em tres.
+
+  As duas rotas de LEITURA da mesma familia (`/webhooks/deliveries/dead` e
+  `/webhooks/deliveries/{id}`) tem tres segmentos e ja casam com
+  `{resource}/{id}/{action}` no GET. So esta precisa de declaracao propria.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/webhooks/deliveries/{id}/requeue",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/webhooks/deliveries/{id}/requeue",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
 {
   "endpoint": "/identityos/v1/iam/auth/otp/request",
   "method": "POST",
