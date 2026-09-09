@@ -20,7 +20,7 @@
   "_comment": "AccountOS — colecao (sem segmento apos /accounts)",
   "endpoint": "/accountos/v1/accounts",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -61,7 +61,7 @@
 {
   "endpoint": "/accountos/v1/accounts",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -106,7 +106,7 @@
 
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -147,7 +147,7 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -188,7 +188,7 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "PUT",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
