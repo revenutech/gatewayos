@@ -19,6 +19,20 @@
     "router": {
       "return_error_msg": {{ .service.return_error_msg }},
       {{/*
+        RI-377 (metade 2 — a fronteira). Sem isto o KrakenD confia em todo
+        proxy e o ClientIP DELE = o X-Forwarded-For mais à esquerda escolhido
+        pelo cliente; ele carimba esse valor no XFF que envia ao backend, e o
+        identityos (que confia só no gateway) o honra — o freio de login por
+        IP vira contornável rotacionando o cabeçalho (medido: spoof 9.9.9.9 via
+        gateway -> identityos gravou 9.9.9.9). Com forwarded_by_client_ip:false
+        o ClientIP do gateway passa a ser o RemoteAddr real da conexão, e é ele
+        que segue ao backend — o cabeçalho do cliente deixa de escolher o balde.
+        LOCAL: false (não há LB confiável na frente; o par real é o host). PROD:
+        vira true + trusted_proxies:[CIDR do LB] + remote_ip_headers para
+        recuperar o IP real do cliente através do balanceador. Ver RI-1013.
+      */}}
+      "forwarded_by_client_ip": {{ .service.forwarded_by_client_ip }},
+      {{/*
         🔴 O GATEWAY DERRUBAVA A CONEXAO EM VEZ DE RESPONDER 404.
 
         Medido em 2026-09-06: `POST /identityos/v1/iam/policies/evaluate` —
