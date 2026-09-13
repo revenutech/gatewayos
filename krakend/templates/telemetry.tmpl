@@ -5,8 +5,8 @@
     "otlp": [
       {
         "name": "otel-collector",
-        "host": "otel-collector.monitoring.svc.cluster.local",
-        "port": 4317,
+        "host": "{{ .tracing.otel_host }}",
+        "port": {{ .tracing.otel_port }},
         "use_http": false
       }
     ]
