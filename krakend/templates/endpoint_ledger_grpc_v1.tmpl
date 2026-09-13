@@ -4,7 +4,7 @@
 
   "endpoint": "/ledgeros/grpc/v1/postings",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -46,7 +46,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/postings/{id}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -88,7 +88,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/balances/{id}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -130,7 +130,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/settlements",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -171,7 +171,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/reconciliation/jobs",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
