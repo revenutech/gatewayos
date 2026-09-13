@@ -1,14 +1,135 @@
+{{/*
+  🔴 A COLECAO NAO ERA ALCANCAVEL. Os tres blocos abaixo declaram
+  `/accountos/v1/accounts/{path}`, e `{path}` exige UM SEGMENTO. O accountos
+  serve, em `modules/account/interfaces/http/handler.go`:
+
+      POST /v1/accounts        abrir conta
+      GET  /v1/accounts        listar contas
+
+  Nenhuma das duas tem segmento depois de `/accounts`, entao nenhuma passava:
+  `GET /accountos/v1/accounts` devolvia `404 page not found` — do proprio
+  KrakenD, sem o accountos jamais saber que foi chamado.
+
+  E o RI-241 outra vez: rota com parametro cobre uma PROFUNDIDADE, nao um
+  prefixo. So que aqui o efeito e maior — as duas rotas ausentes sao
+  exatamente "abrir conta" e "listar contas", o comeco de qualquer fluxo de
+  conta. A TI9.1.1 pede um e2e que abra conta e leia saldo; ele nao tinha por
+  onde comecar.
+*/}}
+{
+  "_comment": "AccountOS — colecao (sem segmento apos /accounts)",
+  "endpoint": "/accountos/v1/accounts",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.accountos }}"],
+    "url_pattern": "/v1/accounts",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_accountos }}
+    }
+  }]
+},
+{
+  "endpoint": "/accountos/v1/accounts",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
+    "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
+      "roles_key": "realm_access.roles",
+      "roles_key_is_nested": true,
+      "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
+    }
+  },
+  "backend": [{
+    "host": ["{{ .backends.accountos }}"],
+    "url_pattern": "/v1/accounts",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_accountos }}
+    }
+  }]
+},
 {
   "_comment": "AccountOS — Account management module (:8093)",
   "_enterprise_equivalent": "endpoints/wildcard — KrakenD Enterprise wildcard routes",
 
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]
@@ -26,11 +147,30 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -48,11 +188,30 @@
 {
   "endpoint": "/accountos/v1/accounts/{path}",
   "method": "PUT",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Subscription-Tier"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "live": false,
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-operator", "ledger-admin"]

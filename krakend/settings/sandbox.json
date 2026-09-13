@@ -3,7 +3,8 @@
     "jwks_url": "https://auth-staging.revenu.tech/realms/ledgeros/protocol/openid-connect/certs",
     "issuer": "https://auth-staging.revenu.tech/realms/ledgeros",
     "audience": "revenu-platform",
-    "disable_jwk_security": false
+    "disable_jwk_security": false,
+    "keycloak_base_path": ""
   },
   "oauth2": {
     "client_id": "krakend-gateway",
@@ -29,7 +30,8 @@
     "ledgeros_grpc_transcoder": "http://127.0.0.1:8085",
     "onboardos": "http://onboardos.ledgeros-staging.svc.cluster.local:8092",
     "accountos": "http://accountos.ledgeros-staging.svc.cluster.local:8093",
-    "financeos": "http://financeos.ledgeros-staging.svc.cluster.local:8095"
+    "financeos": "http://financeos.ledgeros-staging.svc.cluster.local:8095",
+    "keycloak": "https://auth-staging.revenu.com.br"
   },
   "redis": {
     "host": "redis.ledgeros-staging.svc.cluster.local",
@@ -127,5 +129,11 @@
     "ios_minimum": "0.0.0",
     "ios_latest": "2.2.4",
     "ios_store_url": "https://apps.apple.com/br/app/revenu/id0000000000"
+  },
+  "cb_keycloak": {
+    "cb_name": "cb-keycloak",
+    "cb_max_errors": 3,
+    "cb_interval": 60,
+    "cb_timeout": 10
   }
 }

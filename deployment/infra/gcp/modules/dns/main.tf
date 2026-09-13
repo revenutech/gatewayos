@@ -36,17 +36,28 @@ variable "environment" {
   type = string
 }
 variable "zone_name" {
-  type = string
+  type    = string
   default = ""
 }
 variable "domain" {
-  type = string
+  type    = string
   default = ""
 }
 variable "ingress_ip" {
-  type = string
+  type    = string
   default = ""
 }
 variable "labels" {
-  type = map(string)
-  default =
+  type    = map(string)
+  default = {}
+}
+
+output "zone_name" {
+  description = "Managed zone name (empty when the zone is not created)"
+  value       = try(google_dns_managed_zone.gateway[0].name, "")
+}
+
+output "nameservers" {
+  description = "Zone name servers, for delegation at the registrar"
+  value       = try(google_dns_managed_zone.gateway[0].name_servers, [])
+}
