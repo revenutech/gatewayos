@@ -33,11 +33,11 @@ variable "environment" {
   type = string
 }
 variable "protection_level" {
-  type = string
+  type    = string
   default = "SOFTWARE"
 }
 variable "labels" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 

@@ -48,7 +48,7 @@ resource "google_monitoring_dashboard" "gateway" {
                       }
                     }
                   }
-                  plotType   = "LINE"
+                  plotType       = "LINE"
                   legendTemplate = "Requests"
                 }]
                 yAxis = { scale = "LINEAR" }
@@ -73,7 +73,7 @@ resource "google_monitoring_dashboard" "gateway" {
                       }
                     }
                   }
-                  plotType   = "LINE"
+                  plotType       = "LINE"
                   legendTemplate = "5xx errors"
                 }]
                 yAxis = { scale = "LINEAR" }
@@ -99,8 +99,8 @@ resource "google_monitoring_dashboard" "gateway" {
                       timeSeriesFilter = {
                         filter = "resource.type = \"k8s_container\" AND resource.labels.container_name = \"krakend\" AND metric.type = \"custom.googleapis.com/opencensus/krakend/router/response/latency\""
                         aggregation = {
-                          alignmentPeriod    = "60s"
-                          perSeriesAligner   = "ALIGN_PERCENTILE_50"
+                          alignmentPeriod  = "60s"
+                          perSeriesAligner = "ALIGN_PERCENTILE_50"
                         }
                       }
                     }
@@ -112,8 +112,8 @@ resource "google_monitoring_dashboard" "gateway" {
                       timeSeriesFilter = {
                         filter = "resource.type = \"k8s_container\" AND resource.labels.container_name = \"krakend\" AND metric.type = \"custom.googleapis.com/opencensus/krakend/router/response/latency\""
                         aggregation = {
-                          alignmentPeriod    = "60s"
-                          perSeriesAligner   = "ALIGN_PERCENTILE_95"
+                          alignmentPeriod  = "60s"
+                          perSeriesAligner = "ALIGN_PERCENTILE_95"
                         }
                       }
                     }
@@ -125,8 +125,8 @@ resource "google_monitoring_dashboard" "gateway" {
                       timeSeriesFilter = {
                         filter = "resource.type = \"k8s_container\" AND resource.labels.container_name = \"krakend\" AND metric.type = \"custom.googleapis.com/opencensus/krakend/router/response/latency\""
                         aggregation = {
-                          alignmentPeriod    = "60s"
-                          perSeriesAligner   = "ALIGN_PERCENTILE_99"
+                          alignmentPeriod  = "60s"
+                          perSeriesAligner = "ALIGN_PERCENTILE_99"
                         }
                       }
                     }

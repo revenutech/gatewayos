@@ -1,14 +1,108 @@
+{{/*
+  endpoint_identityos_v1.tmpl — superficie do IdentityOS no gateway.
+
+  🔴 CORRIGIDO em 2026-09-05. A versao anterior tinha DUAS rotas, e as DUAS
+  apontavam para caminhos que o backend nao serve:
+
+      /identityos/v1/auth/{path}   -> "/v1/auth/{path}"    o backend serve /v1/iam/auth/*
+      /identityos/v1/users/{path}  -> "/v1/users/{path}"   nao existe em lugar nenhum
+
+  Medido pelo efeito: com token valido o gateway autenticava, encaminhava, e o
+  identityos devolvia 404. A cadeia funcionava; o MAPA e que estava errado.
+
+  🔴 E `Authorization` NAO estava em `input_headers`: o KrakenD validava o
+  token e encaminhava so os headers derivados (X-User-ID/X-Tenant-ID/X-Roles).
+  O identityos, zero-trust, respondia `missing authorization header`. Encaminhar
+  identidade por header em vez de token e o "estado A" que a D1 do ADR-006
+  REJEITOU explicitamente.
+
+  🔴 O CAMINHO PUBLICO PASSOU A ESPELHAR O DO BACKEND em 2026-09-06.
+
+  Era `/identityos/v1/{resource}` -> `/v1/iam/{resource}`: o gateway APAGAVA o
+  segmento `iam`. Isso impedia o sandbox de falar com o gateway sem reescrever
+  as 77 chamadas dele, porque o cliente do front so CONCATENA base + caminho, e
+  nenhuma base transforma `/v1/iam/roles` em `/identityos/v1/roles`.
+
+  Agora e `/identityos/v1/iam/{resource}` -> `/v1/iam/{resource}`: o prefixo de
+  MODULO continua (a convencao do gateway, com /paymentos, /ledgeros, /onboardos)
+  e o resto do caminho e o mesmo que o modulo serve. Com
+  `IDENTITYOS_BASE_URL=<gateway>/identityos` o front funciona sem tocar em uma
+  chamada.
+
+  Nenhum consumidor externo dependia do caminho antigo — conferido em todos os
+  repositorios.
+
+  O prefixo real do modulo e `/v1/iam/*` — 19 grupos de rota. O
+  `/v1/identityos/*` e alias LEGADO com `sunset=2026-10-19`, anunciado pelo
+  proprio servico no boot; nao se constroi rota nova sobre ele.
+*/}}
+{{/*
+  ⚠️ PUBLICA, e sem ela o Authorization Code nao comeca. O identityos a
+  registra FORA do grupo protegido, com o motivo escrito: "the browser hits
+  it with no session by definition, and the only effect is a 302 to
+  Keycloak. No identity to verify."
+
+  Sem bloco proprio ela caia em `/identityos/v1/iam/{resource}/{id}` GET,
+  que valida JWT — exigindo sessao de quem vem justamente busca-la.
+*/}}
 {
-  "endpoint": "/identityos/v1/auth/{path}",
+  "endpoint": "/identityos/v1/iam/auth/authorize",
+  "method": "GET",
+  "input_headers": ["X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/authorize",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/*
+  🔴 A SUPERFICIE ADMINISTRATIVA NAO EXISTIA NO GATEWAY, e o que existia era o
+  metodo errado. Medido em 2026-09-06:
+
+    POST /identityos/v1/iam/admin/tenants   405   <- o identityos SERVE esta
+    GET  /identityos/v1/iam/admin/tenants   401   <- o identityos NAO serve
+
+  O `POST` nao estava declarado; o `GET` caía no `/{resource}/{id}` com
+  `resource=admin`, `id=tenants`, e virava rota que PARECE real — valida JWT,
+  responde 401 sem token, e do outro lado nao ha handler nenhum (direto no
+  identityos: 404). É o RI-241 outra vez, agora fabricando uma rota inteira.
+
+  ⚠️ E o `check-rota-backend.py` nao acusa, por limitacao DECLARADA dele:
+  "parametro escolhe O QUE, nao QUAL" — `{resource}/{id}` é exatamente isso, e
+  o gate pula. O defeito morava dentro do ponto cego que o proprio gate anuncia.
+
+  ⚠️ SOBRE A SEGUNDA VIA (TI13.4.6). O `/admin/*` do identityos NAO usa o
+  `protectedMiddleware`: ele é guardado pelo `AdminGuard`, que aceita
+  `super_admin` por JWT **ou** chave `ak_live_…` com escopo. Aqui o
+  `jwt_validator` fica, e a consequencia é explicita: **a chave de API nao
+  atravessa esta fronteira** — ela nao é JWT, o validador recusa, e a via de
+  chave existe apenas contra o identityos direto.
+
+  Isso responde "em qual fronteira ela é aceita", que era a pergunta. NAO
+  responde "ela sobrevive?" (TI13.4.1) — essa é decisao, nao medicao.
+
+  O PAPEL nao é conferido aqui de proposito: o `AdminGuard` confere
+  `super_admin`, emite `ADMIN_ACCESS_GRANTED`/`DENIED` com `reason_code` e
+  incrementa o contador por superficie. O gateway nao audita nada disso;
+  duplicar a regra aqui só criaria um segundo lugar para ela divergir.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/admin/tenants",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
-    "url_pattern": "/v1/auth/{path}",
+    "url_pattern": "/v1/iam/admin/tenants",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_identityos }}
@@ -16,21 +110,760 @@
   }]
 },
 {
-  "endpoint": "/identityos/v1/users/{path}",
-  "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "endpoint": "/identityos/v1/iam/auth/change-password",
+  "method": "POST",
+  "_comment": "PROTEGIDA — o identityos a registra em `authProtected`",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
-    "auth/validator": {
-      "roles_key": "realm_access.roles",
-      "roles_key_is_nested": true,
-      "roles": ["ledger-admin"]
-    }
+    {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
     "host": ["{{ .backends.identityos }}"],
-    "url_pattern": "/v1/users/{path}",
+    "url_pattern": "/v1/iam/auth/change-password",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/*
+  🔴 O GATEWAY EXIGIA UM TOKEN PARA CONSEGUIR UM TOKEN.
+
+  Este bloco carregava `jwt_validator.tmpl`, e ele cobre `{path}` — ou seja,
+  `login`, `register`, `refresh`, `reset-password`, `verify-email`,
+  `code-exchange`. Toda porta de ENTRADA da plataforma estava atras do
+  proprio token que ela existe para emitir. Medido em 2026-09-06:
+
+    POST /identityos/v1/iam/auth/login           sem token 401   com token 400
+    POST /identityos/v1/iam/auth/register        sem token 401   com token 400
+    POST /identityos/v1/iam/auth/reset-password  sem token 401   com token 400
+    POST /identityos/v1/iam/auth/otp/request     sem token 401   com token 400
+
+  O `400` e o identityos respondendo a um corpo vazio: com token a rota
+  chega. O `401` e o KrakenD, antes do backend.
+
+  E e por aqui que passa o `ensureIdentity`. Com a porta fechada, nenhum
+  usuario da malha vira identidade no identityos, e toda rota `/me/*`
+  responde 404 (RI-346).
+
+  ⚠️ QUEM DECIDE O QUE E PUBLICO E O IDENTITYOS, nao este arquivo. Ele
+  declara em `modules/shared/routes/routes.go`: o grupo `auth` roda SEM
+  middleware (login, register, verify-email, refresh, logout,
+  reset-password, reset-password/confirm, revoke, otp/request, otp/verify,
+  code-exchange) e o grupo `authProtected` roda COM (change-password,
+  otp/{id}/status). Este bloco espelha aquela declaracao — e por isso o
+  `change-password` ganhou bloco PROPRIO logo acima, senao ele cairia neste
+  `{path}` e ficaria aberto.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/auth/{path}",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  {{/*
+    ⚠️ AQUI NAO HA LIMITADOR, e a ausencia e DECLARADA — nao esquecimento.
+    Tentei por um, em 2026-09-06, e tirei depois de medir:
+
+      client_max_rate: 20/min .... `401` na primeira e `429` na SEGUNDA
+                                   tentativa. Usuario que erra a senha duas
+                                   vezes seguidas leva 429. Apertado demais
+                                   para uma tela de login.
+      client_max_rate: 0 ......... so o teto global (`max_rate`). A 10 req/s
+                                   de teto e ~10 req/s de sonda, recarga do
+                                   balde e balde-por-cliente ficam
+                                   INDISTINGUIVEIS: nao consegui provar que
+                                   o teto segurava.
+
+    E a `strategy: "ip"` do KrakenD tambem le `X-Forwarded-For`, que o cliente
+    escolhe — o mesmo furo do limitador do identityos (RI-377). Um limitador
+    por IP nesta fronteira nao protege contra quem forja o cabecalho.
+
+    Nao deixei um controle que eu nao consigo medir. O furo esta registrado no
+    plano; fecha-lo pede o gateway REESCREVER o `X-Forwarded-For` em vez de
+    repassa-lo, e isso e decisao de quem opera a fronteira.
+  */}}
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/{path}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/* Colecoes de leitura. `{resource}` cobre identities, sessions, roles,
+     policies, mfa, verificacoes, api-keys, documents, consents, invites,
+     clients, tenants, audit, compliance — um segmento. */}}
+{
+  "endpoint": "/identityos/v1/iam/{resource}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/{resource}",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/* Recurso individual. */}}
+{
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}/{id}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
+  "method": "PATCH",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}/{id}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/{resource}/{id}",
+  "method": "DELETE",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}/{id}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/* Acao sobre recurso: /identities/{id}/suspend, /sessions/{id}/step-up,
+     /documents/{id}/transition, /me/notifications/{id}/read. */}}
+{
+  "endpoint": "/identityos/v1/iam/{resource}/{id}/{action}",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}/{id}/{action}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/{resource}/{id}/{action}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/{resource}/{id}/{action}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+
+
+{{/*
+  🔴 ROTA A ROTA, e nao um padrao mais fundo. Decidido em 2026-09-06.
+
+  O FLOW-I0004 mediu: das 77 rotas que o sandbox chama, 59 casavam com algum dos
+  quatro padroes com parametro e 18 nao — todas por PROFUNDIDADE. O padrao mais
+  fundo cobria 3 segmentos apos `/v1/iam/`, e o de `auth` cobria UM.
+
+  A alternativa era um `{resource}/{id}/{action}/{sub}`: uma linha, cobre quase
+  tudo, e deixa o gateway passar caminho que o backend nao serve. Aqui ele e uma
+  LISTA DE PERMISSOES, entao cada rota e declarada, com metodo, e paga o preco de
+  repetir o validador.
+
+  ⚠️ TRES das rotas que o sandbox chama NAO foram declaradas de proposito:
+
+      PATCH /v1/iam/me/notification-channels/{id}        -> backend 404
+      PATCH /v1/iam/me/notifications/{id}/read           -> backend 404
+      PATCH /v1/iam/me/notifications/read-all            -> backend 404
+
+  Eram QUATRO ate 2026-09-06: o `POST .../notification-channels/{kind}/test`
+  passou a existir no identityos (TI8.4.5) e esta declarado logo abaixo.
+
+  Eram DUAS quando este comentario foi escrito. A conferencia por METODO+
+  CAMINHO (`tools/check-cobertura-identityos.py`) achou as outras duas — a
+  varredura anterior comparava so o caminho, e `PATCH` num caminho que so tem
+  `GET` declarado passava por coberto.
+
+  Nenhuma das quatro existe no identityos: `modules/shared/routes/routes.go`
+  registra apenas `GET`/`PATCH /me/notifications-prefs`. O front as chama e
+  engole o 404. Declarar seria recriar o RI-123 — rota exposta que nao e
+  alcancavel —, que e o defeito que esta serie consertou neste mesmo arquivo.
+  Quando o backend as servir, elas entram aqui.
+
+  ⚠️ E o metodo importa: a sonda mostrou `403` (rota existe, permissao nega) onde
+  o dump do log nao listava a rota. Varredura de log erra; efeito nao.
+*/}}
+{{/*
+  🔴 `POST /policies/evaluate` — a rota que o mapa de cobertura perdeu.
+
+  Ela tem DOIS segmentos apos `/v1/iam/`, entao casava por FORMA com o padrao
+  `{resource}/{id}` — que declara `GET`, `PATCH` e `DELETE`, e nao `POST`. O
+  mapa comparava caminho e nao metodo, e por isso a deu por coberta.
+
+  O efeito nao era um 404: era o panico do gin descrito no `krakend.tmpl`,
+  com a conexao morrendo sem resposta. `POST` numa profundidade sem bloco
+  `POST` e exatamente a entrada daquele ramo.
+
+  E a rota EXISTE no backend — `routes.go:237`, `policiesGrp.POST("/evaluate")`.
+  Sem ela o botao "Simular" da tela de Politicas nao tem como responder.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/policies/evaluate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/policies/evaluate",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/*
+  Reenfileirar uma entrega morta. QUATRO segmentos apos `/v1/iam/` —
+  `webhooks/deliveries/{id}/requeue` —, fundo demais para qualquer um dos
+  padroes com parametro, que param em tres.
+
+  As duas rotas de LEITURA da mesma familia (`/webhooks/deliveries/dead` e
+  `/webhooks/deliveries/{id}`) tem tres segmentos e ja casam com
+  `{resource}/{id}/{action}` no GET. So esta precisa de declaracao propria.
+*/}}
+{{/*
+  Envio de teste por canal. QUATRO segmentos apos `/v1/iam/` —
+  `me/notification-channels/{kind}/test` —, fundo demais para os padroes com
+  parametro, que param em tres.
+
+  🔴 O front ja chamava esta rota antes de ela existir, e respondia
+  `{sent: true}` mesmo assim. Agora ela existe: so o canal de e-mail entrega,
+  e os outros tres devolvem `501` dizendo por que nao.
+*/}}
+{{/*
+  Diagnostico de OTP. QUATRO segmentos apos `/v1/iam/` —
+  `auth/otp/{id}/status` —, fundo demais para os padroes com parametro.
+
+  🔴 A consulta existia no identityos, com teste, e com ZERO chamadores. O
+  comentario dela trazia a pergunta que motivou escreve-la — "por que o codigo
+  deste usuario nao funciona?" — e a resposta so vinha lendo o banco a mao.
+
+  ⚠️ O `/v1/iam/identities/{id}/reset-tokens`, o irmao dela, tem TRES segmentos
+  e ja casa com `{resource}/{id}/{action}` no GET. So esta precisa de
+  declaracao propria.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/auth/otp/{id}/status",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/otp/{id}/status",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/me/notification-channels/{kind}/test",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/notification-channels/{kind}/test",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/webhooks/deliveries/{id}/requeue",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/webhooks/deliveries/{id}/requeue",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
+  "endpoint": "/identityos/v1/iam/auth/otp/request",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/otp/request",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
+  "endpoint": "/identityos/v1/iam/auth/otp/verify",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/otp/verify",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "_comment": "PUBLICA — o identityos a registra no grupo `auth`, sem middleware",
+  "endpoint": "/identityos/v1/iam/auth/reset-password/confirm",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/auth/reset-password/confirm",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/identities/{id}/mfa/enroll",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/identities/{id}/mfa/enroll",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/identities/{id}/mfa/revoke",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/identities/{id}/mfa/revoke",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/* RI-993 (TI8.1.4 refresh): 8 rotas profundidade 4-5 servidas pelo backend que os padroes genericos (ate 3 segmentos) nao cobrem. Allowlist explicita, medidas no dump vivo do identityos, todas backend-served (sem RI-123). */}}
+{
+  "endpoint": "/identityos/v1/iam/compliance/merkle/roots/{id}/proof",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/compliance/merkle/roots/{id}/proof",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/federation/links/{id}/refresh",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/federation/links/{id}/refresh",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/identities/{id}/roles/assign",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/identities/{id}/roles/assign",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/identities/{id}/roles/remove",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/identities/{id}/roles/remove",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/me/contacts/{id}/promote",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/contacts/{id}/promote",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/me/contacts/{id}/resend",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/contacts/{id}/resend",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/me/contacts/{id}/verify",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/contacts/{id}/verify",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/me/contacts/{id}/verify-and-promote",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/me/contacts/{id}/verify-and-promote",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/identities/{id}/sessions/{sid}",
+  "method": "DELETE",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/identities/{id}/sessions/{sid}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/invites",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/invites",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/products/{slug}",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/products/{slug}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
+  "method": "PATCH",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}",
+  "method": "DELETE",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/role",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}/role",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/identityos/v1/iam/tenants/{id}/members/{identity}/invite/resend",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type"],
+  "input_query_strings": ["*"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/tenants/{id}/members/{identity}/invite/resend",
     "encoding": "no-op",
     "extra_config": {
       {{ template "circuit_breaker.tmpl" .cb_identityos }}

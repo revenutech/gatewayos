@@ -13,13 +13,75 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check KrakenD config
+      # 🔴 ESTE GATE APROVAVA CONFIG QUE O KRAKEND RECUSA.
+      #
+      # Ele compilava e fazia `json.load(...)`: verificava que a saida era JSON
+      # VALIDO, nunca que o KrakenD a aceita. E `"host": ["<no value>"]` — que e
+      # o que um template rende quando falta uma chave nas settings — e JSON
+      # perfeitamente valido. Os TRES perfis estavam quebrados
+      # (`host <no value> not valid: invalid host`) e o CI passava verde.
+      #
+      # Alem disso, `sandbox` nunca era compilado: so `develop` e `production`.
+      #
+      # `krakend check` e o unico gate que vale, porque e o mesmo binario que
+      # roda em producao. Rodamos nos TRES perfis, e em ambas as formas de
+      # settings (diretorio para o runtime, flat para o compile-config.sh).
+      - name: Check KrakenD config (krakend check, os 3 perfis)
         run: |
+          set -euo pipefail
+          KRAKEND_IMAGE=krakend:2.9.4
+          falhas=0
+          for env in develop sandbox production; do
+            echo "::group::krakend check — $env"
+            if docker run --rm \
+                 -v "$PWD/krakend:/etc/krakend:ro" \
+                 -e FC_ENABLE=1 \
+                 -e FC_SETTINGS="/etc/krakend/settings/$env" \
+                 -e FC_PARTIALS=/etc/krakend/partials \
+                 -e FC_TEMPLATES=/etc/krakend/templates \
+                 -e FC_OUT=/tmp/compiled.json \
+                 "$KRAKEND_IMAGE" check -c /etc/krakend/krakend.tmpl; then
+              echo "✅ $env"
+            else
+              echo "🔴 $env NAO compila"
+              falhas=$((falhas+1))
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$falhas" -gt 0 ]; then
+            echo "🔴 $falhas perfil(is) reprovado(s) em krakend check"
+            exit 1
+          fi
+
+      # A forma flat (`settings/<env>.json`) e a que o `compile-config.sh` usa.
+      # Ela e uma SEGUNDA fonte para as mesmas chaves, e as duas divergem sem
+      # que nada avise — por isso o gate seguinte compara.
+      - name: Compile config (forma flat) e comparar com a forma diretorio
+        run: |
+          set -euo pipefail
           pip install -q jinja2 2>/dev/null || true
-          bash tools/compile-config.sh krakend develop /tmp/krakend-compiled.json
-          bash tools/compile-config.sh krakend production /tmp/krakend-prod.json
-          echo "Compiled config is valid JSON"
-          python3 -c "import json; json.load(open('/tmp/krakend-compiled.json')); print('JSON OK')"
+          for env in develop sandbox production; do
+            bash tools/compile-config.sh krakend "$env" "/tmp/flat-$env.json"
+            python3 -c "import json; json.load(open('/tmp/flat-$env.json'))"
+            python3 - "$env" <<'EOF'
+          import json, sys
+          env = sys.argv[1]
+          flat = json.load(open(f'krakend/settings/{env}.json'))
+          import os
+          dir_keys = {}
+          for f in os.listdir(f'krakend/settings/{env}'):
+              if f.endswith('.json'):
+                  dir_keys[f[:-5]] = json.load(open(f'krakend/settings/{env}/{f}'))
+          faltando = [k for k in dir_keys if k not in flat]
+          sobrando = [k for k in flat if k not in dir_keys]
+          if faltando or sobrando:
+              print(f'🔴 {env}: divergencia entre as duas formas de settings')
+              if faltando: print('   so no diretorio:', faltando)
+              if sobrando: print('   so no flat     :', sobrando)
+              sys.exit(1)
+          print(f'✅ {env}: as duas formas declaram as mesmas chaves')
+          EOF
+          done
 
       - name: Lint JSON configs
         run: |
@@ -40,23 +102,80 @@ jobs:
 
   # Enterprise KrakenD equivalent: developer/openapi
   openapi-generate:
-    name: Generate OpenAPI Spec
+    name: OpenAPI Spec em dia com os templates
     runs-on: ubuntu-latest
     needs: validate
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: pip install -r tools/openapi-generator/requirements.txt
-      - name: Generate OpenAPI spec
+
+      # 🔴 ESTE JOB GERAVA E NAO CONFERIA NADA.
+      #
+      # Ele rendia um `openapi.yaml` descartavel na raiz e o subia como
+      # artifact. O `docs/api/` versionado nunca entrava na comparacao, entao
+      # ele podia estar de qualquer jeito que o CI passava verde.
+      #
+      # E esteve: o commit eb21314 publicou `docs/api/` com 381 paths / 506
+      # operacoes, gerado ANTES da reescrita do `endpoint_identityos_v1.tmpl`
+      # que ia no MESMO commit. Regerar deu 383 / 512. Artefato gerado
+      # versionado deriva do fonte, e so um gate que REGERA e COMPARA acusa —
+      # ler o arquivo commitado nao acusa, porque ele e coerente consigo mesmo.
+      #
+      # O gerador e deterministico (medido: duas geracoes seguidas dao o mesmo
+      # md5), entao a comparacao e byte a byte e nao fica intermitente.
+      - name: Regenerar e comparar com docs/api (o gate)
         run: |
+          set -euo pipefail
+          OUT="$(mktemp -d)"
           python tools/openapi-generator/generate.py \
             --endpoints-dir krakend/templates \
-            --output openapi.yaml
+            --output "$OUT/openapi.yaml"
+          python tools/openapi-generator/generate.py \
+            --endpoints-dir krakend/templates \
+            --output "$OUT/openapi.json" --format json
+
+          # Copiado ANTES do laco: em falha o par regerado E a evidencia, e o
+          # `exit 1` abaixo pularia a copia se ela viesse depois.
+          cp "$OUT/openapi.yaml" "$OUT/openapi.json" .
+
+          falhas=0
+          for f in openapi.yaml openapi.json; do
+            if diff -u "docs/api/$f" "$OUT/$f" > "$OUT/$f.diff"; then
+              echo "✅ docs/api/$f em dia com os templates"
+            else
+              echo "🔴 docs/api/$f DIVERGE dos templates:"
+              head -60 "$OUT/$f.diff"
+              falhas=$((falhas+1))
+            fi
+          done
+
+          if [ "$falhas" -gt 0 ]; then
+            echo ""
+            echo "🔴 O spec versionado nao confere com os templates."
+            echo ""
+            echo "Os templates mudaram e docs/api/ nao foi regerado — ou foi regerado"
+            echo "antes da ultima mudanca de template. Rode, na raiz do repositorio:"
+            echo ""
+            echo "  python3 -m venv tools/openapi-generator/.venv"
+            echo "  tools/openapi-generator/.venv/bin/pip install -r tools/openapi-generator/requirements.txt"
+            echo "  tools/openapi-generator/.venv/bin/python tools/openapi-generator/generate.py --endpoints-dir krakend/templates --output docs/api/openapi.yaml"
+            echo "  tools/openapi-generator/.venv/bin/python tools/openapi-generator/generate.py --endpoints-dir krakend/templates --output docs/api/openapi.json --format json"
+            echo ""
+            echo "...e commite as duas saidas JUNTO da mudanca de template."
+            exit 1
+          fi
+
+      # Sobe o par REGERADO. Em falha ele e a evidencia; em sucesso e igual ao
+      # versionado, por definicao do gate acima.
       - name: Upload OpenAPI spec
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: openapi-spec
-          path: openapi.yaml
+          path: |
+            openapi.yaml
+            openapi.json
 
   docker-build:
     name: Docker Build Test

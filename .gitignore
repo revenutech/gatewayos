@@ -3,3 +3,10 @@ krakend/compiled-krakend.json
 *.tfstate
 *.tfstate.backup
 .terraform.lock.hcl
+
+# Par regerado que o gate do CI copia para a raiz (job `openapi-generate`).
+# O spec versionado e `docs/api/`; estes sao copia descartavel, e sem a regra
+# uma execucao local do gate deixa dois arquivos de ~1 MB prontos para entrar
+# num commit por engano.
+/openapi.yaml
+/openapi.json
