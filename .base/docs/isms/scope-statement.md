@@ -130,3 +130,7 @@ This ISMS applies to:
 > - [ISMS Manual](isms-manual.md)
 > - [Statement of Applicability](../risk/statement-of-applicability.md)
 > - LedgerOS ISMS: `ledgeros/.base/plans/08-security/iso27000-security-framework.md`
+>
+> **Normative source — ISO/IEC 27000–27005 (fonte única de verdade, TI16.0.1):**
+> `ledgeros/.base/knowledge/` — índice `00-master-index.ttl`; uma pasta por norma
+> com hífen (`iso-27000/` … `iso-27005/`). Não citar `iso27000/` sem hífen (duplicata, K5).
