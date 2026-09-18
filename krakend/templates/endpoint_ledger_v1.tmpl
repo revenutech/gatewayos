@@ -5,8 +5,7 @@
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
       "allow_open_libs": false
     },
     "auth/validator": {
@@ -47,8 +46,7 @@
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
       "allow_open_libs": false
     },
     "auth/validator": {
@@ -89,8 +87,7 @@
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
       "allow_open_libs": false
     },
     "auth/validator": {
@@ -131,8 +128,7 @@
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
       "allow_open_libs": false
     },
     "auth/validator": {
@@ -172,8 +168,7 @@
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
-      "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
-      "live": false,
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
       "allow_open_libs": false
     },
     "auth/validator": {
