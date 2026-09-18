@@ -4,7 +4,7 @@
 
   "endpoint": "/ledgeros/v1/my/postings",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -47,7 +47,7 @@
   "_comment": "User-scoped balances — routes to user-specific backend path",
   "endpoint": "/ledgeros/v1/my/balances",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -90,7 +90,7 @@
   "_comment": "Tenant dashboard — aggregated view scoped to JWT tenant",
   "endpoint": "/ledgeros/v1/my/dashboard",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
     "modifier/lua-endpoint": {

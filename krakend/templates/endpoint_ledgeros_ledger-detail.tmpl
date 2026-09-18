@@ -4,7 +4,7 @@
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/ledger.json",
   "endpoint": "/ledgeros/v1/postings/{id}/confirm",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
   "timeout": "5s",
   "extra_config": {
@@ -23,7 +23,7 @@
 {
   "endpoint": "/ledgeros/v1/balances/search",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "input_query_strings": ["*"],
   "output_encoding": "json",
   "timeout": "3s",
@@ -43,7 +43,7 @@
 {
   "endpoint": "/ledgeros/v1/balances/block",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
   "timeout": "5s",
   "extra_config": {
@@ -62,7 +62,7 @@
 {
   "endpoint": "/ledgeros/v1/balances/unblock",
   "method": "POST",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
   "timeout": "5s",
   "extra_config": {
