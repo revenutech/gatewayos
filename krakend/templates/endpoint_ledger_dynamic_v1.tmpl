@@ -9,6 +9,7 @@
   "extra_config": {
     "modifier/lua-endpoint": {
       "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "pre": "log_correlation(request)",
       "live": false,
       "allow_open_libs": false
     },
@@ -52,6 +53,7 @@
   "extra_config": {
     "modifier/lua-endpoint": {
       "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "pre": "log_correlation(request)",
       "live": false,
       "allow_open_libs": false
     },
@@ -95,6 +97,7 @@
   "extra_config": {
     "modifier/lua-endpoint": {
       "sources": ["/etc/krakend/partials/lua/jwe_guard.lua"],
+      "pre": "log_correlation(request)",
       "live": false,
       "allow_open_libs": false
     },

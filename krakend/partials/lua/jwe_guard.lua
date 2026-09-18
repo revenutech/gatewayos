@@ -48,3 +48,13 @@ function check_jwe(request)
         return
     end
 end
+
+-- 4.5 (RI-1427): loga o X-Correlation-ID no stdout do gateway. O telemetry/logging
+-- (formato logstash) do KrakenD Community não inclui headers custom no access-log;
+-- este `pre` o imprime, casando o log do GATEWAY com o do ledgeros (Audit gRPC).
+function log_correlation(request)
+    local cid = request:headers("X-Correlation-ID")
+    if cid and cid ~= "" then
+        print("[CORRELATION] x-correlation-id=" .. cid)
+    end
+end
