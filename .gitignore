@@ -10,3 +10,4 @@ krakend/compiled-krakend.json
 # num commit por engano.
 /openapi.yaml
 /openapi.json
+tools/openapi-generator/.venv/
