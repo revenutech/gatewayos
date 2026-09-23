@@ -1,3 +1,11 @@
+{{/* Rate limit POR TENANT + teto global (decisão do dono RI-1465, TI5.2.3).
+     client_max_rate keyed em X-Tenant-ID, que o auth/validator DERIVA da claim
+     tenant_id validada (propagate_claims: tenant_id -> x-tenant-id) — logo NÃO é
+     spoofável pelo cliente (corrige também o X-Forwarded-For do strategy:ip).
+     max_rate = teto GLOBAL anti-flood (backstop). Tokens M2M sem tenant_id caem
+     no bucket de chave vazia (fallback compartilhado; alta confiança interna).
+     ⚠️ VERIFICAR AO VIVO: (1) isolamento — tenant A estoura, B intacto; (2) anti-spoof
+     — X-Tenant-ID enviado pelo cliente NÃO sobrescreve o derivado da claim. */}}
 "qos/ratelimit/router": {
   "max_rate": {{ .rate_limit.global_max }},
   "client_max_rate": {{ .rate_limit.tenant_max }},

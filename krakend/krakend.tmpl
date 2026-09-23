@@ -17,7 +17,49 @@
       "format": "logstash"
     },
     "router": {
-      "return_error_msg": {{ .service.return_error_msg }}
+      "return_error_msg": {{ .service.return_error_msg }},
+      {{/*
+        RI-377 (metade 2 — a fronteira). Sem isto o KrakenD confia em todo
+        proxy e o ClientIP DELE = o X-Forwarded-For mais à esquerda escolhido
+        pelo cliente; ele carimba esse valor no XFF que envia ao backend, e o
+        identityos (que confia só no gateway) o honra — o freio de login por
+        IP vira contornável rotacionando o cabeçalho (medido: spoof 9.9.9.9 via
+        gateway -> identityos gravou 9.9.9.9). Com forwarded_by_client_ip:false
+        o ClientIP do gateway passa a ser o RemoteAddr real da conexão, e é ele
+        que segue ao backend — o cabeçalho do cliente deixa de escolher o balde.
+        LOCAL: false (não há LB confiável na frente; o par real é o host). PROD:
+        vira true + trusted_proxies:[CIDR do LB] + remote_ip_headers para
+        recuperar o IP real do cliente através do balanceador. Ver RI-1013.
+      */}}
+      "forwarded_by_client_ip": {{ .service.forwarded_by_client_ip }},
+      {{/*
+        🔴 O GATEWAY DERRUBAVA A CONEXAO EM VEZ DE RESPONDER 404.
+
+        Medido em 2026-09-06: `POST /identityos/v1/iam/policies/evaluate` —
+        caminho nao declarado — nao dava 404. Dava **resposta vazia**, e o
+        cliente via `fetch failed`. O log tinha o motivo:
+
+            http: panic serving ...: invalid node type
+            gin.(*node).findCaseInsensitivePathRec  tree.go:862
+            gin.redirectFixedPath                   gin.go:691
+
+        `redirectFixedPath` so e alcancado quando NENHUMA rota casou: o gin
+        tenta achar o caminho ignorando maiusculas antes de desistir, e a
+        arvore de rotas deste gateway o faz entrar num no que ele nao sabe
+        tratar (gin 1.9.1). O `net/http` recupera o panico por requisicao —
+        o processo sobrevive —, mas a conexao morre sem resposta.
+
+        **Erro de rota virava falha de rede.** E a diferenca importa: um 404
+        manda conferir a rota; `fetch failed` manda conferir container, DNS e
+        porta. A investigacao comeca no lugar errado, e o log do gateway e o
+        unico lugar onde a causa aparece.
+
+        Desligar a correcao de caminho tira o gin daquele ramo. O que se perde
+        e o redirecionamento de `/Identityos/...` para `/identityos/...`, que
+        um gateway de API nao deve fazer de qualquer forma: caminho e
+        sensivel a caixa, e adivinhar o que o cliente quis dizer esconde erro.
+      */}}
+      "disable_redirect_fixed_path": true
     }
   },
   "endpoints": [
@@ -34,6 +76,7 @@
     ,{{ template "endpoint_paymentos_health_v1.tmpl" . }}
     ,{{ template "endpoint_paymentos_qrcode_public_v1.tmpl" . }}
     ,{{ template "endpoint_identityos_v1.tmpl" . }}
+    ,{{ template "endpoint_health_modulos_v1.tmpl" . }}
     ,{{ template "endpoint_atmos_v1.tmpl" . }}
     ,{{ template "endpoint_admin_v1.tmpl" . }}
     ,{{ template "endpoint_ledger_grpc_v1.tmpl" . }}

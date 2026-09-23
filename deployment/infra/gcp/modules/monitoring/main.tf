@@ -101,8 +101,8 @@ variable "alert_email" {
   type = string
 }
 variable "slack_webhook_url" {
-  type = string
-  default = ""
+  type      = string
+  default   = ""
   sensitive = true
 }
 variable "labels" {

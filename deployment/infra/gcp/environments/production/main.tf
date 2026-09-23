@@ -31,32 +31,32 @@ terraform {
 
 # --- VPC ---
 module "vpc" {
-  source      = "../../modules/vpc"
-  project_id  = var.project_id
-  region      = local.region
-  vpc_name    = "gateway-prod-vpc"
-  subnet_cidr = "10.20.32.0/20"
-  pods_cidr   = "10.25.0.0/16"
+  source        = "../../modules/vpc"
+  project_id    = var.project_id
+  region        = local.region
+  vpc_name      = "gateway-prod-vpc"
+  subnet_cidr   = "10.20.32.0/20"
+  pods_cidr     = "10.25.0.0/16"
   services_cidr = "10.26.0.0/20"
 }
 
 # --- GKE ---
 module "gke" {
-  source        = "../../modules/gke"
-  project_id    = var.project_id
-  region        = local.region
-  environment   = local.environment
-  cluster_name  = "gateway-prod-cluster"
-  regional      = true  # HA across 3 zones
-  network_id    = module.vpc.network_id
-  subnet_id     = module.vpc.subnet_id
-  node_count    = 3
-  min_nodes     = 3
-  max_nodes     = 8
-  machine_type  = "e2-standard-4"
+  source          = "../../modules/gke"
+  project_id      = var.project_id
+  region          = local.region
+  environment     = local.environment
+  cluster_name    = "gateway-prod-cluster"
+  regional        = true # HA across 3 zones
+  network_id      = module.vpc.network_id
+  subnet_id       = module.vpc.subnet_id
+  node_count      = 3
+  min_nodes       = 3
+  max_nodes       = 8
+  machine_type    = "e2-standard-4"
   release_channel = "STABLE"
-  binary_auth   = true  # Only signed images
-  labels        = local.labels
+  binary_auth     = true # Only signed images
+  labels          = local.labels
 
   master_authorized_cidrs = [
     { cidr = "0.0.0.0/0", name = "github-actions" }
@@ -71,7 +71,7 @@ module "artifact_registry" {
   region          = local.region
   repository_name = "gateway-prod"
   keep_count      = 50
-  immutable_tags  = true  # Prevent image mutation
+  immutable_tags  = true # Prevent image mutation
   ci_sa_email     = module.gke.gateway_ci_sa_email
   gke_sa_email    = module.gke.gateway_app_sa_email
   labels          = local.labels
@@ -83,7 +83,7 @@ module "kms" {
   project_id       = var.project_id
   region           = local.region
   environment      = local.environment
-  protection_level = "HSM"  # FIPS 140-2 Level 3
+  protection_level = "HSM" # FIPS 140-2 Level 3
   labels           = local.labels
 }
 

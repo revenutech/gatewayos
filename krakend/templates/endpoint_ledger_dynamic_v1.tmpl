@@ -4,11 +4,29 @@
 
   "endpoint": "/ledgeros/v1/my/postings",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -28,11 +46,29 @@
   "_comment": "User-scoped balances — routes to user-specific backend path",
   "endpoint": "/ledgeros/v1/my/balances",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]
@@ -52,11 +88,29 @@
   "_comment": "Tenant dashboard — aggregated view scoped to JWT tenant",
   "endpoint": "/ledgeros/v1/my/dashboard",
   "method": "GET",
-  "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
-    {{ template "jwt_validator.tmpl" . }},
+    "modifier/lua-endpoint": {
+      "pre": "local req=ctx:load(); local cid=req:headers('X-Correlation-ID'); if cid and cid~='' then print('[CORRELATION] x-correlation-id='..cid) end",
+      "allow_open_libs": false
+    },
     "auth/validator": {
+      "alg": "RS256",
+      "jwk_url": "{{ .keycloak.jwks_url }}",
+      "issuer": "{{ .keycloak.issuer }}",
+      "audience": ["{{ .keycloak.audience }}"],
+      "cache": true,
+      "cache_duration": 3600,
+      "failed_jwk_key_cooldown": "10s",
+      "disable_jwk_security": {{ .keycloak.disable_jwk_security }},
+      "propagate_claims": [
+        ["sub", "x-user-id"],
+        ["tenant_id", "x-tenant-id"],
+        ["realm_access.roles", "x-roles"],
+        ["jti", "x-jwt-jti"],
+        ["subscription_tier", "x-subscription-tier"]
+      ],
       "roles_key": "realm_access.roles",
       "roles_key_is_nested": true,
       "roles": ["ledger-viewer", "ledger-operator", "ledger-admin"]

@@ -25,7 +25,7 @@ Identifies parties with an interest in the API Gateway's information security, t
 | 5 | **Development team** | Internal | Clear security policies, secure development guidelines, security tooling | B1-GW policy, secure config guidelines, CI security gates, CLAUDE.md | A.8.25, A.8.28, A.6.3 |
 | 6 | **Operations team** | Internal | Runbooks, monitoring dashboards, incident procedures, change management | Runbooks, Grafana dashboards, IRP, change management procedure | A.5.37, A.8.16, A.8.32 |
 | 7 | **Data subjects** (end users via LGPD) | Legal | PII protection, right to access/delete, data portability | Gateway does not store PII; transit-only protection via TLS, log masking | A.5.34, A.8.24 |
-| 8 | **Cloud service providers** (DigitalOcean/K8s) | Supplier | Shared responsibility model compliance, SLA adherence | K8s security context, network policies, resource limits | A.5.23, A.8.20, A.8.22 |
+| 8 | **Cloud service providers** (GCP/K8s) | Supplier | Shared responsibility model compliance, SLA adherence | K8s security context, network policies, resource limits | A.5.23, A.8.20, A.8.22 |
 | 9 | **Third-party integrations** (Keycloak, Redis, Envoy) | Supplier | Version compliance, security patches, configuration security | Pinned versions, vulnerability scanning in CI, security configs | A.5.19, A.8.8, A.8.19 |
 | 10 | **Management / Board** | Governance | ISMS effectiveness reporting, risk posture, compliance status | Management review (quarterly), security metrics dashboard, risk register | Cl. 5.1, Cl. 9.3 |
 

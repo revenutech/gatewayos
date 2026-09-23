@@ -111,7 +111,10 @@ UNPROTECTED=$((TOTAL_ENDPOINTS - PROTECTED_ENDPOINTS))
 # Endpoints publicos por design. Sem esta lista o indicador mede a coisa errada:
 # conta como "desprotegido" o que e protegido por outro mecanismo (mTLS do BACEN,
 # OIDC do Keycloak) ou o que e publico de proposito (health, docs, QR Pix).
-INTENTIONAL_PUBLIC_PREFIXES="/__ready /__health /paymentos/jdpi /paymentos/banklink /auth/realms /pix/cob /v1/app/version"
+# Fluxos de auth do identityos que sao pre-autenticacao por natureza (nao ha
+# token ainda): OAuth authorize, pedido/verificacao de OTP, confirmacao de
+# reset de senha, e o catch-all de login/token. Exigir JWT quebraria o fluxo.
+INTENTIONAL_PUBLIC_PREFIXES="/__ready /__health /paymentos/jdpi /paymentos/banklink /auth/realms /pix/cob /v1/app/version /identityos/v1/iam/auth/authorize /identityos/v1/iam/auth/otp /identityos/v1/iam/auth/reset-password /identityos/v1/iam/auth/{path}"
 # Publicos por natureza, em qualquer prefixo de modulo: emissao de token e documentacao
 INTENTIONAL_PUBLIC_SUBSTRINGS="/oauth /docs /openapi"
 

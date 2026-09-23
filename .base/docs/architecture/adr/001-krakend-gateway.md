@@ -76,3 +76,5 @@ Use **KrakenD v2.7 Community Edition** with:
 - [Auth Flow](../auth-flow.md) — JWT validation and RBAC implementation
 - Envoy gRPC configuration: `envoy/envoy-dev.yaml`
 - Lua scripts: `krakend/partials/lua/`
+
+> **Nota de auditoria de frescor 2026-09-17.** Versão do KrakenD desatualizada: a imagem base é **2.13.4** (`Dockerfile:1 FROM krakend:2.13.4`) e o build patcha **2.9.4** (`build/krakend/patch-deps.sh`), não "v2.7".

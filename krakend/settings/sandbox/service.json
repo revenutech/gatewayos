@@ -3,5 +3,6 @@
   "log_level": "INFO",
   "return_error_msg": false,
   "expose_docs": true,
-  "expose_test_endpoints": false
+  "expose_test_endpoints": false,
+  "forwarded_by_client_ip": false
 }

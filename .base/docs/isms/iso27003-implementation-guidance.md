@@ -284,4 +284,4 @@ classification: Internal
 
 ---
 
-> **Cross-references:** [ISMS Manual](isms-manual.md) | [Controls Matrix](../compliance/controls-matrix.md) | [ISO 27003 source PDF](ledgeros/.base/knowledge/iso-27000/pdfs/ISO_IEC_27003_2017(en).pdf)
+> **Cross-references:** [ISMS Manual](isms-manual.md) | [Controls Matrix](../compliance/controls-matrix.md) | [ISO 27003 source PDF](ledgeros/.base/knowledge/iso-27003/pdfs/ISO_IEC_27003_2017(en).pdf)

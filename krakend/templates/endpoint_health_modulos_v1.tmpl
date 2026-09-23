@@ -1,0 +1,99 @@
+{{/*
+  Saude POR MODULO, atras do gateway.
+
+  🔴 POR QUE ISTO EXISTE. A tela "Conexoes" do dashboard listava nove
+  integracoes com `status: 'connected'`, `lastSync: '30/03/2026 07:30'` e
+  `requests24h: 1247` — tudo LITERAL num arquivo TypeScript. Cinco dos nove
+  modulos nem sequer rodam na malha local, e a tela dizia "Conectado" para os
+  cinco. Numero inventado com cara de medicao e pior que campo vazio: nao ha o
+  que investigar.
+
+  So entram os modulos que a malha sobe e que SERVEM saude — o RI-244 vale aqui
+  igual: declarar rota que o backend nao atende e expor caminho inalcancavel.
+  `onboardos`, `paymentos`, `harmonyos`, `chargeos` e `cardos` ficam de fora ate
+  subirem.
+
+  ⚠️ O caminho de saude NAO e o mesmo em todos, e por isso cada um e declarado
+  com o seu. Medido em 2026-09-06:
+
+      identityos   /health   200      /healthz 404
+      accountos    /health   200      /healthz 401
+      ledgeros     /health   200      /healthz 401
+      wssgateway   /healthz  200      /health  404
+
+  ⚠️ O caminho e `/{modulo}/health`, e NAO `/{modulo}/__health`. O prefixo `__`
+  e reservado pelo KrakenD para os endpoints internos dele (`/__health`,
+  `/__debug`, `/__echo`, `/__stats`), e um endpoint declarado com ele e
+  DESCARTADO — com a mesma mensagem generica de "endpoint invalido", que nao
+  menciona prefixo nenhum. `/paymentos/health` ja usava esta forma.
+
+  ⚠️ O `input_headers` precisa conter os alvos de `propagate_claims` do
+  validador (`x-user-id`, `x-tenant-id`, `x-roles`). Sem eles o KrakenD nao
+  reclama do header: ele recusa o ENDPOINT INTEIRO, com
+  "ignoring the 'GET /identityos/__health' endpoint, since it is invalid" — uma
+  mensagem que nao menciona header nenhum.
+
+  ⚠️ COM VALIDADOR DE JWT, ao contrario de `/__health` e `/__ready`. Saber quais
+  modulos estao de pe e informacao de topologia; quem consome isto e o BFF, que
+  ja tem token de servico. Sonda de infraestrutura continua sendo o `/__health`
+  do proprio KrakenD.
+*/}}
+{
+  "endpoint": "/identityos/health",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{
+  "endpoint": "/accountos/health",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.accountos }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/ledgeros/health",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/health",
+    "encoding": "no-op"
+  }]
+},
+{
+  "endpoint": "/wssgateway/health",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.wssgateway }}"],
+    "url_pattern": "/healthz",
+    "encoding": "no-op"
+  }]
+}
