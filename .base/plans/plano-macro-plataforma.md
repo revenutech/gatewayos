@@ -43,7 +43,7 @@ wss-gateway, agora fora de escopo.
 | onboardos | 184 | ~133 paths | coberto |
 | ledgeros | 46 | ~40 grupos `/v1/*` | parcial |
 | accountos | 6 | 30 paths / 56 rotas | **grande** |
-| identos | 4 | ~150 endpoints `/v1/iam/*` | **crítica** |
+| identityos | 4 | ~150 endpoints `/v1/iam/*` | **crítica** |
 | authorityos | **0** | 32 paths | **ausente** |
 
 ### Auth — já parcialmente pronto
