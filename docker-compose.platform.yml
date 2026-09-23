@@ -1,0 +1,204 @@
+# =============================================================================
+# Revenu Platform — infraestrutura compartilhada para o stack local
+# ISO 27001: A.8.31 (Separation of environments)
+# =============================================================================
+# Sobe a infra que TODOS os modulos compartilham, na rede `revenu-platform-net`,
+# com os aliases que os servicos ja esperam (`cockroachdb`, `kafka`, `redis`,
+# `keycloak`, `vault`). Por isso os DSNs existentes nos composes de cada modulo
+# continuam validos — muda a rede, nao a configuracao.
+#
+# Uso:
+#   make -C ../cockroachdb network      # cria revenu-platform-net (idempotente)
+#   docker compose -f docker-compose.yml -f docker-compose.platform.yml up -d
+#
+# Cada modulo entra na rede com seu proprio overlay:
+#   cd ../identityos-revenu
+#   docker compose -f docker-compose.yml -f docker-compose.platform.yml up -d
+#
+# Unica porta publicada no host e a do gateway (8080). Servicos conversam por
+# DNS interno, espelhando a topologia do cluster GKE alvo.
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------- gateway --
+  krakend:
+    environment:
+      # A raiz de settings/ contem os diretorios por ambiente E os arquivos
+      # flat; apontar para a raiz carregaria chaves conflitantes.
+      - FC_SETTINGS=/etc/krakend/settings/develop
+    networks:
+      default:
+      revenu-platform-net:
+        aliases:
+          - gateway
+
+  envoy-grpc-transcoder:
+    ports: !reset []
+    networks:
+      default:
+      revenu-platform-net:
+        aliases:
+          - envoy-grpc-transcoder
+
+  # ------------------------------------------------------------------- dados --
+  cockroachdb:
+    image: cockroachdb/cockroach:v24.3.0
+    container_name: revenu-cockroachdb
+    command: start-single-node --insecure
+    volumes:
+      - cockroach-data:/cockroach/cockroach-data
+    healthcheck:
+      test: ["CMD", "cockroach", "sql", "--insecure", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    networks:
+      revenu-platform-net:
+        aliases:
+          - cockroachdb
+
+  # Cria um database por modulo na mesma instancia — isolamento logico, sem o
+  # custo de cinco containers CockroachDB como hoje.
+  cockroachdb-init:
+    image: cockroachdb/cockroach:v24.3.0
+    depends_on:
+      cockroachdb:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        for db in ledgeros identityos onboardos accountos authorityos; do
+          cockroach sql --insecure --host=cockroachdb:26257 \
+            -e "CREATE DATABASE IF NOT EXISTS $$db;"
+        done
+        echo "databases prontos"
+    restart: "no"
+    networks:
+      - revenu-platform-net
+
+  # Imagem oficial Apache. A `bitnami/kafka:3.7` usada pelos composes de
+  # identityos, onboardos e accounts foi removida do Docker Hub e nao resolve
+  # mais — aqueles composes nao sobem hoje. Os nomes de variavel da imagem
+  # oficial nao levam o prefixo `KAFKA_CFG_` da Bitnami.
+  kafka:
+    image: apache/kafka:3.7.2
+    container_name: revenu-kafka
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      revenu-platform-net:
+        aliases:
+          - kafka
+
+  redis:
+    image: redis:7-alpine
+    container_name: revenu-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      revenu-platform-net:
+        aliases:
+          - redis
+
+  # -------------------------------------------------------------------- auth --
+  keycloak-db:
+    image: postgres:16-alpine
+    container_name: revenu-keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak-dev-secret
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - revenu-platform-net
+
+  # O realm `ledgeros` e importado de keycloakos-revenu/docker/realm-export.json,
+  # gerado a partir do CR do operator (k8s/base/keycloak-realm.yaml) — mesma
+  # fonte de verdade, 13 clients e 40 scopes. Os secrets sao valores de
+  # desenvolvimento (`dev-*`), nunca os de producao, que vivem no Vault.
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.3
+    container_name: revenu-keycloak
+    command: ["start-dev", "--http-relative-path=/auth", "--import-realm"]
+    volumes:
+      - ../keycloakos-revenu/docker/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak-dev-secret
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_FEATURES: "organization,token-exchange,admin-fine-grained-authz,dpop"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      revenu-platform-net:
+        aliases:
+          - keycloak
+
+  vault:
+    image: hashicorp/vault:1.18
+    container_name: revenu-vault
+    cap_add: ["IPC_LOCK"]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: dev-root-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    command: ["server", "-dev"]
+    restart: unless-stopped
+    networks:
+      revenu-platform-net:
+        aliases:
+          - vault
+
+volumes:
+  cockroach-data:
+  kafka-data:
+  redis-data:
+  keycloak-db-data:
+
+networks:
+  revenu-platform-net:
+    external: true
+    name: revenu-platform-net

@@ -55,7 +55,7 @@ Os arquivos em `krakend/endpoints/ledgeros/*.json` existem, mas não entram no t
 | Dashboard agregado | `GET` | `/v1/dashboard/overview`, `/v1/dashboard/health` | JWT + RBAC | não | fan-out para 4 ou 5 backends; `overview` usa `concurrent_calls` |
 | PaymentOS | `POST`,`GET` | `/v1/pix/{path}`, `/v1/ted/{path}`, `/v1/boleto/{path}` | JWT + RBAC | não | `no-op`; usa `/{path}` como se fosse wildcard |
 | Atmos | `POST`,`GET` | `/v1/atm/{path}` | JWT + RBAC | não | `no-op`; usa `/{path}` |
-| Identos | `POST`,`GET` | `/v1/auth/{path}`, `/v1/users/{path}` | `/v1/auth/*`: JWT sem roles; `/v1/users/*`: JWT + `ledger-admin` | não | revisar se `/v1/auth/*` deveria mesmo exigir token |
+| IdentityOS | `POST`,`GET` | `/v1/auth/{path}`, `/v1/users/{path}` | `/v1/auth/*`: JWT sem roles; `/v1/users/*`: JWT + `ledger-admin` | não | revisar se `/v1/auth/*` deveria mesmo exigir token |
 | Admin | `GET`,`POST` | `/v1/admin/{path}` | JWT + `ledger-admin` | não | `no-op`; usa `/{path}` |
 | OnboardOS | `POST`,`GET` | `/v1/onboarding/{path}` | JWT + RBAC | não | `no-op`; usa `/{path}` |
 | AccountOS | `POST`,`GET`,`PUT` | `/v1/accounts/{path}` | JWT + RBAC | não | `no-op`; usa `/{path}` |

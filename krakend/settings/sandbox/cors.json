@@ -1,6 +1,6 @@
 {
   "allow_origins": [
-    "https://uat.corebanxapp.com.br"
+    "https://sandbox.app.revenu.tech"
   ],
   "allow_methods": [
     "GET",

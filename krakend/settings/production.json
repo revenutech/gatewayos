@@ -44,7 +44,7 @@
   },
   "cors": {
     "allow_origins": [
-      "https://sit.corebanxapp.com.br"
+      "https://app.revenu.tech"
     ],
     "allow_methods": [
       "GET",
