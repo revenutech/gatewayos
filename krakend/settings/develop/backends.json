@@ -15,5 +15,6 @@
   "cardos_http": "http://cardos:8085",
   "harmonyos_http": "http://harmonyos:8097",
   "investos_http": "http://investos:8089",
-  "loanos_http": "http://loanos:8083"
+  "loanos_http": "http://loanos:8083",
+  "insuranceos_http": "http://insuranceos:8086"
 }

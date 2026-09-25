@@ -15,5 +15,6 @@
   "cardos_http": "http://cardos.ledgeros-staging.svc.cluster.local:8085",
   "harmonyos_http": "http://harmonyos.ledgeros-staging.svc.cluster.local:8097",
   "investos_http": "http://investos.ledgeros-staging.svc.cluster.local:8089",
-  "loanos_http": "http://loanos.ledgeros-staging.svc.cluster.local:8083"
+  "loanos_http": "http://loanos.ledgeros-staging.svc.cluster.local:8083",
+  "insuranceos_http": "http://insuranceos.ledgeros-staging.svc.cluster.local:8086"
 }

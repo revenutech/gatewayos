@@ -1,0 +1,1626 @@
+{{/*
+  INSURANCEOS — declarado 2026-09-25, a borda ja recarregava (revenu-insuranceos-api,
+  :8686, healthy) sem nenhum template para ele — foi declarado DEPOIS dos cinco
+  (billos/cardos/harmonyos/investos/loanos) terem sido escritos.
+
+  ADR-034: A BORDA CEDE. O `endpoint` (lado do front) entra no vocabulario
+  `/insuranceos/v1/...`, igual aos outros 5 modulos desta leva — quem le e o
+  BFF, e o BFF fala `/insuranceos/v1/...` para todos eles.
+
+  🔴 O MODULO NAO SERVE SOB `/v1/...` — SERVE SOB `/api/v1/...`. MEDIDO:
+      GET /api/v1/webhooks  -> 401     GET /v1/policies -> 404
+      GET /api/v1/zzz       -> 404     GET /zzz         -> 404
+  405 declarado prova o oposto de 404: aqui o par (401 no prefixo certo, 404 no
+  errado) e a mesma prova com outro sinal. O `backend.url_pattern` de CADA rota
+  abaixo leva `/api` — e so ele; o `endpoint` do lado do front NAO leva, para
+  ficar no mesmo vocabulario dos outros 5.
+
+  FONTE — go list -deps ./cmd/api (insuranceos-revenu) confirma os 10 modulos
+  de dominio linkados (contract/policy/product/underwriting/premium/claim/
+  commission/reinsurance/regulatory/openinsurance) + internal/webhook.
+  `cmd/api/main.go:118-186` monta os 10 `routes.RegisterHTTP(api, h)` mais
+  `webhook.RegisterRoutes(api, h)`, TODOS atras de `auth.Middleware` +
+  `auth.AuditMiddleware` + rate limiter (main.go:120-130) — nenhuma rota de
+  negocio e publica. Contagem por arquivo, `grep -n '\.\(GET\|POST\|PUT\|DELETE\)('`:
+  contract 3 (routes.go:12-14) · policy 11 (routes.go:13-25) · product 8
+  (routes.go:12-19) · underwriting 6 (routes.go:12-17) · premium 6
+  (routes.go:12-17) · claim 6 (routes.go:12-17) · commission 5 (routes.go:
+  12-16) · reinsurance 4 (routes.go:12-15) · regulatory 8 (routes.go:12-19) ·
+  openinsurance 6 (routes.go:13-18) · webhook 4 (internal/webhook/routes.go:
+  12-15) = 67 rotas de negocio, TODAS declaradas abaixo.
+
+  🔴 NAO SAO OS 77. Dos 77 que `cmd/api/main.go` registra no total, 10 ficam
+  de fora, DELIBERADAMENTE:
+    - `GET /health`            (main.go:97) — publica, sem auth; e a sonda de
+      infraestrutura do container, nao rota de negocio do Navigator 360. Segue
+      o mesmo corte que RI-244 ja aplica em `endpoint_health_modulos_v1.tmpl`
+      (modulo entra la, com o path de saude real, nao aqui).
+    - `POST /oauth/token`      (main.go:110) — publica, e o MINT proprio do
+      insuranceos (HS256, `AUTH_MODE=hs256` no override). Nao e um recurso do
+      dominio de seguros; e auth do proprio modulo, e a borda ja tem o SEU
+      proprio validador (Keycloak RS256, `jwt_validator.tmpl`) na frente de
+      toda rota abaixo. Expor o mint alheio pela borda duplicaria emissor de
+      token sem nenhum consumidor (o BFF fala com o Keycloak).
+    - `GET /docs`, `/docs/guides`, `/docs/guides/{page}`, `/docs/api`,
+      `/docs/changelog`, `/docs/openapi.yaml`, `/docs/static/*filepath`
+      (internal/docs/handler.go:26-37, 7 rotas) — publicas, documentacao HTML/
+      OpenAPI servida pelo proprio processo. Nao sao API do Navigator 360;
+      nenhum consumidor do front as chama. `endpoint_docs_v1.tmpl` ja cobre o
+      padrao "docs" desta borda para outros modulos, se algum dia isto entrar.
+  1 (health) + 1 (oauth) + 7 (docs, contando o StaticFS) = 9; a decima e o
+  `HEAD` implicito que o `StaticFS` do gin registra ao lado do `GET` (mesmo
+  handler, mesmo path) — nao e uma rota adicional do dominio, e o gin conta os
+  dois metodos separadamente no log de boot.
+
+  BACKEND — alias de rede `insuranceos`, HTTP na 8086
+  (`docker/revenu/overrides/insuranceos.yaml`: `aliases: [insuranceos]`,
+  `HTTP_PORT: "8086"`). 🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) NAO tem
+  `insuranceos_http` — mesma lacuna que harmonyos/billos/cardos/investos/loanos
+  tinham quando os deles foram escritos. Fallback: `{{ if .backends.insuranceos_http }}`
+  usa a chave quando existir, cai no literal `http://insuranceos:8086` quando
+  nao (caso de hoje). `qos/circuit-breaker` vai INLINE pelo mesmo motivo —
+  `cb_insuranceos` tambem nao existe no settings vivo.
+
+  QUERY STRING — RTSK.051.1341.01/MS-013 4.4: `input_query_strings` e por
+  endpoint, sem opcao global. O gate `check-query-string-descartada.py` NAO
+  cobre insuranceos (o codigo nao usa `@Router` Swagger — ve-se no proprio
+  script: "insuranceos ... nao tem prefixo na borda hoje", que era literal ate
+  este template nascer). Medi na mao (`grep -rn 'c.Query' modules...handler`):
+  4 dos 67 handlers leem query string, e SO esses quatro levam
+  `input_query_strings` abaixo, nomeada (nao `["*"]`) — o mesmo padrao usado no
+  `DELETE /paymentos/v1/boleto/dda/payer/{id}` (reason, LGPD):
+    GET contracts/delegation-status      -> mga_id, insurer_id  (ambos obrigatorios; 400 sem eles)
+    GET open-insurance/consents/{id}/validate -> api_category
+    GET regulatory/provisions             -> type
+    GET regulatory/sro-entries             -> period
+  Os outros 25 GET (incluindo `products`, `reports`, listagens `ListByPolicy`
+  etc.) NAO leem `c.Query` nos handlers de hoje — nao levam a chave, para nao
+  declarar surface que o modulo nao consome.
+*/}}
+
+{
+  "_comment": "insuranceos contract · POST /api/v1/contracts — Create — modules/contract/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/contracts",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/contracts",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos contract · GET /api/v1/contracts/{id} — GetByID — modules/contract/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/contracts/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/contracts/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos contract · GET /api/v1/contracts/delegation-status — GetDelegationStatus — modules/contract/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/contracts/delegation-status",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["mga_id", "insurer_id"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/contracts/delegation-status",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/quotes — CreateQuote — modules/policy/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/policies/quotes",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/quotes",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/submit-proposal — SubmitProposal — modules/policy/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/policies/{id}/submit-proposal",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/submit-proposal",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/accept — AcceptProposal — modules/policy/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/policies/{id}/accept",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/accept",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/issue — IssuePolicy — modules/policy/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/policies/{id}/issue",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/issue",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/cancel — CancelPolicy — modules/policy/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/policies/{id}/cancel",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/cancel",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/transfer — TransferPolicy — modules/policy/routes/routes.go:18",
+  "endpoint": "/insuranceos/v1/policies/{id}/transfer",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/transfer",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/endorsements — CreateEndorsement — modules/policy/routes/routes.go:19",
+  "endpoint": "/insuranceos/v1/policies/{id}/endorsements",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/endorsements",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · POST /api/v1/policies/{id}/renew — RenewPolicy — modules/policy/routes/routes.go:20",
+  "endpoint": "/insuranceos/v1/policies/{id}/renew",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/renew",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · GET /api/v1/policies/{id} — GetByID — modules/policy/routes/routes.go:23",
+  "endpoint": "/insuranceos/v1/policies/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · GET /api/v1/policies/e2e/{e2eId} — GetByE2E — modules/policy/routes/routes.go:24",
+  "endpoint": "/insuranceos/v1/policies/e2e/{e2eId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/e2e/{e2eId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos policy · GET /api/v1/policies/{id}/history — GetHistory — modules/policy/routes/routes.go:25",
+  "endpoint": "/insuranceos/v1/policies/{id}/history",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/policies/{id}/history",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · POST /api/v1/products — Create — modules/product/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/products",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · POST /api/v1/products/{id}/activate — Activate — modules/product/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/products/{id}/activate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}/activate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · POST /api/v1/products/{id}/suspend — Suspend — modules/product/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/products/{id}/suspend",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}/suspend",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · GET /api/v1/products — List — modules/product/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/products",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · GET /api/v1/products/{id} — GetByID — modules/product/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/products/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · GET /api/v1/products/{id}/coverages — GetCoverages — modules/product/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/products/{id}/coverages",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}/coverages",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · GET /api/v1/products/{id}/commission-template — GetCommissionTemplate — modules/product/routes/routes.go:18",
+  "endpoint": "/insuranceos/v1/products/{id}/commission-template",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}/commission-template",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos product · GET /api/v1/products/{id}/carencies — GetCarencies — modules/product/routes/routes.go:19",
+  "endpoint": "/insuranceos/v1/products/{id}/carencies",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/products/{id}/carencies",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · POST /api/v1/underwriting/evaluate — EvaluateRisk — modules/underwriting/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/underwriting/evaluate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/evaluate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · POST /api/v1/underwriting/validate-questionnaire — ValidateQuestionnaire — modules/underwriting/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/underwriting/validate-questionnaire",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/validate-questionnaire",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · POST /api/v1/underwriting/{id}/decision — RecordDecision — modules/underwriting/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/underwriting/{id}/decision",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/{id}/decision",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · GET /api/v1/underwriting/{id} — GetByID — modules/underwriting/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/underwriting/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · GET /api/v1/underwriting/{id}/risk-factors — GetRiskFactors — modules/underwriting/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/underwriting/{id}/risk-factors",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/{id}/risk-factors",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos underwriting · GET /api/v1/underwriting/questionnaire/{productId} — GetQuestionnaireRequirements — modules/underwriting/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/underwriting/questionnaire/{productId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/underwriting/questionnaire/{productId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · POST /api/v1/premiums/generate — GenerateInstallments — modules/premium/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/premiums/generate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/generate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · POST /api/v1/premiums/{id}/payment — RecordPayment — modules/premium/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/premiums/{id}/payment",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/{id}/payment",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · POST /api/v1/premiums/{id}/reconcile — Reconcile — modules/premium/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/premiums/{id}/reconcile",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/{id}/reconcile",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · GET /api/v1/premiums/{id} — GetByID — modules/premium/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/premiums/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · GET /api/v1/premiums/policy/{policyId} — ListByPolicy — modules/premium/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/premiums/policy/{policyId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/policy/{policyId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos premium · GET /api/v1/premiums/overdue — GetOverdueReport — modules/premium/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/premiums/overdue",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/premiums/overdue",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · POST /api/v1/claims/fnol — RegisterFNOL — modules/claim/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/claims/fnol",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/fnol",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · POST /api/v1/claims/{id}/assign-adjuster — AssignAdjuster — modules/claim/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/claims/{id}/assign-adjuster",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/{id}/assign-adjuster",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · POST /api/v1/claims/{id}/decide — Decide — modules/claim/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/claims/{id}/decide",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/{id}/decide",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · POST /api/v1/claims/{id}/settle — Settle — modules/claim/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/claims/{id}/settle",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/{id}/settle",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · GET /api/v1/claims/{id} — GetByID — modules/claim/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/claims/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos claim · GET /api/v1/claims/{id}/sla — CheckSLA — modules/claim/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/claims/{id}/sla",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/claims/{id}/sla",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos commission · POST /api/v1/commissions/calculate — Calculate — modules/commission/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/commissions/calculate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/commissions/calculate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos commission · POST /api/v1/commissions/{id}/pay — Pay — modules/commission/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/commissions/{id}/pay",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/commissions/{id}/pay",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos commission · POST /api/v1/commissions/{id}/reverse — Reverse — modules/commission/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/commissions/{id}/reverse",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/commissions/{id}/reverse",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos commission · GET /api/v1/commissions/{id} — GetByID — modules/commission/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/commissions/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/commissions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos commission · GET /api/v1/commissions/policy/{policyId} — ListByPolicy — modules/commission/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/commissions/policy/{policyId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/commissions/policy/{policyId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos reinsurance · POST /api/v1/reinsurance/cessions — Create — modules/reinsurance/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/reinsurance/cessions",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/reinsurance/cessions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos reinsurance · POST /api/v1/reinsurance/{id}/recover — Recover — modules/reinsurance/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/reinsurance/{id}/recover",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/reinsurance/{id}/recover",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos reinsurance · GET /api/v1/reinsurance/{id} — GetByID — modules/reinsurance/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/reinsurance/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/reinsurance/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos reinsurance · GET /api/v1/reinsurance/policy/{policyId} — ListByPolicy — modules/reinsurance/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/reinsurance/policy/{policyId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/reinsurance/policy/{policyId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · POST /api/v1/regulatory/reports/generate — Generate — modules/regulatory/routes/routes.go:12",
+  "endpoint": "/insuranceos/v1/regulatory/reports/generate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/reports/generate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · POST /api/v1/regulatory/reports/{id}/validate — Validate — modules/regulatory/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/regulatory/reports/{id}/validate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/reports/{id}/validate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · POST /api/v1/regulatory/reports/{id}/submit — Submit — modules/regulatory/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/regulatory/reports/{id}/submit",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/reports/{id}/submit",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · POST /api/v1/regulatory/provisions/calculate — CalculateProvision — modules/regulatory/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/regulatory/provisions/calculate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/provisions/calculate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · GET /api/v1/regulatory/reports — ListReports — modules/regulatory/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/regulatory/reports",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/reports",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · GET /api/v1/regulatory/reports/{id} — GetReport — modules/regulatory/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/regulatory/reports/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/reports/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · GET /api/v1/regulatory/provisions — GetProvisions — modules/regulatory/routes/routes.go:18",
+  "endpoint": "/insuranceos/v1/regulatory/provisions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["type"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/provisions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos regulatory · GET /api/v1/regulatory/sro-entries — GetSROEntries — modules/regulatory/routes/routes.go:19",
+  "endpoint": "/insuranceos/v1/regulatory/sro-entries",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["period"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/regulatory/sro-entries",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · POST /api/v1/open-insurance/consents — CreateConsent — modules/openinsurance/routes/routes.go:13",
+  "endpoint": "/insuranceos/v1/open-insurance/consents",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · POST /api/v1/open-insurance/consents/{id}/revoke — RevokeConsent — modules/openinsurance/routes/routes.go:14",
+  "endpoint": "/insuranceos/v1/open-insurance/consents/{id}/revoke",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents/{id}/revoke",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · PUT /api/v1/open-insurance/consents/{id}/scopes — UpdateScopes — modules/openinsurance/routes/routes.go:15",
+  "endpoint": "/insuranceos/v1/open-insurance/consents/{id}/scopes",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents/{id}/scopes",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · GET /api/v1/open-insurance/consents/{id} — GetConsent — modules/openinsurance/routes/routes.go:16",
+  "endpoint": "/insuranceos/v1/open-insurance/consents/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · GET /api/v1/open-insurance/consents/{id}/validate — ValidateForAPI — modules/openinsurance/routes/routes.go:17",
+  "endpoint": "/insuranceos/v1/open-insurance/consents/{id}/validate",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["api_category"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents/{id}/validate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos openinsurance · GET /api/v1/open-insurance/consents/customer/{customerId} — ListByCustomer — modules/openinsurance/routes/routes.go:18",
+  "endpoint": "/insuranceos/v1/open-insurance/consents/customer/{customerId}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/open-insurance/consents/customer/{customerId}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos webhook · POST /api/v1/webhooks — Create — internal/webhook/routes.go:12",
+  "endpoint": "/insuranceos/v1/webhooks",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/webhooks",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos webhook · GET /api/v1/webhooks — List — internal/webhook/routes.go:13",
+  "endpoint": "/insuranceos/v1/webhooks",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/webhooks",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos webhook · DELETE /api/v1/webhooks/{id} — Delete — internal/webhook/routes.go:14",
+  "endpoint": "/insuranceos/v1/webhooks/{id}",
+  "method": "DELETE",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/webhooks/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "_comment": "insuranceos webhook · POST /api/v1/webhooks/{id}/test — Test — internal/webhook/routes.go:15",
+  "endpoint": "/insuranceos/v1/webhooks/{id}/test",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.insuranceos_http }}{{ .backends.insuranceos_http }}{{ else }}http://insuranceos:8086{{ end }}"],
+    "url_pattern": "/api/v1/webhooks/{id}/test",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-insuranceos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

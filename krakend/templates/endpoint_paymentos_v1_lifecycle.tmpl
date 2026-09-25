@@ -7,10 +7,11 @@
   template in krakend.tmpl.
 */}}
 {
-  "_comment": "BOLETO lifecycle — DELETE /v1/boleto/dda/payer/{id}",
+  "_comment": "BOLETO lifecycle — DELETE /v1/boleto/dda/payer/{id} — `reason` e obrigatorio no handler (LGPD Art. 18, Lei 13.709/2018); sem input_query_strings a borda descartava-o em silencio antes de chegar ao modulo",
   "endpoint": "/paymentos/v1/boleto/dda/payer/{id}",
   "method": "DELETE",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
+  "input_query_strings": ["reason"],
   "output_encoding": "no-op",
   "extra_config": {
     "auth/validator": {

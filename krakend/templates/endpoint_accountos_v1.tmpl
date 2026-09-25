@@ -273,6 +273,7 @@
   "endpoint": "/accountos/v1/accounts/{path}/history",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -316,6 +317,7 @@
   "endpoint": "/accountos/v1/products",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {
@@ -644,6 +646,7 @@
   "endpoint": "/accountos/v1/statements",
   "method": "GET",
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
+  "input_query_strings": ["*"],
   "output_encoding": "no-op",
   "extra_config": {
     "modifier/lua-endpoint": {

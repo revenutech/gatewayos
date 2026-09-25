@@ -104,6 +104,13 @@
     ,{{ template "endpoint_harmonyos_navigator360_v1.tmpl" . }}
     ,{{ template "endpoint_investos_navigator360_v1.tmpl" . }}
     ,{{ template "endpoint_loanos_navigator360_v1.tmpl" . }}
+    {{/*
+      MS-013 4.5: insuranceos subiu na borda (revenu-insuranceos-api, :8686)
+      DEPOIS dos cinco acima terem sido escritos — nenhum template existia.
+      67 rotas de negocio; 10 ficam fora (health/oauth/docs), ver o comentario
+      de cabecalho do proprio template.
+    */}}
+    ,{{ template "endpoint_insuranceos_v1.tmpl" . }}
     {{ if .service.expose_test_endpoints }},{{ template "endpoint_test_v1.tmpl" . }}{{ end }}
     ,{{ template "endpoint_keycloak_v1.tmpl" . }}
     ,{{ template "endpoint_app_version_v1.tmpl" . }}
