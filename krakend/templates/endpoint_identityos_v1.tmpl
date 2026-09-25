@@ -61,6 +61,47 @@
   }]
 },
 {{/*
+  ⚠️ PUBLICA POR ESPECIFICACAO (RFC 8414 / OpenID Discovery), e sem ela o
+  gateway fecha um circuito sobre si mesmo. Medido em 2026-09-25:
+
+      GET :8280/identityos/v1/iam/.well-known/jwks.json   401
+      GET :8091/v1/iam/.well-known/jwks.json              200
+
+  Nao havia rota `.well-known` declarada sob /identityos. Os dois segmentos
+  caiam em `/identityos/v1/iam/{resource}/{id}` GET — resource=".well-known",
+  id="jwks.json" —, que carrega `auth/validator`. O gateway exigia o Bearer
+  para entregar A CHAVE PUBLICA QUE VALIDA O BEARER: quem so tem a chave nunca
+  chega ao token, e quem ja tem o token nao precisa pedir a chave.
+
+  A prova de que era o catch-all, e nao backend ausente: dois segmentos
+  inventados davam 401 (a rota existe e nega), quatro davam 404 (a rota nao
+  existe). 401 nao prova ausencia de rota — distingue-se negar de nao existir.
+
+  Sem `auth/validator`, portanto, pelo mesmo motivo que o
+  `/auth/realms/ledgeros/.well-known/openid-configuration` do keycloak ja e
+  servido aberto neste mesmo gateway. O corpo e material publico por
+  definicao — modulo/expoente e cadeia x5c das chaves de assinatura. Nao ha
+  identidade a verificar, e nada que a verificacao protegesse.
+
+  Declarada ANTES do catch-all. No gin a rota literal vence a parametrizada no
+  mesmo nivel independentemente da ordem no ficheiro; a ordem aqui e para o
+  leitor, nao para o roteador.
+*/}}
+{
+  "endpoint": "/identityos/v1/iam/.well-known/jwks.json",
+  "method": "GET",
+  "input_headers": ["X-Correlation-ID"],
+  "output_encoding": "no-op",
+  "backend": [{
+    "host": ["{{ .backends.identityos }}"],
+    "url_pattern": "/v1/iam/.well-known/jwks.json",
+    "encoding": "no-op",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_identityos }}
+    }
+  }]
+},
+{{/*
   🔴 A SUPERFICIE ADMINISTRATIVA NAO EXISTIA NO GATEWAY, e o que existia era o
   metodo errado. Medido em 2026-09-06:
 
