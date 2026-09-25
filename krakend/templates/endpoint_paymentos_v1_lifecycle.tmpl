@@ -38,6 +38,7 @@
   "_comment": "GET /v1/boleto",
   "endpoint": "/paymentos/v1/boleto",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -66,6 +67,7 @@
   "_comment": "GET /v1/boleto/barcode/{barcode}",
   "endpoint": "/paymentos/v1/boleto/barcode/{barcode}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -94,6 +96,7 @@
   "_comment": "GET /v1/boleto/nosso-numero/{nosso_numero}",
   "endpoint": "/paymentos/v1/boleto/nosso-numero/{nosso_numero}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -402,6 +405,7 @@
   "_comment": "GET /v1/pix",
   "endpoint": "/paymentos/v1/pix",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -430,6 +434,7 @@
   "_comment": "GET /v1/pix/claims/{claim_id}",
   "endpoint": "/paymentos/v1/pix/claims/{claim_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -458,6 +463,7 @@
   "_comment": "GET /v1/pix/cob/{txid}",
   "endpoint": "/paymentos/v1/pix/cob/{txid}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -486,6 +492,7 @@
   "_comment": "GET /v1/pix/fraud/infractions",
   "endpoint": "/paymentos/v1/pix/fraud/infractions",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -514,6 +521,7 @@
   "_comment": "GET /v1/pix/fraud/infractions/{infraction_id}",
   "endpoint": "/paymentos/v1/pix/fraud/infractions/{infraction_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -542,6 +550,7 @@
   "_comment": "GET /v1/pix/fraud/markers",
   "endpoint": "/paymentos/v1/pix/fraud/markers",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -570,6 +579,7 @@
   "_comment": "GET /v1/pix/fraud/markers/{marker_id}",
   "endpoint": "/paymentos/v1/pix/fraud/markers/{marker_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -598,6 +608,7 @@
   "_comment": "GET /v1/pix/fraud/report/{report_id}",
   "endpoint": "/paymentos/v1/pix/fraud/report/{report_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -626,6 +637,7 @@
   "_comment": "GET /v1/pix/keys/reconciliation",
   "endpoint": "/paymentos/v1/pix/keys/reconciliation",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -654,6 +666,7 @@
   "_comment": "GET /v1/pix/keys/statistics",
   "endpoint": "/paymentos/v1/pix/keys/statistics",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -682,6 +695,7 @@
   "_comment": "GET /v1/pix/keys/{entry_id}",
   "endpoint": "/paymentos/v1/pix/keys/{entry_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -710,6 +724,7 @@
   "_comment": "GET /v1/pix/loc/{loc_id}",
   "endpoint": "/paymentos/v1/pix/loc/{loc_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -738,6 +753,7 @@
   "_comment": "GET /v1/pix/lotecob/{batch_id}",
   "endpoint": "/paymentos/v1/pix/lotecob/{batch_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -766,6 +782,7 @@
   "_comment": "GET /v1/pix/med/chain",
   "endpoint": "/paymentos/v1/pix/med/chain",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -794,6 +811,7 @@
   "_comment": "GET /v1/pix/med/chain/{chain_id}",
   "endpoint": "/paymentos/v1/pix/med/chain/{chain_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -822,6 +840,7 @@
   "_comment": "GET /v1/pix/med/recoveries",
   "endpoint": "/paymentos/v1/pix/med/recoveries",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -850,6 +869,7 @@
   "_comment": "GET /v1/pix/med/recoveries/{recovery_id}",
   "endpoint": "/paymentos/v1/pix/med/recoveries/{recovery_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -878,6 +898,7 @@
   "_comment": "GET /v1/pix/payload/cob/{txid}",
   "endpoint": "/paymentos/v1/pix/payload/cob/{txid}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -906,6 +927,7 @@
   "_comment": "GET /v1/pix/payload/cobv/{txid}",
   "endpoint": "/paymentos/v1/pix/payload/cobv/{txid}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -934,6 +956,7 @@
   "_comment": "GET /v1/pix/pi/accounts/{id}/balance",
   "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/balance",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -962,6 +985,7 @@
   "_comment": "GET /v1/pix/pi/accounts/{id}/statement",
   "endpoint": "/paymentos/v1/pix/pi/accounts/{id}/statement",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -990,6 +1014,7 @@
   "_comment": "GET /v1/pix/pi/operations",
   "endpoint": "/paymentos/v1/pix/pi/operations",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1018,6 +1043,7 @@
   "_comment": "GET /v1/pix/pi/operations/{request_id}",
   "endpoint": "/paymentos/v1/pix/pi/operations/{request_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1046,6 +1072,7 @@
   "_comment": "GET /v1/pix/psti/status",
   "endpoint": "/paymentos/v1/pix/psti/status",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1074,6 +1101,7 @@
   "_comment": "GET /v1/pix/recurring/{auth_id}",
   "endpoint": "/paymentos/v1/pix/recurring/{auth_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1102,6 +1130,7 @@
   "_comment": "GET /v1/pix/scheduled/{schedule_id}",
   "endpoint": "/paymentos/v1/pix/scheduled/{schedule_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2138,6 +2167,7 @@
   "_comment": "ACH lifecycle — GET /v1/ach",
   "endpoint": "/paymentos/v1/ach",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2278,6 +2308,7 @@
   "_comment": "CHEQUE lifecycle — GET /v1/cheque",
   "endpoint": "/paymentos/v1/cheque",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2306,6 +2337,7 @@
   "_comment": "GET /v1/cheque/cmc7/{cmc7}",
   "endpoint": "/paymentos/v1/cheque/cmc7/{cmc7}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2418,6 +2450,7 @@
   "_comment": "FEDNOW lifecycle — GET /v1/fednow",
   "endpoint": "/paymentos/v1/fednow",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2502,6 +2535,7 @@
   "_comment": "PAYMENTS lifecycle — GET /v1/payments",
   "endpoint": "/paymentos/v1/payments",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2754,6 +2788,7 @@
   "_comment": "TED lifecycle — GET /v1/ted",
   "endpoint": "/paymentos/v1/ted",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2922,6 +2957,7 @@
   "_comment": "TED Agendado — GET /v1/ted/scheduled (list)",
   "endpoint": "/paymentos/v1/ted/scheduled",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -2978,6 +3014,7 @@
   "_comment": "TED Agendado — GET /v1/ted/scheduled/{schedule_id}",
   "endpoint": "/paymentos/v1/ted/scheduled/{schedule_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3034,6 +3071,7 @@
   "_comment": "WIRE lifecycle — GET /v1/wire",
   "endpoint": "/paymentos/v1/wire",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3062,6 +3100,7 @@
   "_comment": "GET /v1/wire/{id}/status",
   "endpoint": "/paymentos/v1/wire/{path}/status",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {

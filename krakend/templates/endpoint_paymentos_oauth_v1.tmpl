@@ -38,6 +38,7 @@
   "_comment": "=== OAUTH CLIENTS - GET ===",
   "endpoint": "/paymentos/v1/oauth/clients",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -94,6 +95,7 @@
   "_comment": "=== OAUTH CLIENTS BY ID - GET ===",
   "endpoint": "/paymentos/v1/oauth/clients/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {

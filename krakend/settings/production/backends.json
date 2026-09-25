@@ -10,5 +10,10 @@
   "accountos": "http://accountos.ledgeros-production.svc.cluster.local:8093",
   "financeos": "http://financeos.ledgeros-production.svc.cluster.local:8095",
   "keycloak": "https://auth.revenu.com.br",
-  "wssgateway": "http://wssgateway.ledgeros-production.svc.cluster.local:8099"
+  "wssgateway": "http://wssgateway.ledgeros-production.svc.cluster.local:8099",
+  "billos_http": "http://billos.ledgeros-production.svc.cluster.local:8096",
+  "cardos_http": "http://cardos.ledgeros-production.svc.cluster.local:8085",
+  "harmonyos_http": "http://harmonyos.ledgeros-production.svc.cluster.local:8097",
+  "investos_http": "http://investos.ledgeros-production.svc.cluster.local:8089",
+  "loanos_http": "http://loanos.ledgeros-production.svc.cluster.local:8083"
 }

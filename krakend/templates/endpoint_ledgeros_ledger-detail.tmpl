@@ -2,7 +2,7 @@
   "_comment": "LedgerOS - Detailed Ledger API Endpoints (confirm, balance search/block/unblock)",
   "_iso27001": "A.9.4.1 (Information access restriction)",
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/ledger.json",
-  "endpoint": "/ledgeros/v1/postings/{id}/confirm",
+  "endpoint": "/ledgeros/v1/transactions/{id}/confirm",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
@@ -11,7 +11,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/transactions/{id}/confirm",
     "encoding": "json",
     "extra_config": {
@@ -21,7 +21,7 @@
   }]
 },
 {
-  "endpoint": "/ledgeros/v1/balances/search",
+  "endpoint": "/ledgeros/v1/balance/search",
   "method": "GET",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "input_query_strings": ["*"],
@@ -31,7 +31,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/balance/search",
     "encoding": "json",
     "extra_config": {
@@ -41,7 +41,7 @@
   }]
 },
 {
-  "endpoint": "/ledgeros/v1/balances/block",
+  "endpoint": "/ledgeros/v1/balance/block",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
@@ -50,7 +50,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/balance/block",
     "encoding": "json",
     "extra_config": {
@@ -60,7 +60,7 @@
   }]
 },
 {
-  "endpoint": "/ledgeros/v1/balances/unblock",
+  "endpoint": "/ledgeros/v1/balance/unblock",
   "method": "POST",
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Content-Type", "Authorization"],
   "output_encoding": "json",
@@ -69,7 +69,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/balance/unblock",
     "encoding": "json",
     "extra_config": {

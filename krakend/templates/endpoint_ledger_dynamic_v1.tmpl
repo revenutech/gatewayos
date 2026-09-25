@@ -4,6 +4,7 @@
 
   "endpoint": "/ledgeros/v1/my/postings",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {
@@ -46,6 +47,7 @@
   "_comment": "User-scoped balances — routes to user-specific backend path",
   "endpoint": "/ledgeros/v1/my/balances",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "X-Subscription-Tier"],
   "output_encoding": "json",
   "extra_config": {

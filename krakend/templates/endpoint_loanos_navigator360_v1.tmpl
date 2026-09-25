@@ -1,0 +1,804 @@
+{{/*
+  LOANOS — MS-013 4.1 (`RTSK.051.1318.01`) · Navigator 360.
+
+  ADR-034 (ACCEPTED 2026-09-25): **A BORDA CEDE.** O KrakenD declara o endpoint
+  no vocabulario que o MODULO serve, nunca no do BFF nem num terceiro nome. Por
+  isso aqui nao ha portugues: os caminhos sao os que `loanos` regista no codigo.
+  Cada bloco traz, em comentario, o caminho que o BFF monta hoje e a linha
+  `ficheiro:linha` do registo de rota que o prova.
+
+  Fonte dos alvos: `conceitos/traducao-bff-modulo.tsv`, coluna `MS`=MS-013,
+  `upstream`=loanos — 30 linhas, 28 pares (verbo, caminho) unicos.
+
+  Colapsos (dois caminhos do BFF, UM alvo no modulo — ADR-034 funde):
+    POST /v1/schedules/{id}/restructure  <-  POST /v1/cobrancas/{x}/renegociar, POST /v1/contratos/{x}/renegociar
+    GET /v1/schedules/{id}  <-  GET /v1/parcelas, GET /v1/parcelas/{x}
+
+  BACKEND — `http://loanos:8083` — contentor NAO esta de pe; a prova e a `fonte` do TSV.
+  🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) tem 11
+  chaves e NENHUMA para este modulo, e esse ficheiro fica fora de
+  `gatewayos/krakend/`. Por isso o host e um FALLBACK: `{{ if .backends.loanos_http }}` usa a
+  chave quando ela existir (sandbox/production ja a tem) e cai no literal
+  quando nao existir, que e o caso do settings local. O literal traz o alias de rede
+  que o proprio override do stack declara
+  (`docker/revenu/overrides/loanos.yaml:125` — `aliases: [loanos]`) e a porta
+  HTTP do mesmo ficheiro (`HTTP_PORT: "8083"`). Fica dentro da rede `revenu`
+  (`RN_NAV_009`). Quando o dono acrescentar `loanos_http` ao `backends.json`
+  VIVO, o template passa a usa-lo sozinho — sem tocar em nada aqui.
+  ⚠️ NAO usar `{{ env "API_SERVER_HOST" ... }}`: medido, essa variavel nao
+  existe no contentor (`docker exec ... echo "[${API_SERVER_HOST}]"` -> `[]`).
+
+  QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
+  Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+*/}}
+{{/*
+  loanos · GET /v1/reports/dashboard
+    o BFF monta: GET /v1/analytics
+    prova (rota do modulo): loanos-revenu/modules/reports/module.go:83   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/reports/dashboard",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/reports/dashboard",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/schedules/{id}/charge-off
+    o BFF monta: POST /v1/cobrancas/{x}/baixar
+    prova (rota do modulo): loanos-revenu/modules/collection/handler/handler.go:79   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/schedules/{id}/charge-off",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/schedules/{id}/charge-off",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/schedules/{id}/restructure
+    o BFF monta: POST /v1/cobrancas/{x}/renegociar · POST /v1/contratos/{x}/renegociar
+    prova (rota do modulo): loanos-revenu/modules/collection/handler/handler.go:81   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/schedules/{id}/restructure",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/schedules/{id}/restructure",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /portal/v1/loans
+    o BFF monta: GET /v1/contratos
+    prova (rota do modulo): loanos-revenu/modules/portal/handler/handler.go:62   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/portal/v1/loans",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/portal/v1/loans",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/schedules/{id}/preclose
+    o BFF monta: POST /v1/contratos/{x}/liquidar
+    prova (rota do modulo): loanos-revenu/modules/collection/handler/handler.go:80   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/schedules/{id}/preclose",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/schedules/{id}/preclose",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/loans/{loan_id}/disbursements
+    o BFF monta: GET /v1/desembolsos
+    prova (rota do modulo): loanos-revenu/modules/disbursement/handler/handler.go:58   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/loans/{loan_id}/disbursements",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/loans/{loan_id}/disbursements",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/disbursements/{id}
+    o BFF monta: GET /v1/desembolsos/{x}
+    prova (rota do modulo): loanos-revenu/modules/disbursement/handler/handler.go:57   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/disbursements/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/disbursements/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/disbursements/{id}/reverse
+    o BFF monta: POST /v1/desembolsos/{x}/estornar
+    prova (rota do modulo): loanos-revenu/modules/disbursement/handler/handler.go:55   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/disbursements/{id}/reverse",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/disbursements/{id}/reverse",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/applications/{id}/collaterals
+    o BFF monta: GET /v1/garantias
+    prova (rota do modulo): loanos-revenu/modules/collateral/handler/handler.go:50   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/applications/{id}/collaterals",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/applications/{id}/collaterals",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/collaterals
+    o BFF monta: POST /v1/garantias
+    prova (rota do modulo): loanos-revenu/modules/collateral/handler/handler.go:48   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/collaterals",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/collaterals",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/collaterals/{id}
+    o BFF monta: GET /v1/garantias/{x}
+    prova (rota do modulo): loanos-revenu/modules/collateral/handler/handler.go:49   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/collaterals/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/collaterals/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/collaterals/{id}/execute
+    o BFF monta: POST /v1/garantias/{x}/executar
+    prova (rota do modulo): loanos-revenu/modules/collateral/handler/handler.go:53   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/collaterals/{id}/execute",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/collaterals/{id}/execute",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/collaterals/{id}/release
+    o BFF monta: POST /v1/garantias/{x}/liberar
+    prova (rota do modulo): loanos-revenu/modules/collateral/handler/handler.go:52   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/collaterals/{id}/release",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/collaterals/{id}/release",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/schedules/{id}
+    o BFF monta: GET /v1/parcelas · GET /v1/parcelas/{x}
+    prova (rota do modulo): loanos-revenu/modules/collection/handler/handler.go:96   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/schedules/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/schedules/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/schedules/{id}/payments
+    o BFF monta: POST /v1/parcelas/{x}/pagar
+    prova (rota do modulo): loanos-revenu/modules/collection/handler/handler.go:75   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/schedules/{id}/payments",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/schedules/{id}/payments",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/products
+    o BFF monta: GET /v1/produtos
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:89   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/products",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/products",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/products
+    o BFF monta: POST /v1/produtos
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:88   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/products",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/products",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/products/{id}
+    o BFF monta: GET /v1/produtos/{x}
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:90   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/products/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/products/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · PATCH /v1/products/{id}
+    o BFF monta: PUT /v1/produtos/{x}
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:91   [verbo]
+*/}}
+{
+  "endpoint": "/loanos/v1/products/{id}",
+  "method": "PATCH",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/products/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/borrowers/{borrower_id}/applications
+    o BFF monta: GET /v1/propostas
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:82   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/borrowers/{borrower_id}/applications",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/borrowers/{borrower_id}/applications",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/applications
+    o BFF monta: POST /v1/propostas
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:78   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/applications",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/applications",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/applications/{id}
+    o BFF monta: GET /v1/propostas/{x}
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:79   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/applications/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/applications/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/applications/{id}/approve
+    o BFF monta: POST /v1/propostas/{x}/aprovar
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:80   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/applications/{id}/approve",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/applications/{id}/approve",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/applications/{id}/reject
+    o BFF monta: POST /v1/propostas/{x}/recusar
+    prova (rota do modulo): loanos-revenu/modules/origination/handler/handler.go:81   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/applications/{id}/reject",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/applications/{id}/reject",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/reports/definitions
+    o BFF monta: GET /v1/regulatorio/relatorios
+    prova (rota do modulo): loanos-revenu/modules/reports/handler/handler.go:46   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/reports/definitions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/reports/definitions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · POST /v1/reports/{slug}/execute
+    o BFF monta: POST /v1/regulatorio/relatorios/gerar
+    prova (rota do modulo): loanos-revenu/modules/reports/handler/handler.go:47   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/reports/{slug}/execute",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/reports/{slug}/execute",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/reports/definitions/{id}
+    o BFF monta: GET /v1/regulatorio/relatorios/{x}
+    prova (rota do modulo): loanos-revenu/modules/reports/handler/handler.go:45   [1:1]
+*/}}
+{
+  "endpoint": "/loanos/v1/reports/definitions/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/reports/definitions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  loanos · GET /v1/reports/runs/{id}/output
+    o BFF monta: GET /v1/regulatorio/relatorios/{x}/exportar
+    prova (rota do modulo): loanos-revenu/modules/reports/handler/handler.go:49   [escopo]
+*/}}
+{
+  "endpoint": "/loanos/v1/reports/runs/{id}/output",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.loanos_http }}{{ .backends.loanos_http }}{{ else }}http://loanos:8083{{ end }}"],
+    "url_pattern": "/v1/reports/runs/{id}/output",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-loanos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+}

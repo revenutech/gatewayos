@@ -1,0 +1,692 @@
+{{/*
+  INVESTOS — MS-013 4.1 (`RTSK.051.1318.01`) · Navigator 360.
+
+  ADR-034 (ACCEPTED 2026-09-25): **A BORDA CEDE.** O KrakenD declara o endpoint
+  no vocabulario que o MODULO serve, nunca no do BFF nem num terceiro nome. Por
+  isso aqui nao ha portugues: os caminhos sao os que `investos` regista no codigo.
+  Cada bloco traz, em comentario, o caminho que o BFF monta hoje e a linha
+  `ficheiro:linha` do registo de rota que o prova.
+
+  Fonte dos alvos: `conceitos/traducao-bff-modulo.tsv`, coluna `MS`=MS-013,
+  `upstream`=investos — 24 linhas, 24 pares (verbo, caminho) unicos.
+
+  BACKEND — `http://investos:8089` — contentor NAO esta de pe; a prova e a `fonte` do TSV.
+  🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) tem 11
+  chaves e NENHUMA para este modulo, e esse ficheiro fica fora de
+  `gatewayos/krakend/`. Por isso o host e um FALLBACK: `{{ if .backends.investos_http }}` usa a
+  chave quando ela existir (sandbox/production ja a tem) e cai no literal
+  quando nao existir, que e o caso do settings local. O literal traz o alias de rede
+  que o proprio override do stack declara
+  (`docker/revenu/overrides/investos.yaml:93` — `aliases: [investos]`) e a porta
+  HTTP do mesmo ficheiro (`HTTP_PORT: "8089"`). Fica dentro da rede `revenu`
+  (`RN_NAV_009`). Quando o dono acrescentar `investos_http` ao `backends.json`
+  VIVO, o template passa a usa-lo sozinho — sem tocar em nada aqui.
+  ⚠️ NAO usar `{{ env "API_SERVER_HOST" ... }}`: medido, essa variavel nao
+  existe no contentor (`docker exec ... echo "[${API_SERVER_HOST}]"` -> `[]`).
+
+  QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
+  Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+*/}}
+{{/*
+  investos · GET /v1/corporate-actions
+    o BFF monta: GET /v1/acoes-corporativas
+    prova (rota do modulo): investos-revenu/modules/corporateaction/handler/handler.go:80   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/corporate-actions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/corporate-actions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/corporate-actions/{id}
+    o BFF monta: ? /v1/acoes-corporativas/{x}
+    prova (rota do modulo): investos-revenu/modules/corporateaction/handler/handler.go:79   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/corporate-actions/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/corporate-actions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/portfolio/summary
+    o BFF monta: GET /v1/analytics
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:88   [escopo]
+*/}}
+{
+  "endpoint": "/investos/v1/portfolio/summary",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/portfolio/summary",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/reports/custody-statement
+    o BFF monta: GET /v1/custodia
+    prova (rota do modulo): investos-revenu/modules/reporting/handler/custody.go:54   [escopo]
+*/}}
+{
+  "endpoint": "/investos/v1/reports/custody-statement",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/reports/custody-statement",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/settlements
+    o BFF monta: GET /v1/liquidacoes
+    prova (rota do modulo): investos-revenu/modules/settlement/handler/handler.go:82   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/settlements",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/settlements",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/settlements/{id}
+    o BFF monta: ? /v1/liquidacoes/{x}
+    prova (rota do modulo): investos-revenu/modules/settlement/handler/handler.go:81   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/settlements/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/settlements/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/settlements/{id}/settle
+    o BFF monta: POST /v1/liquidacoes/{x}/confirmar
+    prova (rota do modulo): investos-revenu/modules/settlement/handler/handler.go:73   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/settlements/{id}/settle",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/settlements/{id}/settle",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/orders
+    o BFF monta: GET /v1/ordens
+    prova (rota do modulo): investos-revenu/modules/order/handler/handler.go:73   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/orders",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/orders",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/orders
+    o BFF monta: POST /v1/ordens
+    prova (rota do modulo): investos-revenu/modules/order/handler/handler.go:64   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/orders",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/orders",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/orders/{id}
+    o BFF monta: ? /v1/ordens/{x}
+    prova (rota do modulo): investos-revenu/modules/order/handler/handler.go:72   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/orders/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/orders/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/orders/{id}/amend
+    o BFF monta: POST /v1/ordens/{x}/alterar
+    prova (rota do modulo): investos-revenu/modules/order/handler/handler.go:70   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/orders/{id}/amend",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/orders/{id}/amend",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/orders/{id}/cancel
+    o BFF monta: POST /v1/ordens/{x}/cancelar
+    prova (rota do modulo): investos-revenu/modules/order/handler/handler.go:68   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/orders/{id}/cancel",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/orders/{id}/cancel",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/positions
+    o BFF monta: GET /v1/posicoes
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:87   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/positions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/positions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/positions
+    o BFF monta: POST /v1/posicoes
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:76   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/positions",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/positions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/positions/{id}
+    o BFF monta: GET /v1/posicoes/{x}
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:86   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/positions/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/positions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/positions/{id}/close
+    o BFF monta: POST /v1/posicoes/{x}/fechar
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:78   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/positions/{id}/close",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/positions/{id}/close",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/reports
+    o BFF monta: GET /v1/regulatorio/relatorios
+    prova (rota do modulo): investos-revenu/modules/reporting/handler/handler.go:46   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/reports",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/reports",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/reports/generate
+    o BFF monta: POST /v1/regulatorio/relatorios/gerar
+    prova (rota do modulo): investos-revenu/modules/reporting/handler/handler.go:43   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/reports/generate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/reports/generate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/reports/{id}
+    o BFF monta: ? /v1/regulatorio/relatorios/{x}
+    prova (rota do modulo): investos-revenu/modules/reporting/handler/handler.go:45   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/reports/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/reports/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/reports/{id}/submit
+    o BFF monta: POST /v1/regulatorio/relatorios/{x}/submeter
+    prova (rota do modulo): investos-revenu/modules/reporting/handler/handler.go:44   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/reports/{id}/submit",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/reports/{id}/submit",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/portfolio/{id}/attribution
+    o BFF monta: ? /v1/rentabilidade/{x}
+    prova (rota do modulo): investos-revenu/modules/portfolio/handler/handler.go:85   [acao]
+*/}}
+{
+  "endpoint": "/investos/v1/portfolio/{id}/attribution",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/portfolio/{id}/attribution",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/risk-reports
+    o BFF monta: GET /v1/risco
+    prova (rota do modulo): investos-revenu/modules/riskanalytics/handler/handler.go:66   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/risk-reports",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/risk-reports",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · GET /v1/risk-reports/{id}
+    o BFF monta: ? /v1/risco/{x}
+    prova (rota do modulo): investos-revenu/modules/riskanalytics/handler/handler.go:65   [1:1]
+*/}}
+{
+  "endpoint": "/investos/v1/risk-reports/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/risk-reports/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  investos · POST /v1/collateral/{id}/resolve
+    o BFF monta: POST /v1/risco/{x}/resolver-margin-call
+    prova (rota do modulo): investos-revenu/modules/collateral/handler/handler.go:69   [escopo]
+*/}}
+{
+  "endpoint": "/investos/v1/collateral/{id}/resolve",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.investos_http }}{{ .backends.investos_http }}{{ else }}http://investos:8089{{ end }}"],
+    "url_pattern": "/v1/collateral/{id}/resolve",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-investos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

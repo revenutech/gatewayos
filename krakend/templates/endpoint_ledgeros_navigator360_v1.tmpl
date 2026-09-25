@@ -1,0 +1,159 @@
+{{/*
+  LedgerOS — os alvos da MS-013 (Navigator 360) que faltavam na borda.
+
+  ADR-034 (ACCEPTED 2026-09-25): A BORDA CEDE. O KrakenD declara o endpoint no
+  vocabulário que o MÓDULO serve, e não num terceiro nome. Por isso aqui não há
+  `postings`, `lancamentos` nem `saldos`: só `transactions`, `reconciliation`,
+  `compliance` e `posting/entries`, que é o que o `ledgeros` regista no gin.
+
+  Verbos conferidos no código do módulo (não supostos):
+    src/internal/transaction/routes/routes.go:76   tx.GET("")
+    src/internal/transaction/routes/routes.go:77   tx.POST("")
+    src/internal/transaction/routes/routes.go:87   tx.GET("/:id")
+    src/internal/transaction/routes/routes.go:95   reports.GET("/by-date")
+    src/internal/reconciliation/routes/routes.go:15 v1.GET("/jobs")
+    src/internal/compliance/routes/routes.go:25    v1.GET("/cases")
+    src/internal/posting/routes/routes.go:31       v1.POST("/entries/post")
+
+  `/ledgeros/v1/postings` (POST) e `/ledgeros/v1/postings/{id}` (GET) continuam
+  declarados em `endpoint_ledger_v1.tmpl` e apontam para os MESMOS alvos: ficam
+  como alias legado, intactos, para não partir quem já os usa.
+*/}}
+{
+  "endpoint": "/ledgeros/v1/transactions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/transactions",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/transactions/{id}",
+  "method": "GET",
+  "input_query_strings": ["*"],
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/transactions/reports/by-date",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/transactions/reports/by-date",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/reconciliation/jobs",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/reconciliation/jobs",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/compliance/cases",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/compliance/cases",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{
+  "endpoint": "/ledgeros/v1/posting/entries/post",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ .backends.ledgeros_http }}"],
+    "url_pattern": "/v1/posting/entries/post",
+    "encoding": "json",
+    "extra_config": {
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

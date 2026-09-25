@@ -143,6 +143,7 @@
   "_comment": "=== TED - GET ===",
   "endpoint": "/paymentos/v1/ted/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -199,6 +200,7 @@
   "_comment": "=== BOLETO - GET ===",
   "endpoint": "/paymentos/v1/boleto/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -283,6 +285,7 @@
   "_comment": "=== PAYMENTS - GET ===",
   "endpoint": "/paymentos/v1/payments/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -339,6 +342,7 @@
   "_comment": "=== ACH - GET ===",
   "endpoint": "/paymentos/v1/ach/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -395,6 +399,7 @@
   "_comment": "=== CHEQUE - GET ===",
   "endpoint": "/paymentos/v1/cheque/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -451,6 +456,7 @@
   "_comment": "=== FEDNOW - GET ===",
   "endpoint": "/paymentos/v1/fednow/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -507,6 +513,7 @@
   "_comment": "=== WIRE - GET ===",
   "endpoint": "/paymentos/v1/wire/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -535,6 +542,7 @@
   "_comment": "=== LEDGER BALANCE - GET ===",
   "endpoint": "/paymentos/v1/ledger/balance/{account_id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -563,6 +571,7 @@
   "_comment": "=== ROUTING - GET ===",
   "endpoint": "/paymentos/v1/routing/{path}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -591,6 +600,7 @@
   "_comment": "=== AUDIT LOGS - GET ===",
   "endpoint": "/paymentos/v1/audit/logs",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1194,6 +1204,7 @@
   "_comment": "=== JDPI WEBHOOK PA AGENDAMENTO/RECEBEDOR - GET (anexo 5.3.5) ===",
   "endpoint": "/paymentos/jdpi/webhook/pa/agendamento/recebedor/{ispb}/{cnpj}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["Content-Type", "X-Correlation-ID"],
   "output_encoding": "no-op",
   "backend": [{

@@ -1,0 +1,247 @@
+{{/*
+  CARDOS — MS-013 4.1 (`RTSK.051.1318.01`) · Navigator 360.
+
+  ADR-034 (ACCEPTED 2026-09-25): **A BORDA CEDE.** O KrakenD declara o endpoint
+  no vocabulario que o MODULO serve, nunca no do BFF nem num terceiro nome. Por
+  isso aqui nao ha portugues: os caminhos sao os que `cardos` regista no codigo.
+  Cada bloco traz, em comentario, o caminho que o BFF monta hoje e a linha
+  `ficheiro:linha` do registo de rota que o prova.
+
+  Fonte dos alvos: `conceitos/traducao-bff-modulo.tsv`, coluna `MS`=MS-013,
+  `upstream`=cardos — 8 linhas, 8 pares (verbo, caminho) unicos.
+
+  BACKEND — `http://cardos:8085` — contentor NAO esta de pe; a prova e a `fonte` do TSV.
+  🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) tem 11
+  chaves e NENHUMA para este modulo, e esse ficheiro fica fora de
+  `gatewayos/krakend/`. Por isso o host e um FALLBACK: `{{ if .backends.cardos_http }}` usa a
+  chave quando ela existir (sandbox/production ja a tem) e cai no literal
+  quando nao existir, que e o caso do settings local. O literal traz o alias de rede
+  que o proprio override do stack declara
+  (`docker/revenu/overrides/cardos.yaml:164` — `aliases: [cardos]`) e a porta
+  HTTP do mesmo ficheiro (`HTTP_PORT: "8085"`). Fica dentro da rede `revenu`
+  (`RN_NAV_009`). Quando o dono acrescentar `cardos_http` ao `backends.json`
+  VIVO, o template passa a usa-lo sozinho — sem tocar em nada aqui.
+  ⚠️ NAO usar `{{ env "API_SERVER_HOST" ... }}`: medido, essa variavel nao
+  existe no contentor (`docker exec ... echo "[${API_SERVER_HOST}]"` -> `[]`).
+
+  QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
+  Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+*/}}
+{{/*
+  cardos · POST /v1/cards/{id}/lock
+    o BFF monta: POST /v1/cards/{x}/bloquear
+    prova (rota do modulo): cardos-revenu/modules/issuance/handler/handler.go:75   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/cards/{id}/lock",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/cards/{id}/lock",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · POST /v1/cards/{id}/terminate
+    o BFF monta: POST /v1/cards/{x}/cancelar
+    prova (rota do modulo): cardos-revenu/modules/issuance/handler/handler.go:77   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/cards/{id}/terminate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/cards/{id}/terminate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · POST /v1/cards/{id}/unlock
+    o BFF monta: POST /v1/cards/{x}/desbloquear
+    prova (rota do modulo): cardos-revenu/modules/issuance/handler/handler.go:76   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/cards/{id}/unlock",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/cards/{id}/unlock",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · PUT /v1/cards/{id}/limits
+    o BFF monta: POST /v1/cards/{x}/limite
+    prova (rota do modulo): cardos-revenu/modules/issuance/handler/handler.go:79   [verbo]
+*/}}
+{
+  "endpoint": "/cardos/v1/cards/{id}/limits",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/cards/{id}/limits",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · POST /v1/disputes/{id}/resolve
+    o BFF monta: POST /v1/disputes/{x}/resolver
+    prova (rota do modulo): cardos-revenu/modules/dispute/handler/handler.go:63   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/disputes/{id}/resolve",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/disputes/{id}/resolve",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · POST /v1/payments/{id}/collect
+    o BFF monta: POST /v1/payments/{x}/pagar
+    prova (rota do modulo): cardos-revenu/modules/settlement/handler/handler.go:78   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/payments/{id}/collect",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/payments/{id}/collect",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  cardos · GET /v1/transactions/by-status
+    o BFF monta: GET /v1/transactions
+    prova (rota do modulo): cardos-revenu/modules/transaction/handler/handler.go:66   [escopo]
+*/}}
+{
+  "endpoint": "/cardos/v1/transactions/by-status",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/transactions/by-status",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  cardos · POST /v1/transactions/{id}/reverse
+    o BFF monta: POST /v1/transactions/{x}/reverter
+    prova (rota do modulo): cardos-revenu/modules/transaction/handler/handler.go:61   [1:1]
+*/}}
+{
+  "endpoint": "/cardos/v1/transactions/{id}/reverse",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.cardos_http }}{{ .backends.cardos_http }}{{ else }}http://cardos:8085{{ end }}"],
+    "url_pattern": "/v1/transactions/{id}/reverse",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-cardos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

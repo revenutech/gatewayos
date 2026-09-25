@@ -1500,6 +1500,7 @@
   "_comment": "SPI — Consulta da situação/liquidação de uma ordem no Temenos (GET paymentOrders/{id}). Read-only.",
   "endpoint": "/paymentos/jdpi/spi/op/temenos-status/{paymentOrderId}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -1665,6 +1666,7 @@
   "_comment": "SPI — Gestão de PSPs",
   "endpoint": "/paymentos/jdpi/spi/gestao-psps/listar",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -3141,6 +3143,7 @@
   "_comment": "MED Contestação — detalhe de uma contestação",
   "endpoint": "/paymentos/jdpi/med/contestacao/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {

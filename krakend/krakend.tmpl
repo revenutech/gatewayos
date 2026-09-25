@@ -85,6 +85,25 @@
     ,{{ template "endpoint_accountos_v1.tmpl" . }}
     ,{{ template "endpoint_financeos_v1.tmpl" . }}
     ,{{ template "endpoint_dashboard_v1.tmpl" . }}
+    {{/* MS-013 fase 4 / ADR-034: o ledgeros na borda, no vocabulário do módulo. */}}
+    ,{{ template "endpoint_ledgeros_ledger-detail.tmpl" . }}
+    ,{{ template "endpoint_ledgeros_reconciliation-detail.tmpl" . }}
+    ,{{ template "endpoint_ledgeros_settlement-detail.tmpl" . }}
+    ,{{ template "endpoint_ledgeros_navigator360_v1.tmpl" . }}
+    {{/*
+      MS-013 4.1 (`RTSK.051.1318.01`) / ADR-034: os cinco modulos que a borda
+      nao conhecia — billos, cardos, harmonyos, investos, loanos — declarados no
+      vocabulario que o MODULO serve. `riskos` fica de fora por `ADR-031` (serve
+      3 rotas de infra e mais nada).
+      ⚠️ Template no diretorio != template compilado: so entra quem for invocado
+      AQUI. Era por isso que os 3 `endpoint_ledgeros_*-detail.tmpl` existiam
+      desde Julho e nunca compilavam.
+    */}}
+    ,{{ template "endpoint_billos_navigator360_v1.tmpl" . }}
+    ,{{ template "endpoint_cardos_navigator360_v1.tmpl" . }}
+    ,{{ template "endpoint_harmonyos_navigator360_v1.tmpl" . }}
+    ,{{ template "endpoint_investos_navigator360_v1.tmpl" . }}
+    ,{{ template "endpoint_loanos_navigator360_v1.tmpl" . }}
     {{ if .service.expose_test_endpoints }},{{ template "endpoint_test_v1.tmpl" . }}{{ end }}
     ,{{ template "endpoint_keycloak_v1.tmpl" . }}
     ,{{ template "endpoint_app_version_v1.tmpl" . }}

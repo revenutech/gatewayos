@@ -1,0 +1,221 @@
+{{/*
+  HARMONYOS — MS-013 4.1 (`RTSK.051.1318.01`) · Navigator 360.
+
+  ADR-034 (ACCEPTED 2026-09-25): **A BORDA CEDE.** O KrakenD declara o endpoint
+  no vocabulario que o MODULO serve, nunca no do BFF nem num terceiro nome. Por
+  isso aqui nao ha portugues: os caminhos sao os que `harmonyos` regista no codigo.
+  Cada bloco traz, em comentario, o caminho que o BFF monta hoje e a linha
+  `ficheiro:linha` do registo de rota que o prova.
+
+  Fonte dos alvos: `conceitos/traducao-bff-modulo.tsv`, coluna `MS`=MS-013,
+  `upstream`=harmonyos — 7 linhas, 7 pares (verbo, caminho) unicos.
+
+  BACKEND — `http://harmonyos:8097` — de pe agora (`revenu-harmonyos-api`, :8697->8097).
+  🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) tem 11
+  chaves e NENHUMA para este modulo, e esse ficheiro fica fora de
+  `gatewayos/krakend/`. Por isso o host e um FALLBACK: `{{ if .backends.harmonyos_http }}` usa a
+  chave quando ela existir (sandbox/production ja a tem) e cai no literal
+  quando nao existir, que e o caso do settings local. O literal traz o alias de rede
+  que o proprio override do stack declara
+  (`docker/revenu/overrides/harmonyos.yaml:145` — `aliases: [harmonyos]`) e a porta
+  HTTP do mesmo ficheiro (`HTTP_PORT: "8097"`). Fica dentro da rede `revenu`
+  (`RN_NAV_009`). Quando o dono acrescentar `harmonyos_http` ao `backends.json`
+  VIVO, o template passa a usa-lo sozinho — sem tocar em nada aqui.
+  ⚠️ NAO usar `{{ env "API_SERVER_HOST" ... }}`: medido, essa variavel nao
+  existe no contentor (`docker exec ... echo "[${API_SERVER_HOST}]"` -> `[]`).
+
+  QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
+  Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+*/}}
+{{/*
+  harmonyos · PUT /v1/collections/{id}/cancel
+    o BFF monta: POST /v1/collections/{x}/rejeitar
+    prova (rota do modulo): harmonyos-revenu/modules/collection/routes/routes.go:17   [verbo]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/collections/{id}/cancel",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/collections/{id}/cancel",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · PUT /v1/conventions/{id}/activate
+    o BFF monta: POST /v1/conventions/{x}/ativar
+    prova (rota do modulo): harmonyos-revenu/modules/convention/routes/routes.go:15   [verbo]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/conventions/{id}/activate",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/conventions/{id}/activate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · PUT /v1/conventions/{id}/suspend
+    o BFF monta: POST /v1/conventions/{x}/suspender
+    prova (rota do modulo): harmonyos-revenu/modules/convention/routes/routes.go:16   [verbo]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/conventions/{id}/suspend",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/conventions/{id}/suspend",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · GET /v1/payroll/proventos
+    o BFF monta: GET /v1/proventos
+    prova (rota do modulo): harmonyos-revenu/modules/payroll/routes/routes.go:13   [1:1]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/payroll/proventos",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/payroll/proventos",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · GET /v1/payroll/proventos/{id}
+    o BFF monta: GET /v1/proventos/{x}
+    prova (rota do modulo): harmonyos-revenu/modules/payroll/routes/routes.go:14   [1:1]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/payroll/proventos/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/payroll/proventos/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · PUT /v1/payroll/proventos/{id}/cancel
+    o BFF monta: POST /v1/proventos/{x}/cancelar
+    prova (rota do modulo): harmonyos-revenu/modules/payroll/routes/routes.go:18   [verbo]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/payroll/proventos/{id}/cancel",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/payroll/proventos/{id}/cancel",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  harmonyos · PUT /v1/settlements/{id}/approve
+    o BFF monta: POST /v1/settlements/{x}/aprovar
+    prova (rota do modulo): harmonyos-revenu/modules/settlement/routes/routes.go:15   [verbo]
+*/}}
+{
+  "endpoint": "/harmonyos/v1/settlements/{id}/approve",
+  "method": "PUT",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.harmonyos_http }}{{ .backends.harmonyos_http }}{{ else }}http://harmonyos:8097{{ end }}"],
+    "url_pattern": "/v1/settlements/{id}/approve",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-harmonyos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

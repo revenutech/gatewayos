@@ -1,0 +1,360 @@
+{{/*
+  BILLOS — MS-013 4.1 (`RTSK.051.1318.01`) · Navigator 360.
+
+  ADR-034 (ACCEPTED 2026-09-25): **A BORDA CEDE.** O KrakenD declara o endpoint
+  no vocabulario que o MODULO serve, nunca no do BFF nem num terceiro nome. Por
+  isso aqui nao ha portugues: os caminhos sao os que `billos` regista no codigo.
+  Cada bloco traz, em comentario, o caminho que o BFF monta hoje e a linha
+  `ficheiro:linha` do registo de rota que o prova.
+
+  Fonte dos alvos: `conceitos/traducao-bff-modulo.tsv`, coluna `MS`=MS-013,
+  `upstream`=billos — 12 linhas, 12 pares (verbo, caminho) unicos.
+
+  BACKEND — `http://billos:8096` — contentor NAO esta de pe; a prova e a `fonte` do TSV.
+  🔴 `backends.json` do settings VIVO
+  (`navigatoros-sandbox/docker/revenu/settings/local/backends.json`) tem 11
+  chaves e NENHUMA para este modulo, e esse ficheiro fica fora de
+  `gatewayos/krakend/`. Por isso o host e um FALLBACK: `{{ if .backends.billos_http }}` usa a
+  chave quando ela existir (sandbox/production ja a tem) e cai no literal
+  quando nao existir, que e o caso do settings local. O literal traz o alias de rede
+  que o proprio override do stack declara
+  (`docker/revenu/overrides/billos.yaml:111` — `aliases: [billos]`) e a porta
+  HTTP do mesmo ficheiro (`HTTP_PORT: "8096"`). Fica dentro da rede `revenu`
+  (`RN_NAV_009`). Quando o dono acrescentar `billos_http` ao `backends.json`
+  VIVO, o template passa a usa-lo sozinho — sem tocar em nada aqui.
+  ⚠️ NAO usar `{{ env "API_SERVER_HOST" ... }}`: medido, essa variavel nao
+  existe no contentor (`docker exec ... echo "[${API_SERVER_HOST}]"` -> `[]`).
+
+  QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
+  Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+*/}}
+{{/*
+  billos · GET /v1/analytics/mrr
+    o BFF monta: GET /v1/analytics
+    prova (rota do modulo): billos-revenu/modules/wallet/handler/handler.go:40   [escopo]
+*/}}
+{
+  "endpoint": "/billos/v1/analytics/mrr",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/analytics/mrr",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · GET /v1/customers/{customer_id}/subscriptions
+    o BFF monta: GET /v1/assinaturas
+    prova (rota do modulo): billos-revenu/modules/subscription/handler/handler.go:49   [escopo]
+*/}}
+{
+  "endpoint": "/billos/v1/customers/{customer_id}/subscriptions",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/customers/{customer_id}/subscriptions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/subscriptions
+    o BFF monta: POST /v1/assinaturas
+    prova (rota do modulo): billos-revenu/modules/subscription/handler/handler.go:45   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/subscriptions",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/subscriptions",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  billos · GET /v1/subscriptions/{id}
+    o BFF monta: ? /v1/assinaturas/{x}
+    prova (rota do modulo): billos-revenu/modules/subscription/handler/handler.go:46   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/subscriptions/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/subscriptions/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/subscriptions/{id}/terminate
+    o BFF monta: POST /v1/assinaturas/{x}/cancelar
+    prova (rota do modulo): billos-revenu/modules/subscription/handler/handler.go:48   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/subscriptions/{id}/terminate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/subscriptions/{id}/terminate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/invoices/{id}/collect
+    o BFF monta: POST /v1/cobrancas/{x}/retentar
+    prova (rota do modulo): billos-revenu/modules/invoice/handler/handler.go:53   [acao]
+*/}}
+{
+  "endpoint": "/billos/v1/invoices/{id}/collect",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/invoices/{id}/collect",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  billos · GET /v1/customers/{customer_id}/invoices
+    o BFF monta: GET /v1/faturas
+    prova (rota do modulo): billos-revenu/modules/invoice/handler/handler.go:56   [escopo]
+*/}}
+{
+  "endpoint": "/billos/v1/customers/{customer_id}/invoices",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/customers/{customer_id}/invoices",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/invoices/generate
+    o BFF monta: POST /v1/faturas/emitir
+    prova (rota do modulo): billos-revenu/modules/invoice/handler/handler.go:51   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/invoices/generate",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/invoices/generate",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  billos · GET /v1/invoices/{id}
+    o BFF monta: ? /v1/faturas/{x}
+    prova (rota do modulo): billos-revenu/modules/invoice/handler/handler.go:55   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/invoices/{id}",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/invoices/{id}",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/invoices/{id}/credit-notes
+    o BFF monta: POST /v1/notas-credito
+    prova (rota do modulo): billos-revenu/modules/invoice/handler/handler.go:54   [escopo]
+*/}}
+{
+  "endpoint": "/billos/v1/invoices/{id}/credit-notes",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/invoices/{id}/credit-notes",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+},
+{{/*
+  billos · GET /v1/customers/{customer_id}/wallet
+    o BFF monta: ? /v1/wallets/{x}
+    prova (rota do modulo): billos-revenu/modules/wallet/handler/handler.go:39   [escopo]
+*/}}
+{
+  "endpoint": "/billos/v1/customers/{customer_id}/wallet",
+  "method": "GET",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
+  "input_query_strings": ["*"],
+  "output_encoding": "json",
+  "timeout": "5s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/customers/{customer_id}/wallet",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true }
+    }
+  }]
+},
+{{/*
+  billos · POST /v1/wallets/top-up
+    o BFF monta: POST /v1/wallets/{x}/creditar
+    prova (rota do modulo): billos-revenu/modules/wallet/handler/handler.go:38   [1:1]
+*/}}
+{
+  "endpoint": "/billos/v1/wallets/top-up",
+  "method": "POST",
+  "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Content-Type", "X-Idempotency-Key"],
+  "output_encoding": "json",
+  "timeout": "10s",
+  "extra_config": {
+    {{ template "jwt_validator.tmpl" . }}
+  },
+  "backend": [{
+    "host": ["{{ if .backends.billos_http }}{{ .backends.billos_http }}{{ else }}http://billos:8096{{ end }}"],
+    "url_pattern": "/v1/wallets/top-up",
+    "encoding": "json",
+    "extra_config": {
+      "qos/circuit-breaker": {
+        "interval": 60, "timeout": 10, "max_errors": 5,
+        "name": "cb-billos", "log_status_change": true
+      },
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
+    }
+  }]
+}

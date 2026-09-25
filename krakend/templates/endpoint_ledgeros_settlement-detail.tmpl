@@ -12,7 +12,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/settlements",
     "encoding": "json",
     "extra_config": {
@@ -24,6 +24,7 @@
 {
   "endpoint": "/ledgeros/v1/settlements/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "output_encoding": "json",
   "timeout": "3s",
@@ -31,7 +32,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/settlements/{id}",
     "encoding": "json",
     "extra_config": {
@@ -50,7 +51,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/settlements/{id}/post",
     "encoding": "json",
     "extra_config": {
@@ -69,7 +70,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/settlements/sweep",
     "encoding": "json",
     "extra_config": {

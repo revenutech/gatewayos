@@ -46,6 +46,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/postings/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
   "extra_config": {
@@ -88,6 +89,7 @@
 {
   "endpoint": "/ledgeros/grpc/v1/balances/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["Authorization", "X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID"],
   "output_encoding": "json",
   "extra_config": {

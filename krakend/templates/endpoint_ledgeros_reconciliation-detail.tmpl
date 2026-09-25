@@ -4,6 +4,7 @@
   "_migrated_from": "ledgeros/deployment/krakend/partials/endpoints/reconciliation.json",
   "endpoint": "/ledgeros/v1/reconciliation/jobs/{id}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Correlation-ID", "Authorization"],
   "output_encoding": "json",
   "timeout": "3s",
@@ -11,7 +12,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/reconciliation/jobs/{id}",
     "encoding": "json",
     "extra_config": {
@@ -31,7 +32,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/reconciliation/jobs/{id}/matches",
     "encoding": "json",
     "extra_config": {
@@ -50,7 +51,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/reconciliation/matches/{id}/approve",
     "encoding": "json",
     "extra_config": {
@@ -69,7 +70,7 @@
     {{ template "jwt_validator.tmpl" . }}
   },
   "backend": [{
-    "host": ["{{ env "API_SERVER_HOST" "http://api-server:8081" }}"],
+    "host": ["{{ .backends.ledgeros_http }}"],
     "url_pattern": "/v1/reconciliation/matches/{id}/reject",
     "encoding": "json",
     "extra_config": {

@@ -85,6 +85,7 @@
   "_comment": "GET /receber consumes the cabine FIFO (single-shot). Disabled at the app layer when TED_JDSPB_POLL_ENABLED=true (returns 409).",
   "endpoint": "/paymentos/corebanx/ted/receber",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -127,6 +128,7 @@
   "_comment": "Consultar por NumCtrlIF — declared before the catch-all {ref} so KrakenD matches the longer path first.",
   "endpoint": "/paymentos/corebanx/ted/consultar/ctrlif/{numctrlif}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -169,6 +171,7 @@
   "_comment": "Consultar por NumCabSeq (single-segment ref). The backend Gin route is /consultar/*ref and handles both shapes.",
   "endpoint": "/paymentos/corebanx/ted/consultar/{ref}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -294,6 +297,7 @@
 {
   "endpoint": "/paymentos/jdpi/ted/receber",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -335,6 +339,7 @@
 {
   "endpoint": "/paymentos/jdpi/ted/consultar/ctrlif/{numctrlif}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
@@ -376,6 +381,7 @@
 {
   "endpoint": "/paymentos/jdpi/ted/consultar/{ref}",
   "method": "GET",
+  "input_query_strings": ["*"],
   "input_headers": ["X-User-ID", "X-Tenant-ID", "X-Roles", "X-Correlation-ID", "Authorization"],
   "output_encoding": "no-op",
   "extra_config": {
