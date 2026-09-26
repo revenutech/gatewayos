@@ -35,7 +35,8 @@
     "url_pattern": "/v1/transactions",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -77,7 +78,8 @@
     "url_pattern": "/v1/transactions/{id}",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -119,7 +121,8 @@
     "url_pattern": "/v1/balances/{id}",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -159,7 +162,8 @@
     "url_pattern": "/v1/settlements",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -199,7 +203,8 @@
     "url_pattern": "/v1/reconciliation/jobs",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 }

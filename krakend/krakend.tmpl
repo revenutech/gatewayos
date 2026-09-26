@@ -59,7 +59,34 @@
         um gateway de API nao deve fazer de qualquer forma: caminho e
         sensivel a caixa, e adivinhar o que o cliente quis dizer esconde erro.
       */}}
-      "disable_redirect_fixed_path": true
+      "disable_redirect_fixed_path": true,
+      {{/*
+        🔴 O 405 QUE MENTE.
+
+        Medido em 2026-09-25: `GET /ledgeros/v1/postings` (rota so existe como
+        `POST`) — pela borda dava **405**, direto ao modulo (rota inexistente
+        nesse verbo) daria 404. O 405 e pior que o 404: diz ao cliente "o
+        recurso existe, so trocou de verbo" quando a semantica que a borda
+        quer preservar (ver `disable_redirect_fixed_path` acima) e "nao
+        adivinha, nao revela — se nao bate exato, e 404".
+
+        A causa e o gin (router do KrakenD): por default,
+        `HandleMethodNotAllowed=true` faz o router, antes de desistir,
+        varrer as outras arvores de metodo por aquele MESMO caminho: se achar
+        (aqui, a arvore do POST), responde 405 em vez de cair no handler de
+        404 — e faz isso ANTES de qualquer middleware da rota (JWT, roles)
+        rodar, por isso o 405 sai mesmo sem token.
+
+        `disable_handle_method_not_allowed:true` desliga essa varredura:
+        o router para de checar se "existe noutro verbo" e cai direto no
+        404 generico, como qualquer caminho que nunca foi declarado.
+        Medido depois da mudanca (container efemero, nao o real): GET no
+        mesmo caminho POST-only -> 404; POST continua roteando normal.
+        Custo: perde-se o único sinal de "voce usou o verbo errado" que a
+        borda dava — quem precisar descobrir os verbos aceitos usa a doc,
+        nao o corpo do erro.
+      */}}
+      "disable_handle_method_not_allowed": true
     }
   },
   "endpoints": [

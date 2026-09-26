@@ -44,7 +44,8 @@
       "timeout": "3000ms",
       "extra_config": {
         {{ template "circuit_breaker.tmpl" .cb_posting }},
-        "qos/http-cache": { "shared": true }
+        "qos/http-cache": { "shared": true },
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     },
     {
@@ -54,7 +55,8 @@
       "group": "payments",
       "timeout": "3000ms",
       "extra_config": {
-        {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+        {{ template "circuit_breaker.tmpl" .cb_paymentos }},
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     },
     {
@@ -65,7 +67,8 @@
       "timeout": "3000ms",
       "is_collection": true,
       "extra_config": {
-        {{ template "circuit_breaker.tmpl" .cb_atmos }}
+        {{ template "circuit_breaker.tmpl" .cb_atmos }},
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     },
     {
@@ -75,7 +78,8 @@
       "group": "accounts",
       "timeout": "3000ms",
       "extra_config": {
-        {{ template "circuit_breaker.tmpl" .cb_accountos }}
+        {{ template "circuit_breaker.tmpl" .cb_accountos }},
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     }
   ]
@@ -120,31 +124,46 @@
       "host": ["{{ .backends.ledgeros_http }}"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "ledgeros"
+      "group": "ledgeros",
+      "extra_config": {
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
+      }
     },
     {
       "host": ["{{ .backends.paymentos }}"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "paymentos"
+      "group": "paymentos",
+      "extra_config": {
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
+      }
     },
     {
       "host": ["{{ .backends.atmos }}"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "atmos"
+      "group": "atmos",
+      "extra_config": {
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
+      }
     },
     {
       "host": ["{{ .backends.identityos }}"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "identityos"
+      "group": "identityos",
+      "extra_config": {
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
+      }
     },
     {
       "host": ["{{ .backends.accountos }}"],
       "url_pattern": "/health",
       "encoding": "json",
-      "group": "accountos"
+      "group": "accountos",
+      "extra_config": {
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
+      }
     }
   ]
 }

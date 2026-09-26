@@ -39,7 +39,8 @@
     "url_pattern": "/internal/v1/tenants/{JWT.tenant_id}/transactions",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -82,7 +83,8 @@
     "url_pattern": "/internal/v1/users/{JWT.sub}/balances",
     "encoding": "json",
     "extra_config": {
-      {{ template "circuit_breaker.tmpl" .cb_posting }}
+      {{ template "circuit_breaker.tmpl" .cb_posting }},
+      "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
   }]
 },
@@ -125,7 +127,8 @@
       "encoding": "json",
       "group": "ledger",
       "extra_config": {
-        {{ template "circuit_breaker.tmpl" .cb_posting }}
+        {{ template "circuit_breaker.tmpl" .cb_posting }},
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     },
     {
@@ -134,7 +137,8 @@
       "encoding": "json",
       "group": "payments",
       "extra_config": {
-        {{ template "circuit_breaker.tmpl" .cb_paymentos }}
+        {{ template "circuit_breaker.tmpl" .cb_paymentos }},
+        "backend/http": { "return_error_code": true, "return_error_msg": true }
       }
     }
   ]
