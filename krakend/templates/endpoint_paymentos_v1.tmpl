@@ -790,14 +790,14 @@
   }]
 },
 {
-  "_comment": "=== JDPI CANONICAL CONTA APORTE RBCL 9.4.1 ===",
+  "_comment": "=== JDPI CANONICAL CONTA APORTE RBCL 9.4.1 === | CORRIGIDO 2026-09-25: url_pattern trazia '/api/v1/' copiado do bloco WEBHOOK abaixo (linha ~1254); o modulo paymentos nao serve esse prefixo na rota nativa. Prova ao vivo: /jdpi/conta/api/v1/consultarsitreq -> 404 no backend; /jdpi/conta/consultarsitreq -> 401 (rota real, existe em endpoint_paymentos_jdpi_v1.tmpl). O `endpoint` externo fica como esta (numeracao canonica JDPI 9.4.x); so o encaminhamento para o backend mudou.",
   "endpoint": "/paymentos/jdpi/conta/api/v1/aporte/rbcl",
   "method": "POST",
   "input_headers": ["Content-Type", "X-Correlation-ID", "Chave-Idempotencia"],
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/aporte/rbcl",
+    "url_pattern": "/jdpi/conta/aporte/rbcl",
     "encoding": "no-op"
   }]
 },
@@ -809,7 +809,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/aporte/ccme",
+    "url_pattern": "/jdpi/conta/aporte/ccme",
     "encoding": "no-op"
   }]
 },
@@ -821,7 +821,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/saque/rbcl",
+    "url_pattern": "/jdpi/conta/saque/rbcl",
     "encoding": "no-op"
   }]
 },
@@ -833,7 +833,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/saque/ccme",
+    "url_pattern": "/jdpi/conta/saque/ccme",
     "encoding": "no-op"
   }]
 },
@@ -845,7 +845,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/consultar-saldo/rbcl",
+    "url_pattern": "/jdpi/conta/consultar-saldo/rbcl",
     "encoding": "no-op"
   }]
 },
@@ -858,7 +858,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/consultarsitreq",
+    "url_pattern": "/jdpi/conta/consultarsitreq",
     "encoding": "no-op"
   }]
 },
@@ -871,7 +871,7 @@
   "output_encoding": "no-op",
   "backend": [{
     "host": ["{{ .backends.paymentos }}"],
-    "url_pattern": "/jdpi/conta/api/v1/listar/aporte-retirada",
+    "url_pattern": "/jdpi/conta/listar/aporte-retirada",
     "encoding": "no-op"
   }]
 },

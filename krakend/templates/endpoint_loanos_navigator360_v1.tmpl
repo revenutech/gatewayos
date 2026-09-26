@@ -31,6 +31,26 @@
 
   QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
   Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+
+  DISJUNTOR — granularidade por ROTA (`cb-loanos-{metodo}-{caminho}`), medido e
+  corrigido 2026-09-25. Ate aqui, as 28 rotas partilhavam UM nome
+  (`cb-loanos`): uma rota barulhenta (401 em massa por `organization_id` vazio
+  noutro modulo, contado como falha por `backend/http.return_error_code`)
+  abria o disjuntor para as 27 irmas saudaveis, `/v1/reports/dashboard`
+  incluida — provado ao vivo (query real sem erro, mesmo assim 503 pelo
+  grupo). Nao ha como saber, sem instrumentacao adicional, QUAIS das 28 rotas
+  carregam o bug do `organization_id`; agrupar por "familia" (ex.: todo
+  `/v1/reports/*` num nome) arriscava juntar de novo uma rota doente com uma
+  sa dentro do mesmo grupo. Por rota elimina esse risco por construcao.
+  Custo aceite: perde-se a deteccao agregada de falha do BACKEND inteiro (ex.:
+  `loanos` caido por completo) — com nome unico por rota, cada uma precisa das
+  suas proprias 5 falhas em 60s para abrir; antes, 5 falhas em QUALQUER uma
+  das 28 abriam para todas. Mitigado por duas razoes: (1) uma queda real do
+  backend (processo fora, DB indisponivel) tende a gerar erro em toda rota que
+  receber trafego, entao cada disjuntor por rota abre pelo seu proprio erro
+  real, so que em paralelo em vez de num so tiro; (2) uma rota de baixo
+  trafego que demore mais a acumular 5 falhas tambem manda MENOS carga a um
+  backend ja doente — o atraso e proporcional ao dano que a rota inflige.
 */}}
 {{/*
   loanos · GET /v1/reports/dashboard
@@ -54,7 +74,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-reports-dashboard", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -81,7 +101,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-schedules-id-charge-off", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -108,7 +128,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-schedules-id-restructure", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -136,7 +156,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-portal-v1-loans", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -163,7 +183,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-schedules-id-preclose", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -191,7 +211,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-loans-loan-id-disbursements", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -219,7 +239,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-disbursements-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -246,7 +266,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-disbursements-id-reverse", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -274,7 +294,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-applications-id-collaterals", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -301,7 +321,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-collaterals", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -329,7 +349,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-collaterals-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -356,7 +376,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-collaterals-id-execute", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -383,7 +403,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-collaterals-id-release", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -411,7 +431,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-schedules-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -438,7 +458,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-schedules-id-payments", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -466,7 +486,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-products", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -493,7 +513,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-products", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -521,7 +541,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-products-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -548,7 +568,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-patch-v1-products-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -576,7 +596,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-borrowers-borrower-id-applications", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -603,7 +623,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-applications", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -631,7 +651,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-applications-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -658,7 +678,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-applications-id-approve", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -685,7 +705,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-applications-id-reject", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -713,7 +733,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-reports-definitions", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -740,7 +760,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-post-v1-reports-slug-execute", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -768,7 +788,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-reports-definitions-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -796,7 +816,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-loanos", "log_status_change": true
+        "name": "cb-loanos-get-v1-reports-runs-id-output", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }

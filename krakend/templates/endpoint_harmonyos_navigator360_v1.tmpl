@@ -27,6 +27,15 @@
 
   QUERY STRING — MS-013 4.4: todo GET leva `"input_query_strings": ["*"]`.
   Sem ela o KrakenD descarta a query INTEIRA (nao filtra: descarta).
+
+  DISJUNTOR — granularidade por ROTA (`cb-harmonyos-{metodo}-{caminho}`),
+  medido e corrigido 2026-09-25. Mesmo raciocinio e mesmo custo aceite do
+  `endpoint_loanos_navigator360_v1.tmpl` (ver comentario la, secao DISJUNTOR):
+  as 7 rotas partilhavam `cb-harmonyos` e uma so barulhenta abria o grupo
+  inteiro; por rota elimina o risco de juntar rota doente com sa sem
+  precisar de saber de antemao qual e qual. Custo: perde-se a deteccao
+  agregada de queda total do backend — mitigado pelo mesmo argumento (queda
+  real gera erro em toda rota que recebe trafego; cada uma abre pelo seu).
 */}}
 {{/*
   harmonyos · PUT /v1/collections/{id}/cancel
@@ -49,7 +58,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-put-v1-collections-id-cancel", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -76,7 +85,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-put-v1-conventions-id-activate", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -103,7 +112,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-put-v1-conventions-id-suspend", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -131,7 +140,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-get-v1-payroll-proventos", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -159,7 +168,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-get-v1-payroll-proventos-id", "log_status_change": true
       },
       "backend/http": { "return_error_code": true }
     }
@@ -186,7 +195,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-put-v1-payroll-proventos-id-cancel", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
@@ -213,7 +222,7 @@
     "extra_config": {
       "qos/circuit-breaker": {
         "interval": 60, "timeout": 10, "max_errors": 5,
-        "name": "cb-harmonyos", "log_status_change": true
+        "name": "cb-harmonyos-put-v1-settlements-id-approve", "log_status_change": true
       },
       "backend/http": { "return_error_code": true, "return_error_msg": true }
     }
